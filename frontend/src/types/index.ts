@@ -11,6 +11,18 @@ export interface AnomalyItem {
   source_detector?: string;
 }
 
+export interface LayerScores {
+  spectral: number;
+  prosody: number;
+  breathing: number;
+  acoustic_artifacts: number;
+  lfcc: number;
+  glottal: number;
+  perturbation: number;
+  bispectrum: number;
+  neural_lcnn: number;
+}
+
 export interface AnalysisUpdate {
   type?: string;
   window_index: number;
@@ -18,7 +30,6 @@ export interface AnalysisUpdate {
   timestamp_sec: number;
   risk_score: number;
   raw_risk_score: number;
-  neural_synthetic_probability?: number;
   is_spike: boolean;
   risk_level: RiskLevel;
   alert_type: AlertType;
@@ -27,24 +38,8 @@ export interface AnalysisUpdate {
   recommendation: string;
   suggested_actions: string[];
   diagnostics: AnomalyItem[];
-  domain_shap_contributions?: {
-    compression?: number;
-    acoustic?: number;
-    prosody?: number;
-    phase?: number;
-    emotional?: number;
-    statistical_spectral?: number;
-  };
-  layer_scores: {
-    compression?: number;
-    acoustic?: number;
-    prosody?: number;
-    spectral?: number;
-    phase?: number;
-    breathing?: number;
-    acoustic_artifacts?: number;
-  };
-  layer_metrics: Record<string, any>;
+  layer_scores: LayerScores;
+  layer_metrics: Record<string, Record<string, any>>;
   speaker_separation: {
     caller_ratio: number;
     user_ratio: number;
@@ -54,7 +49,6 @@ export interface AnalysisUpdate {
 
 export interface FileAnalysisReport {
   filename: string;
-  format?: string;
   duration_seconds: number;
   total_windows_analyzed: number;
   overall_verdict: string;
@@ -63,7 +57,32 @@ export interface FileAnalysisReport {
   peak_risk_score: number;
   recommendation: string;
   suggested_actions: string[];
-  domain_shap_contributions?: Record<string, number>;
   unique_anomalies_detected: AnomalyItem[];
   timeline: AnalysisUpdate[];
+}
+
+export interface DatasetItem {
+  name: string;
+  description: string;
+  url: string;
+  type: string;
+  installed: boolean;
+  sample_count: number;
+  local_path: string;
+}
+
+export interface ModelMetrics {
+  status: string;
+  samples_evaluated?: number;
+  accuracy: number;
+  precision: number;
+  recall: number;
+  f1_score: number;
+  equal_error_rate_eer: number;
+  confusion_matrix?: {
+    true_positives_synthetic: number;
+    false_positives: number;
+    true_negatives_genuine: number;
+    false_negatives: number;
+  };
 }

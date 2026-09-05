@@ -1,36 +1,45 @@
-"""Multi-Domain Fusion Scorer and Real-Time Detection Engine.
-Integrates the 6-Domain Feature Framework (Chhatriwala et al., 2026) and
-Cross-Attention Feature Extraction (Gong & Li, 2025).
-"""
+"""Multi-Layer Fusion Scorer and Real-Time Detection Engine (8-Vector Forensic Suite)."""
 import numpy as np
+import os
 from typing import Dict, Any, List, Optional
 from app.core.config import settings
-from app.detectors.multidomain_extractor import MultiDomainFeatureExtractor
-from app.detectors.neural_classifier import MultiDomainNeuralClassifier
-from app.detectors.compression_detector import CompressionDetector
 from app.detectors.spectral_detector import SpectralDetector
 from app.detectors.prosody_detector import ProsodyDetector
 from app.detectors.breathing_detector import BreathingDetector
 from app.detectors.acoustic_artifacts import AcousticArtifactDetector
+from app.detectors.lfcc_detector import LFCCDetector
+from app.detectors.glottal_detector import GlottalFlowDetector
+from app.detectors.perturbation_detector import LaryngealPerturbationDetector
+from app.detectors.bispectrum_detector import BispectrumPhaseDetector
+from app.detectors.neural_lcnn_detector import NeuralLCNNDetector
 from app.audio.speaker_separator import SpeakerSeparator
-from app.audio.preprocessor import AudioPreprocessor
 from app.engine.diagnostic_generator import DiagnosticGenerator
 
 
 class DetectionEngine:
     """
-    Orchestrates the 6-Domain Feature Extraction Pipeline,
-    Multi-Domain Neural Classification, and Dynamic Diagnostic Generation.
+    Orchestrates the 8-vector forensic detector ensemble:
+    1. Spectral & Phase Discontinuity
+    2. Prosodic F0 Pitch Variance & Micro-Tremors
+    3. Respiration & Inhalation Cadence
+    4. Neural Vocoder Filter Cutoffs
+    5. Linear Frequency Cepstral Coefficients (LFCC Delta/Delta-Delta)
+    6. Biomechanical Glottal Flow LPC Inverse Filtering (NAQ)
+    7. Laryngeal Micro-Perturbation (Jitter & Shimmer)
+    8. Higher-Order Bispectral Phase Coupling (QPC)
+    9. Deep Neural LCNN-BiLSTM-Attention Model
     """
 
-    def __init__(self):
-        self.multidomain_extractor = MultiDomainFeatureExtractor(sample_rate=settings.SAMPLE_RATE)
-        self.neural_classifier = MultiDomainNeuralClassifier()
-        self.compression_detector = CompressionDetector(sample_rate=settings.SAMPLE_RATE)
+    def __init__(self, weights_path: str = None):
         self.spectral_detector = SpectralDetector()
         self.prosody_detector = ProsodyDetector()
         self.breathing_detector = BreathingDetector()
         self.acoustic_detector = AcousticArtifactDetector()
+        self.lfcc_detector = LFCCDetector()
+        self.glottal_detector = GlottalFlowDetector()
+        self.perturbation_detector = LaryngealPerturbationDetector()
+        self.bispectrum_detector = BispectrumPhaseDetector()
+        self.neural_detector = NeuralLCNNDetector(weights_path=weights_path)
         self.speaker_separator = SpeakerSeparator()
 
         self.history_scores: List[float] = []
@@ -45,7 +54,7 @@ class DetectionEngine:
         timestamp_sec: float = 0.0,
     ) -> Dict[str, Any]:
         """
-        Executes multi-domain forensic analysis on a 2.0-second audio window.
+        Executes forensic analysis on a 2.0-second audio window.
         """
         self.total_windows_processed += 1
 
@@ -54,124 +63,39 @@ class DetectionEngine:
             audio_window, sample_rate=sample_rate
         )
 
-        formatted_time = f"{int(timestamp_sec // 60):02d}:{int(timestamp_sec % 60):02d}"
-
-        # ── Silence & Inactive Speech Handling (Fast Decay to 0% Risk) ──
-        if len(caller_audio) < sample_rate * 0.1 or AudioPreprocessor.is_silent(caller_audio, rms_threshold=0.005):
-            # When speech stops / silence is detected, decay risk score aggressively
-            self.current_ema_score = max(0.0, float(self.current_ema_score * 0.45 - 0.02))
-            if self.current_ema_score < 0.04:
-                self.current_ema_score = 0.0
-            self.history_scores.append(self.current_ema_score)
-
-            return {
-                "window_index": window_index,
-                "timestamp": formatted_time,
-                "timestamp_sec": round(timestamp_sec, 2),
-                "risk_score": round(self.current_ema_score, 3),
-                "raw_risk_score": 0.0,
-                "neural_synthetic_probability": 0.0,
-                "is_spike": False,
-                "risk_level": "LOW",
-                "alert_type": "NORMAL",
-                "status_text": "Ambient Room / Silence (Listening...)",
-                "user_message": "Channel is clear. No active speech detected.",
-                "recommendation": "Maintain standard security protocol during call pauses.",
-                "suggested_actions": ["Awaiting incoming voice stream..."],
-                "diagnostics": [],
-                "domain_shap_contributions": {
-                    "compression": 0.25,
-                    "acoustic": 0.20,
-                    "prosody": 0.20,
-                    "phase": 0.15,
-                    "emotional": 0.10,
-                    "statistical_spectral": 0.10,
-                },
-                "layer_scores": {
-                    "compression": 0.0,
-                    "acoustic": 0.0,
-                    "prosody": 0.0,
-                    "spectral": 0.0,
-                    "phase": 0.0,
-                    "breathing": 0.0,
-                    "acoustic_artifacts": 0.0,
-                },
-                "layer_metrics": {
-                    "compression": {"delta_mean": 0.0, "delta_var": 0.0},
-                    "acoustic": {"mfcc_mean_norm": 0.0, "delta_var_norm": 0.0},
-                    "prosody": {"pitch_mean_hz": 0.0, "jitter": 0.0, "shimmer": 0.0},
-                    "spectral": {"spectral_flatness": 0.0, "spectral_entropy": 0.0},
-                    "phase": {"group_delay_var": 0.0},
-                    "breathing": {"continuous_speech_sec": 0.0},
-                    "acoustic_artifacts": {"brickwall_cutoff_detected": False},
-                },
-                "speaker_separation": separation_info,
-            }
-
-        # 2. Extract Complete 6-Domain Multi-Feature Representation (Chhatriwala et al. 2026)
-        multi_features = self.multidomain_extractor.extract_all(caller_audio)
-        fused_vector = multi_features["fused_vector"]
-
-        # 3. Neural Classifier Inference (P(Synthetic) + SHAP Domain Contributions)
-        p_genuine, p_synthetic, domain_shap = self.neural_classifier.predict_proba(fused_vector)
-
-        # 4. Individual Modular Detectors for Granular Diagnostics
-        comp_res = self.compression_detector.analyze(caller_audio, sample_rate)
+        # 2. Run all 9 forensic detectors
         spectral_res = self.spectral_detector.analyze(caller_audio, sample_rate)
         prosody_res = self.prosody_detector.analyze(caller_audio, sample_rate)
         breathing_res = self.breathing_detector.analyze(caller_audio, sample_rate)
         acoustic_res = self.acoustic_detector.analyze(caller_audio, sample_rate)
+        lfcc_res = self.lfcc_detector.analyze(caller_audio, sample_rate)
+        glottal_res = self.glottal_detector.analyze(caller_audio, sample_rate)
+        perturb_res = self.perturbation_detector.analyze(caller_audio, sample_rate)
+        bispec_res = self.bispectrum_detector.analyze(caller_audio, sample_rate)
+        neural_res = self.neural_detector.analyze(caller_audio, sample_rate)
 
         detector_results = {
-            "compression": comp_res,
-            "acoustic": {
-                "anomaly_score": multi_features["acoustic"]["anomaly_score"],
-                "metrics": multi_features["acoustic"],
-                "anomalies_detected": [
-                    {
-                        "type": "ACOUSTIC_FORMANT_QUANTIZATION",
-                        "severity": "HIGH",
-                        "metric_name": "MFCC Delta Dynamic Variance",
-                        "value": f"Δ-Var: {multi_features['acoustic']['delta_var_norm']}",
-                        "threshold": "> 0.50 (Normal human dynamic range)",
-                        "description": "Acoustic formant velocity trajectory shows reduced variance typical of neural speech synthesis.",
-                    }
-                ] if multi_features["acoustic"]["anomaly_score"] > 0.65 else [],
-            },
-            "prosody": prosody_res,
             "spectral": spectral_res,
+            "prosody": prosody_res,
             "breathing": breathing_res,
             "acoustic_artifacts": acoustic_res,
+            "lfcc": lfcc_res,
+            "glottal": glottal_res,
+            "perturbation": perturb_res,
+            "bispectrum": bispec_res,
+            "neural_lcnn": neural_res,
         }
 
-        # 5. Hybrid Fusion Score Calculation:
-        # Fuses Neural Posterior (60% weight) + Multi-Domain Heuristic Aggregate (40% weight)
+        # 3. Weighted Fusion Score Calculation
         weights = settings.DETECTOR_WEIGHTS
-        heuristic_score = (
-            weights["compression"] * comp_res["anomaly_score"]
-            + weights["acoustic"] * multi_features["acoustic"]["anomaly_score"]
-            + weights["prosody"] * prosody_res["anomaly_score"]
-            + weights["spectral"] * spectral_res["anomaly_score"]
-            + weights["breathing"] * breathing_res["anomaly_score"]
-            + weights["acoustic_artifacts"] * acoustic_res["anomaly_score"]
+        total_weight = sum(weights.values())
+        raw_score = sum(
+            (weights.get(name, 0.1) / total_weight) * res["anomaly_score"]
+            for name, res in detector_results.items()
         )
-
-        # Corroboration for heuristic score
-        other_heuristic_scores = [
-            multi_features["acoustic"]["anomaly_score"],
-            prosody_res["anomaly_score"],
-            spectral_res["anomaly_score"],
-            breathing_res["anomaly_score"],
-            acoustic_res["anomaly_score"],
-        ]
-        if comp_res["anomaly_score"] > 0.30 and max(other_heuristic_scores) < 0.20:
-            # Isolated telephony compression artifact
-            heuristic_score = min(heuristic_score, 0.15)
-
-        raw_score = 0.60 * p_synthetic + 0.40 * heuristic_score
         raw_score = float(np.clip(raw_score, 0.0, 1.0))
 
-        # 6. Temporal Smoothing (Exponential Moving Average)
+        # 4. Temporal Smoothing (Exponential Moving Average)
         alpha = settings.EMA_ALPHA
         if len(self.history_scores) == 0:
             smoothed_score = raw_score
@@ -179,21 +103,20 @@ class DetectionEngine:
             smoothed_score = alpha * raw_score + (1.0 - alpha) * self.current_ema_score
 
         # Check for sudden risk velocity spike (Voice Swap / Takeover Detection)
-        # Only triggers when transitioning into high synthetic clone territory (raw_score >= 0.60)
         prev_score = self.current_ema_score if len(self.history_scores) > 0 else 0.0
-        is_spike = (raw_score - prev_score) >= settings.SPIKE_DELTA_THRESHOLD and raw_score >= 0.60
+        is_spike = (raw_score - prev_score) >= settings.SPIKE_DELTA_THRESHOLD
 
         self.current_ema_score = smoothed_score
         self.history_scores.append(smoothed_score)
 
-        # 7. Generate Rich Diagnostic Report & Actionable Countermeasures
+        # 5. Generate Rich Diagnostic Report & Actionable Countermeasures
         diagnostic_report = DiagnosticGenerator.generate_report(
             risk_score=smoothed_score,
             detector_results=detector_results,
             is_spike=is_spike,
-            shap_contributions=domain_shap,
         )
 
+        # 6. Format Return Payload
         formatted_time = f"{int(timestamp_sec // 60):02d}:{int(timestamp_sec % 60):02d}"
 
         return {
@@ -202,7 +125,6 @@ class DetectionEngine:
             "timestamp_sec": round(timestamp_sec, 2),
             "risk_score": round(smoothed_score, 3),
             "raw_risk_score": round(raw_score, 3),
-            "neural_synthetic_probability": round(p_synthetic, 3),
             "is_spike": is_spike,
             "risk_level": diagnostic_report["risk_level"],
             "alert_type": diagnostic_report["alert_type"],
@@ -211,24 +133,27 @@ class DetectionEngine:
             "recommendation": diagnostic_report["recommendation"],
             "suggested_actions": diagnostic_report["suggested_actions"],
             "diagnostics": diagnostic_report["anomalies"],
-            "domain_shap_contributions": domain_shap,
             "layer_scores": {
-                "compression": comp_res["anomaly_score"],
-                "acoustic": multi_features["acoustic"]["anomaly_score"],
-                "prosody": prosody_res["anomaly_score"],
                 "spectral": spectral_res["anomaly_score"],
-                "phase": multi_features["phase"]["anomaly_score"],
+                "prosody": prosody_res["anomaly_score"],
                 "breathing": breathing_res["anomaly_score"],
                 "acoustic_artifacts": acoustic_res["anomaly_score"],
+                "lfcc": lfcc_res["anomaly_score"],
+                "glottal": glottal_res["anomaly_score"],
+                "perturbation": perturb_res["anomaly_score"],
+                "bispectrum": bispec_res["anomaly_score"],
+                "neural_lcnn": neural_res["anomaly_score"],
             },
             "layer_metrics": {
-                "compression": comp_res["metrics"],
-                "acoustic": multi_features["acoustic"],
-                "prosody": prosody_res["metrics"],
                 "spectral": spectral_res["metrics"],
-                "phase": multi_features["phase"],
+                "prosody": prosody_res["metrics"],
                 "breathing": breathing_res["metrics"],
                 "acoustic_artifacts": acoustic_res["metrics"],
+                "lfcc": lfcc_res["metrics"],
+                "glottal": glottal_res["metrics"],
+                "perturbation": perturb_res["metrics"],
+                "bispectrum": bispec_res["metrics"],
+                "neural_lcnn": neural_res["metrics"],
             },
             "speaker_separation": separation_info,
         }

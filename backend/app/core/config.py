@@ -1,4 +1,4 @@
-"""Core configuration module for VoxSentinalX."""
+"""Core configuration module for VoxSentinalX with 8-Vector Forensic Decomposition."""
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Dict, List
 
@@ -31,25 +31,25 @@ class Settings(BaseSettings):
     # Risk Classification Thresholds
     RISK_THRESHOLD_LOW: float = 0.30        # 0.00 - 0.30: Normal / Genuine
     RISK_THRESHOLD_MODERATE: float = 0.60   # 0.30 - 0.60: Caution / Inconclusive
-    RISK_THRESHOLD_HIGH: float = 0.75       # 0.60 - 0.75: Warning / Probable Fake
-    # 0.75 - 1.00: Critical Alert / Synthetic
+    RISK_THRESHOLD_HIGH: float = 0.80       # 0.60 - 0.80: Warning / Probable Fake
+    # 0.80 - 1.00: Critical Alert / Synthetic
 
-    # Dynamic Weightings for Multi-Domain Fusion Layer (Based on SHAP Analysis in Chhatriwala et al. 2026)
+    # Dynamic Weightings for 8-Vector Forensic Fusion Layer
     DETECTOR_WEIGHTS: Dict[str, float] = {
-        "compression": 0.25,
-        "acoustic": 0.20,
-        "prosody": 0.20,
-        "spectral": 0.15,
+        "spectral": 0.14,
+        "prosody": 0.12,
         "breathing": 0.10,
         "acoustic_artifacts": 0.10,
+        "lfcc": 0.16,
+        "glottal": 0.12,
+        "perturbation": 0.12,
+        "bispectrum": 0.08,
+        "neural_lcnn": 0.16,
     }
 
     # Temporal Smoothing (Exponential Moving Average)
-    EMA_ALPHA: float = 0.40                 # Responsiveness vs smoothness factor
-    SPIKE_DELTA_THRESHOLD: float = 0.25     # Rapid jump detection threshold
-
-    # Dialect & Acoustic Regional Calibration (Compensates for retroflex plosives, aspirates & syllable meter)
-    DIALECT_CALIBRATION_PROFILE: str = "INDIAN_REGIONAL"
+    EMA_ALPHA: float = 0.35                 # Responsiveness vs smoothness factor
+    SPIKE_DELTA_THRESHOLD: float = 0.28     # Rapid jump detection threshold
 
     # CORS Settings
     CORS_ORIGINS: List[str] = ["*"]

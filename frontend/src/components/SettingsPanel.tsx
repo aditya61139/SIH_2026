@@ -109,48 +109,6 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           </div>
         </div>
 
-        {/* Dialect & Phonetic Regional Calibration */}
-        <div className="py-6 border-b border-slate-800 space-y-4">
-          <div className="flex items-center space-x-2">
-            <Cpu className="h-4 w-4 text-cyan-400" />
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-              Acoustic Dialect & Phonetic Calibration
-            </h3>
-          </div>
-          <p className="text-xs text-slate-400">
-            Select acoustic baseline model calibrated for regional phonetic structures and articulation physics.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="p-3.5 rounded-xl bg-cyan-950/40 border-2 border-cyan-500/80 space-y-1.5 cursor-pointer relative">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-cyan-300">
-                  Indian Regional & Indian English (Active)
-                </span>
-                <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
-              </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Compensates for retroflex plosives (/ʈ/, /ɖ/), aspirated consonants (/kʰ/, /pʰ/), syllable-timed meter, and wide F0 intonation dynamics.
-              </p>
-              <div className="pt-1 flex flex-wrap gap-1">
-                <span className="text-[9px] bg-slate-900 px-2 py-0.5 rounded text-cyan-300 font-mono border border-slate-800">D1 Compression: Calibrated</span>
-                <span className="text-[9px] bg-slate-900 px-2 py-0.5 rounded text-emerald-300 font-mono border border-slate-800">Prosody: Dynamic F0</span>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 space-y-1.5 opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-300">
-                  Standard Western / Stress-Timed English
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Standard stress-timed phonetic baseline with uncompressed vowel duration tracking.
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* Privacy & DPDP Act 2023 Compliance */}
         <div className="py-6 border-b border-slate-800 space-y-4">
           <div className="flex items-center space-x-2">

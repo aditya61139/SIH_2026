@@ -36,19 +36,15 @@ class AcousticArtifactDetector(BaseDetector):
         freqs, psd = signal.welch(audio, fs=sample_rate, nperseg=n_fft)
         psd_db = 10 * np.log10(np.maximum(psd, 1e-12))
 
-        # 2. Check for Telephone Channel Bandlimiting (Standard 3.4kHz AMR-NB / G.711 or 7.0kHz AMR-WB)
-        hf_energy_ratio = np.sum(psd[freqs >= 3800]) / (np.sum(psd) + 1e-12)
-        is_telephony_channel = bool(hf_energy_ratio < 0.025)
-
-        # Check for anomalous Vocoder Brickwall Cutoff (only when not a standard telephone channel)
+        # 2. Check for Brickwall Filter Cutoff (Common in low-tier TTS upsampling)
+        # Look for steep cliff (> 30 dB drop within 400 Hz) in the 3.5kHz - 7.8kHz range
         diff_psd = np.diff(psd_db)
         min_slope = float(np.min(diff_psd))
-        brickwall_cutoff = bool(min_slope < -28.0 and not is_telephony_channel)
+        brickwall_cutoff = min_slope < -25.0
 
-        # 3. Spectral Energy Decay Slope (Natural voice decays approximately -6dB to -14dB per octave)
-        # In telephone audio, evaluate slope strictly within the active passband (200Hz - 3400Hz)
-        max_slope_freq = 3400 if is_telephony_channel else 7000
-        valid_bins = (freqs >= 200) & (freqs <= max_slope_freq)
+        # 3. Spectral Energy Decay Slope (Natural voice decays approximately -6dB to -12dB per octave)
+        # Compute slope across log-frequency bins
+        valid_bins = (freqs >= 200) & (freqs <= 7000)
         if np.sum(valid_bins) > 10:
             log_f = np.log2(freqs[valid_bins])
             p_db = psd_db[valid_bins]

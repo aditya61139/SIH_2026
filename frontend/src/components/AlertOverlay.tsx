@@ -114,9 +114,9 @@ export const AlertOverlay: React.FC<AlertOverlayProps> = ({
 
           <button
             onClick={onClose}
-            className="flex items-center justify-center space-x-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 py-2.5 px-3 text-xs font-semibold text-slate-300 border border-slate-700 hover:border-slate-500 transition-all"
+            className="flex items-center justify-center space-x-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 py-2.5 px-3 text-xs font-semibold text-slate-400 border border-slate-800 transition-all"
           >
-            <span>Acknowledge & Dismiss</span>
+            <span>Acknowledge</span>
           </button>
         </div>
       </div>

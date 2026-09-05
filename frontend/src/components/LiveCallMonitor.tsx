@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Square, Mic, Volume2, ShieldCheck, UserCheck, Layers, Radio, RotateCcw } from 'lucide-react';
+import { Play, Square, Mic, Volume2, ShieldCheck, UserCheck, Layers, Radio, Radar } from 'lucide-react';
 import { VoxSentinalAudioCapture } from '../lib/audioCapture';
 import { CanvasAudioVisualizer } from '../lib/audioVisualizer';
 import { RiskGauge } from './RiskGauge';
 import { DiagnosticFeed } from './DiagnosticFeed';
 import { AlertOverlay } from './AlertOverlay';
+import { ForensicRadar } from './ForensicRadar';
 import { AnalysisUpdate } from '../types';
 
 interface LiveCallMonitorProps {
@@ -27,7 +28,6 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const visualizerRef = useRef<CanvasAudioVisualizer | null>(null);
-  const alertAcknowledgedRef = useRef<boolean>(false);
 
   const handleToggleMonitoring = async () => {
     if (isMonitoring) {
@@ -44,14 +44,8 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
           setLatestAnalysis(data);
           visualizerRef.current?.setRiskLevel(data.risk_level);
 
-          // Trigger Alert modal on CRITICAL risk only if not already dismissed for this incident
           if (data.risk_level === 'CRITICAL') {
-            if (!alertAcknowledgedRef.current) {
-              setShowAlertModal(true);
-            }
-          } else if (data.risk_level === 'LOW' || data.risk_level === 'MODERATE') {
-            // Re-arm alert when threat level subsides
-            alertAcknowledgedRef.current = false;
+            setShowAlertModal(true);
           }
         },
         (status, err) => {
@@ -80,19 +74,6 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
     }
   };
 
-  const handleResetTelemetry = () => {
-    captureEngine.resetSession();
-    setLatestAnalysis(null);
-    setShowAlertModal(false);
-    alertAcknowledgedRef.current = false;
-    visualizerRef.current?.setRiskLevel('LOW');
-  };
-
-  const handleCloseAlertModal = () => {
-    setShowAlertModal(false);
-    alertAcknowledgedRef.current = true; // Dismiss for current active threat incident
-  };
-
   useEffect(() => {
     return () => {
       captureEngine.stopMonitoring();
@@ -104,20 +85,29 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
   const riskLevel = latestAnalysis?.risk_level ?? 'LOW';
   const isSpike = latestAnalysis?.is_spike ?? false;
   const diagnostics = latestAnalysis?.diagnostics ?? [];
-  const layerScores = latestAnalysis?.layer_scores ?? {};
+  const layerScores = latestAnalysis?.layer_scores ?? {
+    spectral: 0,
+    prosody: 0,
+    breathing: 0,
+    acoustic_artifacts: 0,
+    lfcc: 0,
+    glottal: 0,
+    perturbation: 0,
+    bispectrum: 0,
+    neural_lcnn: 0,
+  };
   const separation = latestAnalysis?.speaker_separation ?? {
     caller_ratio: 1.0,
     user_ratio: 0.0,
     calibrated: false,
   };
-  const shap = latestAnalysis?.domain_shap_contributions ?? {};
 
   return (
     <div className="space-y-6">
       {/* Alert Overlay Popup */}
       <AlertOverlay
         isOpen={showAlertModal}
-        onClose={handleCloseAlertModal}
+        onClose={() => setShowAlertModal(false)}
         riskScore={riskScore}
         anomalies={diagnostics}
         recommendation={latestAnalysis?.recommendation || ''}
@@ -130,32 +120,20 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
             <Radio className="h-6 w-6 text-cyan-400" />
           </div>
           <div>
-            <h2 className="text-sm sm:text-base font-bold text-white flex items-center space-x-2">
-              <span>Live Call Impersonation Interceptor</span>
-              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800">
-                Multi-Domain AI Engine v2.0
-              </span>
+            <h2 className="text-sm sm:text-base font-bold text-white">
+              Live Call Impersonation Interceptor (8-Vector Forensic Engine)
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
-              🔊 <strong>Physical Setup:</strong> Place phone on speakerphone next to laptop. VoxSentinalX runs 6-domain forensic checks (Compression Δk, Jitter/Shimmer, Phase Coherence, Acoustic Dynamics).
+              🔊 <strong>Physical Setup:</strong> Place phone on speakerphone next to your PC. VoxSentinalX captures caller audio, filters user voice, and conducts 8-layer AI forensic checks.
             </p>
           </div>
         </div>
 
-        {/* Start / Stop & Reset Buttons */}
-        <div className="mt-4 sm:mt-0 flex items-center space-x-2.5 w-full sm:w-auto">
-          <button
-            onClick={handleResetTelemetry}
-            title="Reset telemetry, baseline, and alert counters"
-            className="flex items-center justify-center space-x-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 px-3.5 py-3 text-xs font-semibold text-slate-300 border border-slate-700 transition-all"
-          >
-            <RotateCcw className="h-4 w-4 text-cyan-400" />
-            <span>Reset Telemetry</span>
-          </button>
-
+        {/* Start / Stop Stream Button */}
+        <div className="mt-4 sm:mt-0 flex items-center space-x-3 w-full sm:w-auto">
           <button
             onClick={handleToggleMonitoring}
-            className={`flex flex-1 sm:flex-initial items-center justify-center space-x-2 rounded-xl px-5 py-3 text-sm font-bold text-white transition-all shadow-lg ${
+            className={`flex w-full sm:w-auto items-center justify-center space-x-2 rounded-xl px-5 py-3 text-sm font-bold text-white transition-all shadow-lg ${
               isMonitoring
                 ? 'bg-red-600 hover:bg-red-500 shadow-red-600/30'
                 : 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-cyan-500/30'
@@ -182,11 +160,11 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
         </div>
       )}
 
-      {/* Main Grid: Visualizer & Risk Gauge + Diagnostics */}
+      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Visualizer, Meter, 6-Domain Breakdown (7 Cols) */}
+        {/* Left Column: Telemetry, Radar, 8-Layer Decomposition (7 Cols) */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Real-time Oscilloscope & Spectrogram Canvas */}
+          {/* Oscilloscope & Spectrogram Canvas */}
           <div className="rounded-2xl bg-slate-900/80 p-5 border border-slate-800">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
@@ -204,24 +182,24 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
             </div>
 
             {/* Canvas Visualizer */}
-            <div className="relative overflow-hidden rounded-xl bg-slate-950 border border-slate-800/80 h-44">
+            <div className="relative overflow-hidden rounded-xl bg-slate-950 border border-slate-800/80 h-40">
               <canvas
                 ref={canvasRef}
                 width={640}
-                height={176}
+                height={160}
                 className="w-full h-full block"
               />
               {!isMonitoring && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/80 text-center p-4">
-                  <Mic className="h-8 w-8 text-slate-600 mb-2" />
+                  <Mic className="h-7 w-7 text-slate-600 mb-1.5" />
                   <p className="text-xs font-medium text-slate-400">
-                    Click "Start Live Monitoring" to begin capturing live call stream.
+                    Click "Start Live Monitoring" to begin real-time deepfake analysis.
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Input Volume Bar */}
+            {/* Volume Input Meter */}
             <div className="mt-3 flex items-center space-x-3">
               <Volume2 className="h-4 w-4 text-slate-400 shrink-0" />
               <div className="flex-1 h-2 rounded-full bg-slate-950 overflow-hidden border border-slate-800">
@@ -236,98 +214,89 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
             </div>
           </div>
 
-          {/* 6-Domain Forensic Scores Breakdown (ITEGAM-JETIA 2026 Framework) */}
+          {/* 8-Layer Forensic Decomposition Breakdown */}
           <div className="rounded-2xl bg-slate-900/80 p-5 border border-slate-800">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <Layers className="h-4 w-4 text-cyan-400" />
                 <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                  6-Domain Multi-Feature Forensic Framework
+                  8-Vector Forensic Decomposition
                 </h3>
               </div>
-              <span className="text-[11px] text-cyan-400 font-mono">Chhatriwala et al. 2026</span>
+              <span className="text-[11px] text-slate-400 font-mono">Sliding Window: 2.0s</span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {/* Domain 1: Compression */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              {/* Layer 1: Spectral */}
               <div className="rounded-xl bg-slate-950/70 p-3 border border-slate-800/80">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-cyan-400 uppercase font-bold block">
-                    D1: Compression
-                  </span>
-                  <span className="text-[9px] font-mono text-slate-400">#1 SHAP</span>
+                <span className="text-[10px] text-slate-400 uppercase font-semibold block">L1: Spectral</span>
+                <div className="mt-0.5 text-base font-mono font-bold text-white">
+                  {Math.round(layerScores.spectral * 100)}%
                 </div>
-                <div className="mt-1 text-lg font-mono font-bold text-white">
-                  {Math.round((layerScores.compression ?? 0) * 100)}%
-                </div>
-                <span className="text-[9px] text-slate-400 block truncate">
-                  Mel-Band Δk Distortion
-                </span>
+                <span className="text-[9px] text-slate-500 block truncate">Flatness & Phase</span>
               </div>
 
-              {/* Domain 2: Acoustic */}
+              {/* Layer 2: Prosody */}
               <div className="rounded-xl bg-slate-950/70 p-3 border border-slate-800/80">
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">
-                  D2: Acoustic
-                </span>
-                <div className="mt-1 text-lg font-mono font-bold text-white">
-                  {Math.round((layerScores.acoustic ?? 0) * 100)}%
+                <span className="text-[10px] text-slate-400 uppercase font-semibold block">L2: Prosody</span>
+                <div className="mt-0.5 text-base font-mono font-bold text-white">
+                  {Math.round(layerScores.prosody * 100)}%
                 </div>
-                <span className="text-[9px] text-slate-400 block truncate">
-                  MFCC + Δ + Δ² (39-dim)
-                </span>
+                <span className="text-[9px] text-slate-500 block truncate">F0 Pitch Variance</span>
               </div>
 
-              {/* Domain 3: Prosody */}
+              {/* Layer 3: Breathing */}
               <div className="rounded-xl bg-slate-950/70 p-3 border border-slate-800/80">
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">
-                  D3: Prosody
-                </span>
-                <div className="mt-1 text-lg font-mono font-bold text-white">
-                  {Math.round((layerScores.prosody ?? 0) * 100)}%
+                <span className="text-[10px] text-slate-400 uppercase font-semibold block">L3: Breathing</span>
+                <div className="mt-0.5 text-base font-mono font-bold text-white">
+                  {Math.round(layerScores.breathing * 100)}%
                 </div>
-                <span className="text-[9px] text-slate-400 block truncate">
-                  Jitter, Shimmer, F0
-                </span>
+                <span className="text-[9px] text-slate-500 block truncate">Respiration Gaps</span>
               </div>
 
-              {/* Domain 4: Phase */}
+              {/* Layer 4: Vocoder */}
               <div className="rounded-xl bg-slate-950/70 p-3 border border-slate-800/80">
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">
-                  D4: Phase Delay
-                </span>
-                <div className="mt-1 text-lg font-mono font-bold text-white">
-                  {Math.round((layerScores.phase ?? 0) * 100)}%
+                <span className="text-[10px] text-slate-400 uppercase font-semibold block">L4: Vocoder</span>
+                <div className="mt-0.5 text-base font-mono font-bold text-white">
+                  {Math.round(layerScores.acoustic_artifacts * 100)}%
                 </div>
-                <span className="text-[9px] text-slate-400 block truncate">
-                  Group Delay τg / Inst Freq
-                </span>
+                <span className="text-[9px] text-slate-500 block truncate">Filter Cutoff</span>
               </div>
 
-              {/* Domain 5: Spectral Entropy */}
+              {/* Layer 5: LFCC */}
               <div className="rounded-xl bg-slate-950/70 p-3 border border-slate-800/80">
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">
-                  D5: Spectral
-                </span>
-                <div className="mt-1 text-lg font-mono font-bold text-white">
-                  {Math.round((layerScores.spectral ?? 0) * 100)}%
+                <span className="text-[10px] text-slate-400 uppercase font-semibold block">L5: ASVspoof LFCC</span>
+                <div className="mt-0.5 text-base font-mono font-bold text-cyan-400">
+                  {Math.round(layerScores.lfcc * 100)}%
                 </div>
-                <span className="text-[9px] text-slate-400 block truncate">
-                  Entropy Hs / Flatness SF
-                </span>
+                <span className="text-[9px] text-slate-500 block truncate">Linear Cepstrum ΔΔ</span>
               </div>
 
-              {/* Domain 6: Respiration / Artifacts */}
+              {/* Layer 6: Glottal */}
               <div className="rounded-xl bg-slate-950/70 p-3 border border-slate-800/80">
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">
-                  D6: Respiration
-                </span>
-                <div className="mt-1 text-lg font-mono font-bold text-white">
-                  {Math.round((layerScores.breathing ?? 0) * 100)}%
+                <span className="text-[10px] text-slate-400 uppercase font-semibold block">L6: Glottal Flow</span>
+                <div className="mt-0.5 text-base font-mono font-bold text-cyan-400">
+                  {Math.round(layerScores.glottal * 100)}%
                 </div>
-                <span className="text-[9px] text-slate-400 block truncate">
-                  Breath Pause Intervals
-                </span>
+                <span className="text-[9px] text-slate-500 block truncate">LPC-NAQ Biomechanics</span>
+              </div>
+
+              {/* Layer 7: Perturbation */}
+              <div className="rounded-xl bg-slate-950/70 p-3 border border-slate-800/80">
+                <span className="text-[10px] text-slate-400 uppercase font-semibold block">L7: Perturbation</span>
+                <div className="mt-0.5 text-base font-mono font-bold text-cyan-400">
+                  {Math.round(layerScores.perturbation * 100)}%
+                </div>
+                <span className="text-[9px] text-slate-500 block truncate">Jitter & Shimmer</span>
+              </div>
+
+              {/* Layer 8: Bispectrum */}
+              <div className="rounded-xl bg-slate-950/70 p-3 border border-slate-800/80">
+                <span className="text-[10px] text-slate-400 uppercase font-semibold block">L8: Bispectrum</span>
+                <div className="mt-0.5 text-base font-mono font-bold text-cyan-400">
+                  {Math.round(layerScores.bispectrum * 100)}%
+                </div>
+                <span className="text-[9px] text-slate-500 block truncate">QPC Phase Coupling</span>
               </div>
             </div>
 
@@ -336,7 +305,7 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
               <div className="flex items-center space-x-2">
                 <UserCheck className="h-4 w-4 text-emerald-400" />
                 <span className="text-slate-300">
-                  Channel Isolation: <strong>Caller Voice ({Math.round(separation.caller_ratio * 100)}%)</strong> vs <strong>Local User ({Math.round(separation.user_ratio * 100)}%)</strong>
+                  Channel Isolation: <strong>Caller ({Math.round(separation.caller_ratio * 100)}%)</strong> vs <strong>User ({Math.round(separation.user_ratio * 100)}%)</strong>
                 </span>
               </div>
               <button
@@ -349,14 +318,22 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
           </div>
         </div>
 
-        {/* Right Column: Risk Gauge & Granular Diagnostic Feed (5 Cols) */}
+        {/* Right Column: Risk Gauge, Radar, Diagnostic Feed (5 Cols) */}
         <div className="lg:col-span-5 space-y-6 flex flex-col">
-          {/* Dynamic Risk Gauge */}
+          {/* Risk Gauge */}
           <RiskGauge
             score={riskScore}
             level={riskLevel}
             isSpike={isSpike}
           />
+
+          {/* Forensic Radar Chart */}
+          <div className="rounded-2xl bg-slate-900/80 p-4 border border-slate-800 flex items-center justify-center">
+            <ForensicRadar
+              scores={layerScores}
+              riskLevel={riskLevel}
+            />
+          </div>
 
           {/* Granular Diagnostic Messages Feed */}
           <div className="flex-1">
