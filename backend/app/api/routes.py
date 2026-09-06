@@ -11,7 +11,8 @@ import soundfile as sf
 import numpy as np
 from scipy import signal
 from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks
-from typing import Dict, Any, List
+from pydantic import BaseModel
+from typing import Dict, Any, List, Optional
 from app.core.config import settings
 from app.engine.fusion_scorer import DetectionEngine
 from app.audio.preprocessor import AudioPreprocessor
@@ -21,6 +22,25 @@ from training.train import train_model
 from training.evaluate import evaluate_model
 
 router = APIRouter()
+
+
+class CalibrationPayload(BaseModel):
+    pcm_data: List[float] = []
+
+
+@router.post("/calibrate")
+async def calibrate_user_voice(payload: CalibrationPayload) -> Dict[str, Any]:
+    """Calibrates near-field user voiceprint from recorded audio samples."""
+    min_samples = int(settings.SAMPLE_RATE * 0.5)  # minimum 0.5s
+    if not payload.pcm_data or len(payload.pcm_data) < min_samples:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Calibration audio too short (minimum {min_samples} samples / 0.5s required)."
+        )
+    samples = np.array(payload.pcm_data, dtype=np.float32)
+    engine = DetectionEngine()
+    result = engine.speaker_separator.calibrate(samples, sample_rate=settings.SAMPLE_RATE)
+    return result
 
 
 @router.get("/health")

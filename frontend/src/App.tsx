@@ -96,6 +96,8 @@ export const App: React.FC = () => {
         isOpen={isCalibrationOpen}
         onClose={() => setIsCalibrationOpen(false)}
         captureEngine={captureEngine}
+        apiBaseUrl={apiBaseUrl}
+        theme={theme}
       />
 
       {/* Footer */}

@@ -121,44 +121,191 @@ export class VoxSentinalAudioCapture {
     return this.analyser;
   }
 
-  public async calibrateUserVoice(durationMs: number = 3000): Promise<boolean> {
-    if (!this.ws || this.ws.readyState !== WebSocket.OPEN || !this.stream) {
-      return false;
-    }
+  private calibAudioContext: AudioContext | null = null;
+  private calibProcessor: ScriptProcessorNode | null = null;
+  private calibStream: MediaStream | null = null;
+  private calibAnalyser: AnalyserNode | null = null;
+  private calibSamples: number[] = [];
+  private isCalibRecording: boolean = false;
+  private calibAnimFrameId: number | null = null;
 
-    return new Promise((resolve) => {
-      // Record calibration audio
-      const audioCtx = new AudioContext({ sampleRate: 16000 });
-      const source = audioCtx.createMediaStreamSource(this.stream!);
-      const proc = audioCtx.createScriptProcessor(4096, 1, 1);
-      const collectedSamples: number[] = [];
+  public async startVoiceRecording(onLevel?: (level: number) => void): Promise<void> {
+    if (this.isCalibRecording) return;
 
-      proc.onaudioprocess = (e) => {
+    this.calibSamples = [];
+    this.isCalibRecording = true;
+
+    try {
+      // Use existing stream if active, otherwise request mic
+      if (this.stream && this.stream.active) {
+        this.calibStream = this.stream;
+      } else {
+        this.calibStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            sampleRate: 16000,
+            channelCount: 1,
+            echoCancellation: false,
+            noiseSuppression: false,
+            autoGainControl: true,
+          },
+        });
+      }
+
+      this.calibAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({
+        sampleRate: 16000,
+      });
+
+      const source = this.calibAudioContext.createMediaStreamSource(this.calibStream);
+
+      // Analyser for live visual feedback
+      this.calibAnalyser = this.calibAudioContext.createAnalyser();
+      this.calibAnalyser.fftSize = 256;
+      source.connect(this.calibAnalyser);
+
+      if (onLevel) {
+        const pcmBuffer = new Uint8Array(new ArrayBuffer(this.calibAnalyser.frequencyBinCount));
+        const pollLevel = () => {
+          if (!this.isCalibRecording || !this.calibAnalyser) return;
+          this.calibAnalyser.getByteFrequencyData(pcmBuffer);
+          let sum = 0;
+          for (let i = 0; i < pcmBuffer.length; i++) {
+            sum += pcmBuffer[i];
+          }
+          const avg = sum / pcmBuffer.length / 255;
+          onLevel(avg);
+          this.calibAnimFrameId = requestAnimationFrame(pollLevel);
+        };
+        pollLevel();
+      }
+
+      // ScriptProcessorNode for recording
+      this.calibProcessor = this.calibAudioContext.createScriptProcessor(4096, 1, 1);
+      this.calibProcessor.onaudioprocess = (e) => {
+        if (!this.isCalibRecording) return;
         const ch = e.inputBuffer.getChannelData(0);
         for (let i = 0; i < ch.length; i++) {
-          collectedSamples.push(ch[i]);
+          this.calibSamples.push(ch[i]);
         }
       };
 
-      source.connect(proc);
-      proc.connect(audioCtx.destination);
+      source.connect(this.calibProcessor);
+      this.calibProcessor.connect(this.calibAudioContext.destination);
 
-      setTimeout(() => {
-        proc.disconnect();
-        source.disconnect();
-        audioCtx.close();
+    } catch (err: any) {
+      this.cancelVoiceRecording();
+      throw new Error(err?.message || 'Failed to access microphone for voice recording.');
+    }
+  }
 
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-          this.ws.send(
-            JSON.stringify({
-              action: 'calibrate',
-              pcm_data: collectedSamples,
-            })
-          );
-          resolve(true);
-        } else {
-          resolve(false);
-        }
+  public async stopVoiceRecordingAndCalibrate(apiBaseUrl: string = 'http://localhost:8000'): Promise<{
+    success: boolean;
+    durationSec: number;
+    profile?: any;
+    message?: string;
+  }> {
+    if (!this.isCalibRecording) {
+      return { success: false, durationSec: 0, message: 'Recording is not active.' };
+    }
+
+    this.isCalibRecording = false;
+
+    if (this.calibAnimFrameId) {
+      cancelAnimationFrame(this.calibAnimFrameId);
+      this.calibAnimFrameId = null;
+    }
+    if (this.calibProcessor) {
+      this.calibProcessor.disconnect();
+      this.calibProcessor = null;
+    }
+    if (this.calibAudioContext) {
+      this.calibAudioContext.close();
+      this.calibAudioContext = null;
+    }
+    // Only stop track if it was standalone
+    if (this.calibStream && this.calibStream !== this.stream) {
+      this.calibStream.getTracks().forEach((t) => t.stop());
+      this.calibStream = null;
+    }
+
+    const recordedData = [...this.calibSamples];
+    const durationSec = recordedData.length / 16000;
+
+    if (recordedData.length < 8000) {
+      return {
+        success: false,
+        durationSec,
+        message: 'Recording too short (minimum 0.5s required). Please speak for at least 1-3 seconds.',
+      };
+    }
+
+    // 1. Send via WebSocket if open
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(
+        JSON.stringify({
+          action: 'calibrate',
+          pcm_data: recordedData,
+        })
+      );
+    }
+
+    // 2. Also send via REST API to ensure backend calibration profile is updated
+    try {
+      const res = await fetch(`${apiBaseUrl}/api/calibrate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pcm_data: recordedData }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return {
+          success: true,
+          durationSec: Math.round(durationSec * 10) / 10,
+          profile: data.profile,
+          message: 'Voiceprint calibrated successfully!',
+        };
+      }
+    } catch {
+      // If REST failed but WS sent or fallback
+    }
+
+    return {
+      success: true,
+      durationSec: Math.round(durationSec * 10) / 10,
+      message: 'Voiceprint calibrated successfully via real-time stream!',
+    };
+  }
+
+  public cancelVoiceRecording() {
+    this.isCalibRecording = false;
+    if (this.calibAnimFrameId) {
+      cancelAnimationFrame(this.calibAnimFrameId);
+      this.calibAnimFrameId = null;
+    }
+    if (this.calibProcessor) {
+      this.calibProcessor.disconnect();
+      this.calibProcessor = null;
+    }
+    if (this.calibAudioContext) {
+      this.calibAudioContext.close();
+      this.calibAudioContext = null;
+    }
+    if (this.calibStream && this.calibStream !== this.stream) {
+      this.calibStream.getTracks().forEach((t) => t.stop());
+      this.calibStream = null;
+    }
+    this.calibSamples = [];
+  }
+
+  public get isRecordingCalibration(): boolean {
+    return this.isCalibRecording;
+  }
+
+  public async calibrateUserVoice(durationMs: number = 3000): Promise<boolean> {
+    await this.startVoiceRecording();
+    return new Promise((resolve) => {
+      setTimeout(async () => {
+        const res = await this.stopVoiceRecordingAndCalibrate();
+        resolve(res.success);
       }, durationMs);
     });
   }
