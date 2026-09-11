@@ -1,12 +1,15 @@
-"""Dataset Downloader, Internet Harvester, and Parquet Audio Extractor for Deepfake Anti-Spoofing Corpora."""
+"""
+VoxSentinalX Internet Dataset Harvester & Unified Corpus Integrator.
+Downloads open-source deepfake and bona fide speech benchmarks from Hugging Face & ASVspoof,
+extracts audio streams, performs hash-based deduplication, organizes directly into data/unified_corpus,
+and updates the training sample inventory index.
+"""
 import os
 import sys
 import io
 import json
 import argparse
-import urllib.request
-import zipfile
-import tarfile
+import hashlib
 import soundfile as sf
 import numpy as np
 from typing import Dict, Any, List
@@ -30,7 +33,7 @@ except ImportError:
 DATASET_CONFIGS = {
     "unified_corpus": {
         "name": "VoxSentinalX Unified Forensic Corpus (Consolidated)",
-        "description": "4,997 unique bona fide human and multi-generator voice clones (OpenAI, XTTS, Seed-TTS, VALL-E, VoiceBox, FlashSpeech, NaturalSpeech3, ASVspoof).",
+        "description": "5,497 unique bona fide human and multi-generator voice clones (OpenAI, XTTS, Seed-TTS, VALL-E, VoiceBox, FlashSpeech, NaturalSpeech3, ASVspoof).",
         "local_path": os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "unified_corpus")),
         "type": "local_directory",
     },
@@ -47,6 +50,12 @@ DATASET_CONFIGS = {
         "repo_id": "DynamicSuperb/SpoofDetection_ASVspoof2017",
         "type": "huggingface_parquet",
     },
+    "asvspoof2017_tts": {
+        "name": "ASVspoof 2017 TTS Subsets (HaninZ)",
+        "description": "Synthetic speech and neural TTS deepfake voice cloning evaluation corpus.",
+        "repo_id": "HaninZ/SpoofDetection_ASVspoof2017_TTS",
+        "type": "huggingface_parquet",
+    },
     "local_archive": {
         "name": "Local High-Capacity Deepfake Archive (K:\\dataSet\\archive)",
         "description": "4,447 real and deepfake samples (OpenAI, VALL-E, VoiceBox, XTTS, Seed-TTS, FlashSpeech, NaturalSpeech3).",
@@ -56,49 +65,50 @@ DATASET_CONFIGS = {
 }
 
 
-def get_dataset_catalog() -> Dict[str, Any]:
-    """Returns catalog of supported internet and local deepfake datasets."""
-    data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data"))
-    os.makedirs(data_dir, exist_ok=True)
-
-    status = {}
-    for key, cfg in DATASET_CONFIGS.items():
-        if cfg.get("local_path"):
-            ds_path = cfg["local_path"]
-        else:
-            ds_path = os.path.join(data_dir, key)
-
-        is_available = os.path.exists(ds_path)
-        sample_count = 0
-        if is_available:
-            for root, _, files in os.walk(ds_path):
-                sample_count += len([f for f in files if f.lower().endswith(('.wav', '.mp3', '.flac'))])
-
-        status[key] = {
-            **cfg,
-            "installed": is_available and sample_count > 0,
-            "sample_count": sample_count,
-            "local_path": ds_path,
-        }
-    return status
+def compute_sha256(filepath: str) -> str:
+    h = hashlib.sha256()
+    with open(filepath, "rb") as f:
+        while chunk := f.read(65536):
+            h.update(chunk)
+    return h.hexdigest()
 
 
-def harvest_huggingface_dataset(repo_id: str, output_dir: str, max_samples: int = 400) -> int:
-    """Downloads parquet files from Hugging Face dataset repo and extracts audio files into real/fake subfolders."""
+def get_existing_hashes(unified_dir: str) -> set:
+    """Collects SHA256 hashes of all existing files in unified_corpus."""
+    hashes = set()
+    for sub in ["real", "fake"]:
+        p = os.path.join(unified_dir, sub)
+        if os.path.exists(p):
+            for f in os.listdir(p):
+                fp = os.path.join(p, f)
+                if os.path.isfile(fp) and f.lower().endswith(('.wav', '.mp3', '.flac')):
+                    hashes.add(compute_sha256(fp))
+    return hashes
+
+
+def harvest_into_unified_corpus(repo_id: str, unified_dir: str, dataset_prefix: str, max_samples: int = 300) -> int:
+    """Downloads parquet files from Hugging Face and extracts audio directly into data/unified_corpus (real/fake)."""
     if not HF_AVAILABLE:
         print("\n[!] Error: 'huggingface_hub' or 'pyarrow' is not installed.")
         print("[!] Please run: pip install huggingface_hub pyarrow soundfile\n")
         return 0
 
-    os.makedirs(os.path.join(output_dir, "real"), exist_ok=True)
-    os.makedirs(os.path.join(output_dir, "fake"), exist_ok=True)
+    real_dir = os.path.join(unified_dir, "real")
+    fake_dir = os.path.join(unified_dir, "fake")
+    os.makedirs(real_dir, exist_ok=True)
+    os.makedirs(fake_dir, exist_ok=True)
 
-    print(f"[-] Harvesting audio samples from Hugging Face repo: {repo_id}...")
+    existing_hashes = get_existing_hashes(unified_dir)
+    print(f"[-] Existing unique samples in unified_corpus: {len(existing_hashes):,}")
+    print(f"[-] Harvesting up to {max_samples} new audio samples from: {repo_id}...")
+
+    saved_count = 0
+    skipped_duplicates = 0
+
     try:
         try:
             files = list_repo_files(repo_id=repo_id, repo_type="dataset")
         except Exception as repo_err:
-            # Fallback if specific repo is gated/private
             fallback = "DynamicSuperb/SpoofDetection_ASVspoof2017"
             print(f"[!] Note: {repo_id} unavailable ({repo_err}). Falling back to {fallback}...")
             repo_id = fallback
@@ -109,7 +119,6 @@ def harvest_huggingface_dataset(repo_id: str, output_dir: str, max_samples: int 
             print(f"[!] No parquet files found in {repo_id}")
             return 0
 
-        saved_count = 0
         for pf in parquet_files:
             if saved_count >= max_samples:
                 break
@@ -132,109 +141,91 @@ def harvest_huggingface_dataset(repo_id: str, output_dir: str, max_samples: int 
                     if not audio_bytes:
                         continue
 
+                    # Hash check to prevent duplicates
+                    byte_hash = hashlib.sha256(audio_bytes).hexdigest()
+                    if byte_hash in existing_hashes:
+                        skipped_duplicates += 1
+                        continue
+
                     label_val = str(table[label_col][row_idx].as_py()).lower() if label_col else ""
-                    # Determine label (authentic/bonafide/real vs spoof/synthetic/fake)
-                    if any(w in label_val for w in ["authentic", "bonafide", "real", "human", "genuine"]):
-                        subfolder = "real"
-                    else:
-                        subfolder = "fake"
+                    is_real = any(w in label_val for w in ["authentic", "bonafide", "real", "human", "genuine"])
+                    target_dir = real_dir if is_real else fake_dir
+                    class_tag = "real" if is_real else "fake"
 
-                    filename_prefix = str(table[file_col][row_idx].as_py()) if file_col else f"sample_{saved_count}.wav"
-                    if not filename_prefix.endswith(".wav"):
-                        filename_prefix += ".wav"
+                    orig_name = str(table[file_col][row_idx].as_py()) if file_col else f"sample_{saved_count}.wav"
+                    if not orig_name.endswith(".wav"):
+                        orig_name += ".wav"
 
-                    target_path = os.path.join(output_dir, subfolder, f"hf_{row_idx}_{filename_prefix}")
+                    target_filename = f"internet_{dataset_prefix}_{class_tag}_{saved_count+1:04d}_{orig_name}"
+                    target_path = os.path.join(target_dir, target_filename)
+
                     with open(target_path, "wb") as f_out:
                         f_out.write(audio_bytes)
+
+                    existing_hashes.add(byte_hash)
                     saved_count += 1
                 except Exception:
                     continue
 
-        print(f"[OK] Successfully harvested {saved_count} audio samples into {output_dir}")
+        print(f"[OK] Harvested {saved_count} new unique audio samples into unified_corpus! (Duplicates filtered: {skipped_duplicates})")
+
+        # Automatically update dataset inventory
+        if saved_count > 0:
+            try:
+                from training.generate_sample_inventory import generate_inventory
+                generate_inventory(unified_dir)
+            except Exception as inv_err:
+                print(f"[!] Note updating inventory: {inv_err}")
+
         return saved_count
     except Exception as e:
         print(f"[!] Error harvesting dataset from {repo_id}: {e}")
         return 0
 
 
-def download_dataset(dataset_key: str = "indic_synth", max_samples: int = 300, output_base_dir: str = "data") -> str:
-    """Downloads or harvests a specific dataset by key."""
-    abs_out = os.path.abspath(output_base_dir)
-    os.makedirs(abs_out, exist_ok=True)
-
+def download_and_organize(dataset_key: str = "indic_synth", max_samples: int = 300, unified_dir: str = r"p:\VoxSentinalX\data\unified_corpus"):
+    """Downloads internet datasets directly into unified_corpus."""
     normalized_key = dataset_key.lower().replace("-", "_")
-
-    if normalized_key in ["all", "everything"]:
-        for key, cfg in DATASET_CONFIGS.items():
-            if cfg.get("type") == "huggingface_parquet":
-                target_dir = os.path.join(abs_out, key)
-                harvest_huggingface_dataset(cfg["repo_id"], target_dir, max_samples=max_samples)
-        return abs_out
 
     if normalized_key in DATASET_CONFIGS:
         cfg = DATASET_CONFIGS[normalized_key]
-        target_dir = os.path.join(abs_out, normalized_key)
         if cfg.get("type") == "huggingface_parquet":
-            harvest_huggingface_dataset(cfg["repo_id"], target_dir, max_samples=max_samples)
-        elif cfg.get("local_path"):
-            print(f"[-] Dataset '{normalized_key}' is a local archive configured at: {cfg['local_path']}")
-        return target_dir
+            harvest_into_unified_corpus(cfg["repo_id"], unified_dir, dataset_prefix=normalized_key, max_samples=max_samples)
+        else:
+            print(f"[-] Dataset '{normalized_key}' is already configured in: {cfg.get('local_path', '')}")
     else:
-        print(f"[!] Dataset key '{dataset_key}' not found in catalog. Available datasets:")
-        for k in DATASET_CONFIGS.keys():
-            print(f"    - {k}")
-        # Default harvest
-        target_dir = os.path.join(abs_out, "indic_synth")
-        harvest_huggingface_dataset("DynamicSuperb/SpoofDetection_ASVspoof2017", target_dir, max_samples=max_samples)
-        return target_dir
+        print(f"[-] Harvesting from default deepfake repository for '{dataset_key}'...")
+        harvest_into_unified_corpus("DynamicSuperb/SpoofDetection_ASVspoof2017", unified_dir, dataset_prefix=normalized_key, max_samples=max_samples)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="VoxSentinalX Deepfake Dataset Harvester & Downloader")
+    parser = argparse.ArgumentParser(description="VoxSentinalX Internet Dataset Harvester & Unified Corpus Organizer")
     parser.add_argument(
         "--dataset",
         type=str,
         default="indic_synth",
-        help="Dataset name to download (e.g. indic_synth, asvspoof5, asvspoof2017_hf, fake_or_real, all)",
+        help="Dataset name to download (e.g. indic_synth, asvspoof5, asvspoof2017_tts, all)",
     )
     parser.add_argument(
         "--max_samples",
         type=int,
         default=300,
-        help="Maximum audio samples to harvest (default: 300)",
+        help="Maximum new audio samples to harvest (default: 300)",
     )
     parser.add_argument(
-        "--output_dir",
+        "--unified_dir",
         type=str,
-        default="data",
-        help="Directory to save harvested audio files (default: data)",
-    )
-    parser.add_argument(
-        "--list",
-        action="store_true",
-        help="List all supported dataset configs and their status",
+        default=r"p:\VoxSentinalX\data\unified_corpus",
+        help="Target unified corpus directory",
     )
 
     args = parser.parse_args()
 
-    print("=" * 68)
-    print("  🛡️ VoxSentinalX Deepfake Dataset Harvester (Hugging Face / ASVspoof)")
-    print("=" * 68)
+    print("=" * 70)
+    print("  🌐 VOXSENTINALX INTERNET DATASET HARVESTER & UNIFIED ORGANIZER")
+    print("=" * 70)
+    print(f"  Target Dataset : {args.dataset}")
+    print(f"  Destination    : {args.unified_dir}")
+    print(f"  Max New Samples: {args.max_samples}\n")
 
-    if args.list:
-        catalog = get_dataset_catalog()
-        for k, v in catalog.items():
-            status_txt = f"INSTALLED ({v['sample_count']} files)" if v['installed'] else "READY TO DOWNLOAD"
-            print(f"[-] [{k}] {v['name']}: {status_txt}")
-            print(f"    Description: {v['description']}")
-            print(f"    Location: {v.get('local_path', v.get('repo_id', ''))}\n")
-    else:
-        if not HF_AVAILABLE:
-            print("\n[!] Required libraries missing for Hugging Face download.")
-            print("[!] Please install required packages:")
-            print("    pip install huggingface_hub pyarrow soundfile\n")
-        
-        print(f"[-] Target Dataset : {args.dataset}")
-        print(f"[-] Output Folder  : {args.output_dir}")
-        print(f"[-] Max Samples    : {args.max_samples}\n")
-        download_dataset(dataset_key=args.dataset, max_samples=args.max_samples, output_base_dir=args.output_dir)
+    download_and_organize(args.dataset, args.max_samples, args.unified_dir)
