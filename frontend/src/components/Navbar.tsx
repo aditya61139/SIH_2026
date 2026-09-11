@@ -1,9 +1,9 @@
 import React from 'react';
-import { Shield, Activity, FileAudio, Settings as SettingsIcon, Mic, Radio, Cpu, Sun, Moon } from 'lucide-react';
+import { Shield, Activity, FileAudio, Settings as SettingsIcon, Mic, Radio, Cpu, Sun, Moon, LayoutGrid, Sparkles } from 'lucide-react';
 
 interface NavbarProps {
-  activeTab: 'live' | 'upload' | 'train' | 'settings';
-  setActiveTab: (tab: 'live' | 'upload' | 'train' | 'settings') => void;
+  activeTab: 'overview' | 'live' | 'upload' | 'train' | 'settings';
+  setActiveTab: (tab: 'overview' | 'live' | 'upload' | 'train' | 'settings') => void;
   onOpenCalibration: () => void;
   isConnected: boolean;
   isMonitoring: boolean;
@@ -23,13 +23,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isDark = theme === 'dark';
 
   return (
-    <header className={`sticky top-0 z-40 border-b backdrop-blur-md transition-colors ${
-      isDark ? 'border-slate-800/80 bg-[#0a0d14]/90' : 'border-slate-200 bg-white/90 shadow-sm'
+    <header className={`sticky top-0 z-40 border-b backdrop-blur-xl transition-colors duration-200 ${
+      isDark ? 'border-slate-800/80 bg-[#070a10]/85' : 'border-slate-200 bg-white/90 shadow-sm'
     }`}>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
         {/* Brand & Problem Statement ID */}
-        <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('live')}>
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-600 to-emerald-400 p-0.5 shadow-lg shadow-cyan-500/20">
+        <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('overview')}>
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-500 via-teal-400 to-emerald-400 p-0.5 shadow-lg shadow-cyan-500/20">
             <div className={`flex h-full w-full items-center justify-center rounded-[10px] ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
               <Shield className="h-5 w-5 text-cyan-400" />
             </div>
@@ -50,18 +50,34 @@ export const Navbar: React.FC<NavbarProps> = ({
               </span>
             </div>
             <p className={`text-xs hidden sm:block ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              AI-Powered Real-Time Voice Cloning Detection
+              AI-Powered Real-Time Voice Cloning Detection & Forensics
             </p>
           </div>
         </div>
 
         {/* Navigation Tabs */}
-        <nav className="flex items-center space-x-1 sm:space-x-2">
+        <nav className="flex items-center space-x-1 sm:space-x-1.5">
+          {/* Overview / Showcase Tab */}
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`flex items-center space-x-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
+              activeTab === 'overview'
+                ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 glow-cyan'
+                : isDark
+                ? 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <LayoutGrid className="h-4 w-4" />
+            <span className="hidden md:inline">Showcase</span>
+          </button>
+
+          {/* Live Monitor */}
           <button
             onClick={() => setActiveTab('live')}
             className={`flex items-center space-x-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'live'
-                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+                ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 glow-cyan'
                 : isDark
                 ? 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
                 : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
@@ -71,39 +87,42 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="hidden md:inline">Live Monitor</span>
           </button>
 
+          {/* File Analyzer */}
           <button
             onClick={() => setActiveTab('upload')}
             className={`flex items-center space-x-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'upload'
-                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+                ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 glow-cyan'
                 : isDark
                 ? 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
                 : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
             }`}
           >
             <FileAudio className="h-4 w-4" />
-            <span className="hidden md:inline">Audio/MP4 Analyzer</span>
+            <span className="hidden md:inline">File Analyzer</span>
           </button>
 
+          {/* Model Suite */}
           <button
             onClick={() => setActiveTab('train')}
             className={`flex items-center space-x-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'train'
-                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 glow-green'
                 : isDark
                 ? 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
                 : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
             }`}
           >
             <Cpu className="h-4 w-4" />
-            <span className="hidden md:inline">Model & Datasets</span>
+            <span className="hidden md:inline">LCNN Training</span>
           </button>
 
+          {/* Voiceprint Calibration */}
           <button
             onClick={onOpenCalibration}
             className={`flex items-center space-x-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-medium border transition-all ${
               isDark
-                ? 'bg-slate-800/60 hover:bg-slate-700/80 text-slate-300 border-slate-700/60'
+                ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border-slate-700/80'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
             }`}
             title="Calibrate your voice for speakerphone separation"
@@ -112,11 +131,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="hidden lg:inline">Calibration</span>
           </button>
 
+          {/* Settings */}
           <button
             onClick={() => setActiveTab('settings')}
             className={`rounded-xl p-2 text-sm font-medium transition-all ${
               activeTab === 'settings'
-                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+                ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 glow-cyan'
                 : isDark
                 ? 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
                 : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
@@ -131,7 +151,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={onToggleTheme}
             className={`rounded-xl p-2 text-sm font-medium border transition-all ${
               isDark
-                ? 'bg-slate-800/80 text-amber-300 hover:bg-slate-700 border-slate-700 shadow-sm'
+                ? 'bg-slate-900/90 text-amber-300 hover:bg-slate-800 border-slate-800 shadow-sm'
                 : 'bg-slate-100 text-slate-800 hover:bg-slate-200 border-slate-300 shadow-sm'
             }`}
             title={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
@@ -145,7 +165,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center space-x-1.5">
             <Radio className={`h-3.5 w-3.5 ${isConnected ? 'text-emerald-400 animate-pulse' : 'text-slate-400'}`} />
             <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              Backend: {isConnected ? <span className="text-emerald-500 font-bold">Online</span> : <span className="text-slate-400">Offline</span>}
+              Backend: {isConnected ? <span className="text-emerald-400 font-bold">Online (FastAPI)</span> : <span className="text-slate-400">Offline</span>}
             </span>
           </div>
         </div>

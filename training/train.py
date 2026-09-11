@@ -61,7 +61,7 @@ def compute_eer(scores: np.ndarray, labels: np.ndarray) -> float:
 
 
 def train_model(
-    data_dir: str = r"K:\dataSet\archive",
+    data_dir: str = "data/unified_corpus",
     epochs: int = 10,
     batch_size: int = 32,
     lr: float = 1e-3,
@@ -72,10 +72,14 @@ def train_model(
     valid_paths = [p for p in paths if os.path.exists(p)]
     
     if not valid_paths:
-        alt_dir = "data/synthetic_corpus"
-        print(f"Dataset path(s) {data_dir} not found. Using {alt_dir}...")
-        data_dir = alt_dir
-        if not os.path.exists(os.path.join(data_dir, "real")) or len(os.listdir(os.path.join(data_dir, "real"))) == 0:
+        alt_dirs = ["data/unified_corpus", r"K:\dataSet\archive", "data/synthetic_corpus"]
+        for candidate in alt_dirs:
+            if os.path.exists(candidate):
+                data_dir = candidate
+                valid_paths = [candidate]
+                break
+        if not valid_paths:
+            data_dir = "data/unified_corpus"
             print(f"Generating synthetic training corpus in {data_dir}...")
             generate_training_corpus(output_dir=data_dir, num_samples_per_class=40)
     else:

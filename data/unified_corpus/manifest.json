@@ -1,0 +1,22 @@
+{
+  "dataset_name": "VoxSentinalX Unified Forensic Corpus",
+  "total_unique_samples": 5497,
+  "bona_fide_real_count": 2577,
+  "synthetic_fake_count": 2920,
+  "newly_generated_ai_samples": 300,
+  "generators": {
+    "real_human": 200,
+    "real_local": 103,
+    "real_real": 2274,
+    "fake_ai": 300,
+    "fake_flashspeech": 118,
+    "fake_local": 447,
+    "fake_naturalspeech3": 32,
+    "fake_openai": 600,
+    "fake_prompttts2": 25,
+    "fake_seedtts": 599,
+    "fake_valle": 95,
+    "fake_voicebox": 104,
+    "fake_xtts": 600
+  }
+}

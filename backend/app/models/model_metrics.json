@@ -1,0 +1,14 @@
+{
+  "status": "trained",
+  "trained_on_dataset": "VoxSentinalX Unified Corpus",
+  "total_audio_samples": 5497,
+  "bona_fide_samples": 2577,
+  "synthetic_samples": 2920,
+  "accuracy": 86.27,
+  "equal_error_rate_eer": 6.86,
+  "precision": 88.28,
+  "recall": 86.99,
+  "f1_score": 87.63,
+  "best_val_loss": 0.3663,
+  "updated_at": "2026-09-11 14:48:45"
+}

@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Navbar } from './components/Navbar';
+import { LandingView } from './components/LandingView';
 import { LiveCallMonitor } from './components/LiveCallMonitor';
 import { FileAnalyzer } from './components/FileAnalyzer';
 import { ModelTrainingSuite } from './components/ModelTrainingSuite';
 import { SettingsPanel } from './components/SettingsPanel';
 import { CalibrationModal } from './components/CalibrationModal';
 import { VoxSentinalAudioCapture } from './lib/audioCapture';
-import { Shield, Sparkles } from 'lucide-react';
+import { Shield, Sparkles, Cpu, Radio } from 'lucide-react';
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'live' | 'upload' | 'train' | 'settings'>('live');
+  const [activeTab, setActiveTab] = useState<'overview' | 'live' | 'upload' | 'train' | 'settings'>('overview');
   const [isCalibrationOpen, setIsCalibrationOpen] = useState<boolean>(false);
   const [wsUrl, setWsUrl] = useState<string>('ws://localhost:8000/ws/analyze');
   const [apiBaseUrl, setApiBaseUrl] = useState<string>('http://localhost:8000');
@@ -49,8 +50,10 @@ export const App: React.FC = () => {
   const isDark = theme === 'dark';
 
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-200 ${
-      isDark ? 'bg-[#0a0d14] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200' : 'bg-slate-100 text-slate-900 selection:bg-cyan-500/20 selection:text-cyan-900'
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 relative ${
+      isDark
+        ? 'bg-[#070a10] text-slate-100 bg-cyber-grid bg-radial-gradient selection:bg-cyan-500/30 selection:text-cyan-200'
+        : 'bg-slate-100 text-slate-900 selection:bg-cyan-500/20 selection:text-cyan-900'
     }`}>
       {/* Top Navigation */}
       <Navbar
@@ -65,6 +68,14 @@ export const App: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6 sm:px-6">
+        {activeTab === 'overview' && (
+          <LandingView
+            onNavigate={setActiveTab}
+            onOpenCalibration={() => setIsCalibrationOpen(true)}
+            theme={theme}
+          />
+        )}
+
         {activeTab === 'live' && (
           <LiveCallMonitor
             captureEngine={captureEngine}
@@ -100,19 +111,32 @@ export const App: React.FC = () => {
         theme={theme}
       />
 
-      {/* Footer */}
-      <footer className={`border-t py-4 px-6 text-center text-xs transition-colors ${
-        isDark ? 'border-slate-800/80 bg-slate-950/60 text-slate-400' : 'border-slate-200 bg-white text-slate-600 shadow-inner'
+      {/* High-Tech Cyber Footer */}
+      <footer className={`border-t py-4 px-6 text-xs transition-colors backdrop-blur-md ${
+        isDark ? 'border-slate-800/80 bg-[#070a10]/80 text-slate-400' : 'border-slate-200 bg-white text-slate-600 shadow-inner'
       }`}>
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center space-x-2">
             <Shield className="h-4 w-4 text-cyan-400" />
             <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-800'}`}>VoxSentinalX</span>
             <span>— Smart India Hackathon Problem Statement #26104</span>
           </div>
-          <div className="flex items-center space-x-1.5 text-xs">
-            <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
-            <span>8-Vector Forensic Decomposition & Deep Neural LCNN-BiLSTM Ensemble</span>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 text-xs">
+            <div className="flex items-center space-x-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
+              <span>8-Vector Forensic Suite</span>
+            </div>
+            <span className="text-slate-600 hidden sm:inline">•</span>
+            <div className="flex items-center space-x-1.5">
+              <Cpu className="h-3.5 w-3.5 text-violet-400" />
+              <span>PyTorch LCNN-BiLSTM</span>
+            </div>
+            <span className="text-slate-600 hidden sm:inline">•</span>
+            <div className="flex items-center space-x-1.5">
+              <Radio className="h-3.5 w-3.5 text-cyan-400" />
+              <span>16 kHz Int16 PCM</span>
+            </div>
           </div>
         </div>
       </footer>
