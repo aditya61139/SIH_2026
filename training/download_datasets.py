@@ -65,6 +65,36 @@ DATASET_CONFIGS = {
 }
 
 
+def get_dataset_catalog() -> Dict[str, Dict[str, Any]]:
+    """Returns catalog of datasets with installation status and sample counts."""
+    catalog = {}
+    default_unified = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "unified_corpus"))
+
+    for key, cfg in DATASET_CONFIGS.items():
+        local_p = cfg.get("local_path")
+        if not local_p:
+            local_p = default_unified
+
+        sample_count = 0
+        installed = False
+        if os.path.exists(local_p):
+            for root, _, files in os.walk(local_p):
+                sample_count += sum(1 for f in files if f.lower().endswith(('.wav', '.mp3', '.flac', '.ogg', '.parquet')))
+            if sample_count > 0:
+                installed = True
+
+        catalog[key] = {
+            "name": cfg.get("name", key),
+            "description": cfg.get("description", ""),
+            "url": f"https://huggingface.co/datasets/{cfg.get('repo_id')}" if cfg.get("repo_id") else "",
+            "type": cfg.get("type", "audio_corpus"),
+            "installed": installed,
+            "sample_count": sample_count,
+            "local_path": local_p,
+        }
+    return catalog
+
+
 def compute_sha256(filepath: str) -> str:
     h = hashlib.sha256()
     with open(filepath, "rb") as f:
