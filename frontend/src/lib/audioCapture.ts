@@ -109,7 +109,12 @@ export class VoxSentinalAudioCapture {
       };
 
       source.connect(this.processor);
-      this.processor.connect(this.audioContext.destination);
+      // Route through a zero-gain node so ScriptProcessor continues firing
+      // without blasting raw microphone audio back out through the speakers.
+      const muteNode = this.audioContext.createGain();
+      muteNode.gain.value = 0;
+      this.processor.connect(muteNode);
+      muteNode.connect(this.audioContext.destination);
 
     } catch (err: any) {
       onStatusChange('error', err?.message || 'Microphone access denied.');
@@ -189,7 +194,10 @@ export class VoxSentinalAudioCapture {
       };
 
       source.connect(this.calibProcessor);
-      this.calibProcessor.connect(this.calibAudioContext.destination);
+      const calibMuteNode = this.calibAudioContext.createGain();
+      calibMuteNode.gain.value = 0;
+      this.calibProcessor.connect(calibMuteNode);
+      calibMuteNode.connect(this.calibAudioContext.destination);
 
     } catch (err: any) {
       this.cancelVoiceRecording();

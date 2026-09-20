@@ -49,20 +49,20 @@ class BispectrumPhaseDetector(BaseDetector):
                 "anomalies_detected": [],
             }
 
-        # 2. Compute Bispectrum over non-redundant principal domain
-        # f1 + f2 <= fs/2
-        max_k = num_freqs // 2
-        bispec_sum = np.zeros((max_k, max_k), dtype=np.complex128)
-        norm_sum = np.zeros((max_k, max_k), dtype=np.float64)
+        # 2. Compute Bispectrum over the lower harmonic interaction domain (bins 1 to 12)
+        # Using vector operations across frames to keep execution real-time (< 2ms).
+        limit_k = min(13, num_freqs // 2)
+        bispec_sum = np.zeros((limit_k, limit_k), dtype=np.complex128)
+        norm_sum = np.zeros((limit_k, limit_k), dtype=np.float64)
 
-        for frame_idx in range(num_frames):
-            x = zxx[:, frame_idx]
-            for k1 in range(1, max_k):
-                for k2 in range(1, max_k - k1):
-                    k3 = k1 + k2
-                    product = x[k1] * x[k2] * np.conj(x[k3])
-                    bispec_sum[k1, k2] += product
-                    norm_sum[k1, k2] += (np.abs(x[k1] * x[k2]) ** 2) * (np.abs(x[k3]) ** 2)
+        for k1 in range(1, limit_k):
+            for k2 in range(1, limit_k):
+                k3 = k1 + k2
+                if k3 < num_freqs:
+                    # Vectorized across all frames simultaneously
+                    prod = zxx[k1, :] * zxx[k2, :] * np.conj(zxx[k3, :])
+                    bispec_sum[k1, k2] = np.sum(prod)
+                    norm_sum[k1, k2] = np.sum((np.abs(zxx[k1, :] * zxx[k2, :]) ** 2) * (np.abs(zxx[k3, :]) ** 2))
 
         bispec_avg = bispec_sum / num_frames
         norm_avg = np.sqrt(norm_sum / num_frames + 1e-12)
@@ -71,9 +71,9 @@ class BispectrumPhaseDetector(BaseDetector):
         bicoherence = np.abs(bispec_avg) / (norm_avg + 1e-12)
         bicoherence = np.clip(bicoherence, 0.0, 1.0)
 
-        # Harmonic interaction zone (first 1.5 kHz = bins 1 to 12 at 16kHz with 128 FFT)
-        active_zone = bicoherence[1:12, 1:12]
-        mean_bic = float(np.mean(active_zone))
+        # Harmonic interaction zone (first ~1.5 kHz)
+        active_zone = bicoherence[1:limit_k, 1:limit_k]
+        mean_bic = float(np.mean(active_zone)) if active_zone.size > 0 else 0.0
         peak_bic = float(np.max(active_zone)) if active_zone.size > 0 else 0.0
 
         # ── Anomaly Assessment ──

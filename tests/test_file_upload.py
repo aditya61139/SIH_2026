@@ -48,5 +48,22 @@ def test_file_upload_endpoint():
     assert data["filename"] == "test_voice.wav"
     assert "overall_verdict" in data
     assert "average_risk_score" in data
-    assert "timeline" in data
     assert len(data["timeline"]) >= 1
+
+
+def test_training_metrics_endpoint():
+    resp = client.get("/api/training/metrics")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "accuracy" in data
+    assert "equal_error_rate_eer" in data
+    assert data.get("accuracy", 0) > 80.0
+
+
+def test_file_upload_oversized():
+    # Simulate an oversized upload exceeding 25MB
+    large_payload = b"0" * (25 * 1024 * 1024 + 100)
+    files = {"file": ("oversized.wav", large_payload, "audio/wav")}
+    resp = client.post("/api/analyze-file", files=files)
+    assert resp.status_code == 413
+    assert "exceeds 25 MB" in resp.json()["detail"]

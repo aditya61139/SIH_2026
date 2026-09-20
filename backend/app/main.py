@@ -22,10 +22,12 @@ app = FastAPI(
 )
 
 # Configure CORS for Frontend Integration
+# Note: Browsers reject wildcard '*' when allow_credentials is True
+is_wildcard_cors = "*" in settings.CORS_ORIGINS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
-    allow_credentials=True,
+    allow_credentials=not is_wildcard_cors,
     allow_methods=["*"],
     allow_headers=["*"],
 )

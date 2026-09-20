@@ -211,21 +211,20 @@ export const LandingView: React.FC<LandingViewProps> = ({
             <span className="flex h-2 w-2 rounded-full bg-cyan-400 animate-ping"></span>
             <span>SIH 2026 Problem Statement ID: #26104</span>
             <span className="text-slate-500">•</span>
-            <span className="text-emerald-400 font-semibold">Defense-Grade Voice Shield</span>
+            <span className="text-emerald-400 font-semibold">Real-Time Voice Forensics</span>
           </div>
 
-          {/* Glowing Headline */}
+          {/* Headline */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight">
-            Autonomous Real-Time <br className="hidden sm:inline" />
+            Real-Time Voice Cloning & <br className="hidden sm:inline" />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 drop-shadow-sm">
-              Voice Cloning & Deepfake
-            </span>{' '}
-            Interceptor
+              Synthetic Audio Detection
+            </span>
           </h1>
 
           {/* Subtitle */}
           <p className={`text-sm sm:text-lg max-w-2xl mx-auto leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-            Engineered with an <strong className="text-cyan-400">8-Vector Decomposed Forensic Suite</strong> coupled with a deep neural <strong className="text-emerald-400">LCNN-BiLSTM Ensemble</strong> to neutralize synthetic audio impersonation attacks with zero user friction.
+            Combines an <strong className="text-cyan-400">8-Vector Forensic Suite</strong> (vocal fold glottal flow, respiration cadence, pitch micro-tremors, and bispectral phase coupling) with a deep neural <strong className="text-emerald-400">Light-CNN Classifier</strong> to identify synthetic speech in real time.
           </p>
 
           {/* Action CTAs */}
@@ -553,23 +552,23 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80">
-            <div className="text-2xl sm:text-3xl font-black text-cyan-400 font-mono">&lt; 1.8%</div>
+            <div className="text-2xl sm:text-3xl font-black text-cyan-400 font-mono">6.86%</div>
             <div className="text-xs text-slate-400 mt-1 font-mono">Equal Error Rate (EER)</div>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80">
-            <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">&lt; 120 ms</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">Frame Latency</div>
+            <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">86.3%</div>
+            <div className="text-xs text-slate-400 mt-1 font-mono">Benchmark Accuracy</div>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80">
-            <div className="text-2xl sm:text-3xl font-black text-violet-400 font-mono">12+</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">Indic Languages (IndicSynth)</div>
+            <div className="text-2xl sm:text-3xl font-black text-violet-400 font-mono">&lt; 150 ms</div>
+            <div className="text-xs text-slate-400 mt-1 font-mono">Pipeline Latency</div>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80">
-            <div className="text-2xl sm:text-3xl font-black text-amber-400 font-mono">ASVspoof 5</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">2024 Benchmark Standard</div>
+            <div className="text-2xl sm:text-3xl font-black text-amber-400 font-mono">5,497</div>
+            <div className="text-xs text-slate-400 mt-1 font-mono">Unified Corpus Samples</div>
           </div>
         </div>
       </section>

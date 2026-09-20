@@ -92,8 +92,11 @@ class SpeakerSeparator:
 
         if caller_frames:
             isolated_caller = np.concatenate(caller_frames)
+            # If separated caller speech is too short for reliable analysis, fall back to mixed audio
+            if len(isolated_caller) < int(sample_rate * 0.3):
+                isolated_caller = mixed_audio
         else:
-            isolated_caller = mixed_audio  # Fallback to whole audio if no separate frames
+            isolated_caller = mixed_audio
 
         return isolated_caller, {
             "caller_ratio": round(caller_ratio, 2),

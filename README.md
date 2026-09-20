@@ -6,11 +6,11 @@
 
 ---
 
-## 🌟 Overview & Core Differentiators
+## 🌟 Overview & Core Methodology
 
-**VoxSentinalX** is a military-grade, real-time voice cloning and deepfake detection system engineered to protect individuals, contact centers, and financial institutions from synthetic speech impersonation attacks.
+**VoxSentinalX** is a real-time voice cloning and synthetic speech detection platform developed for the Smart India Hackathon (SIH 2026). It combines signal-processing physical acoustic analysis with deep neural representations to identify synthetic speech and protect individuals, contact centers, and organizations from voice impersonation attacks.
 
-### 🎯 Key Innovations
+### 🎯 Key Engineering Innovations
 1. **8-Vector Decomposed Forensic Suite**:
    - **Layer 1: Spectral & STFT Phase Coherence**: Unnatural spectral flatness and STFT inversion phase discontinuities.
    - **Layer 2: Prosodic Dynamics**: Fundamental frequency ($F_0$) pitch variance ($\sigma$) and 8–12 Hz involuntary vocal micro-tremors.
@@ -21,9 +21,9 @@
    - **Layer 7: Laryngeal Perturbation (Jitter & Shimmer)**: Period-to-period micro-instability (Jitter local, RAP) and amplitude perturbation (Shimmer local, APQ3).
    - **Layer 8: Higher-Order Bispectral Phase Coupling (QPC)**: Non-linear bicoherence across vocal harmonic frequencies.
    - **Deep Neural Ensemble**: Multi-Layer Perceptron (MLP) & Light-CNN with Max-Feature-Map (MFM), BiLSTM, and Self-Attention.
-2. **Approach 1 (Zero-Friction Live Audio Ingestion)**: Browser microphone audio capture on speakerphone with **dynamic voiceprint calibration** to isolate the incoming caller's voice from the user's voice.
-3. **Unified 5,490+ Audio Forensic Corpus**: Built-in multi-generator dataset covering OpenAI Voice Engine, Coqui XTTS v2, ByteDance Seed-TTS, ASVspoof, FlashSpeech, VoiceBox, VALL-E, and Indic languages.
-4. **Beyond Binary Labels**: Human-readable diagnostic cards with exact measured telemetry, thresholds, and actionable security countermeasures.
+2. **Speakerphone Audio Ingestion with Voiceprint Separation**: Browser microphone audio capture on speakerphone with **dynamic voiceprint calibration** to isolate the incoming caller's voice from the user's voice.
+3. **Unified 5,490+ Audio Forensic Corpus**: Multi-generator dataset covering OpenAI Voice Engine, Coqui XTTS v2, ByteDance Seed-TTS, ASVspoof, FlashSpeech, VoiceBox, VALL-E, and Indic languages.
+4. **Actionable Diagnostic Telemetry**: Measured telemetry, thresholds, and clear security countermeasures rather than opaque black-box labels.
 
 ---
 

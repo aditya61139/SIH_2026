@@ -58,49 +58,49 @@ class DiagnosticGenerator:
         # 4. Formulate Primary User-Facing Message
         if risk_level == "CRITICAL":
             user_message = (
-                "🛑 CRITICAL ALERT: Voice analysis indicates strong probability of AI synthesis or deepfake cloning. "
-                "Multiple spectral, glottal inverse filtering, and deep neural signatures detected."
+                "Alert: Voice analysis indicates a high likelihood of synthetic speech or voice cloning. "
+                "Multiple acoustic and neural feature anomalies were detected."
             )
             recommendation = (
-                "🚨 HIGH RISK: DO NOT authorize any financial transfers, credential releases, or sensitive operations. "
-                "Initiate immediate out-of-band verification via registered callback."
+                "High Risk: Avoid authorizing financial transfers, credential releases, or sensitive actions. "
+                "Verify the caller's identity through an independent, verified callback."
             )
             suggested_actions = [
-                "Request caller to perform out-of-band mobile OTP verification",
-                "Terminate call and dial the contact's official verified number",
-                "Ask unpredictable challenge questions (e.g. 'What did you have for lunch yesterday?')",
-                "Flag call and export forensic telemetry log for security review",
+                "Ask unpredictable challenge questions known only to the real contact",
+                "Hang up and call back on a verified direct phone number",
+                "Request secondary verification via corporate email or messaging channel",
+                "Save forensic telemetry log for security review",
             ]
         elif risk_level == "HIGH":
             user_message = (
-                "🚨 WARNING: This voice exhibits artificial characteristics (monotone pitch, LFCC high-frequency anomalies, or static laryngeal jitter). "
-                "Verify caller identity before proceeding with confidential discussions."
+                "Warning: This voice exhibits artificial characteristics such as unnatural pitch stability or spectral discontinuities. "
+                "Verify the caller's identity before continuing."
             )
             recommendation = (
-                "⚠️ CAUTION: Voice traits are inconsistent with natural vocal biology. "
-                "Treat telephonic instructions with heightened skepticism."
+                "Caution: Acoustic patterns are inconsistent with natural human speech dynamics. "
+                "Treat requests with skepticism."
             )
             suggested_actions = [
-                "Ask the caller a personal challenge question known only to them",
-                "Request an email confirmation from their company address",
-                "Avoid sharing financial or sensitive organizational information",
+                "Ask a personal challenge question",
+                "Confirm request through a secondary communication channel",
+                "Do not share confidential organizational or financial details",
             ]
         elif risk_level == "MODERATE":
             user_message = (
-                "🟡 CAUTION: Minor acoustic irregularities detected. This may be caused by cellular compression artifacts or early voice cloning indicators."
+                "Caution: Minor acoustic irregularities observed. This can result from cellular compression, poor network signal, or low-bitrate codecs."
             )
             recommendation = (
-                "Keep monitoring the conversation. If discussing high-value transactions, verify identity through standard channels."
+                "Continue monitoring the call. For sensitive transactions, confirm identity through standard channels."
             )
             suggested_actions = [
-                "Continue monitoring live call telemetry",
-                "Request caller to speak clearly if background noise is high",
+                "Continue monitoring live telemetry",
+                "Ask the caller to repeat if audio quality is degraded",
             ]
         else:
-            user_message = "🟢 Voice stream verified: Natural human vocal tract resonances, biological glottal dynamics, and respiratory cadence detected."
-            recommendation = "No synthetic impersonation detected. Routine monitoring active."
+            user_message = "Natural voice verified: Pitch variation, respiratory cadence, and spectral resonance match authentic human speech."
+            recommendation = "No synthetic impersonation indicators detected. Routine monitoring active."
             suggested_actions = [
-                "Normal conversation flow permitted",
+                "Acoustic characteristics appear consistent with natural speech",
             ]
 
         return {

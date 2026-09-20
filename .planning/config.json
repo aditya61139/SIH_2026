@@ -1,0 +1,12 @@
+{
+  "project_name": "VoxSentinelX",
+  "version": "2.0.0",
+  "workflow": {
+    "auto_verify": true,
+    "fast_mode": false
+  },
+  "testing": {
+    "framework": "pytest",
+    "command": "& \"C:\\Users\\adity\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" -m pytest tests/ -v"
+  }
+}

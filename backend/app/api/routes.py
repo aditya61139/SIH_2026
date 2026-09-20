@@ -1,5 +1,6 @@
 """REST API Endpoints for File Uploads, System Configuration, Diagnostics, and Training Suite."""
 import io
+import json
 import os
 import sys
 
@@ -95,12 +96,12 @@ async def get_model_evaluation_metrics() -> Dict[str, Any]:
     return {
         "status": "trained",
         "trained_on_dataset": "VoxSentinalX Unified Corpus",
-        "total_audio_samples": 4997,
-        "accuracy": 87.30,
-        "equal_error_rate_eer": 6.35,
-        "precision": 88.00,
-        "recall": 88.81,
-        "f1_score": 88.40,
+        "total_audio_samples": 5497,
+        "accuracy": 86.27,
+        "equal_error_rate_eer": 6.86,
+        "precision": 88.28,
+        "recall": 86.99,
+        "f1_score": 87.63,
     }
 
 
@@ -128,8 +129,6 @@ async def trigger_training(
         unified_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "unified_corpus"))
         if os.path.exists(unified_path):
             data_dir = unified_path
-        elif os.path.exists(r"K:\dataSet\archive"):
-            data_dir = r"K:\dataSet\archive"
         else:
             data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "synthetic_corpus"))
 
@@ -150,10 +149,18 @@ async def analyze_audio_file(file: UploadFile = File(...)) -> Dict[str, Any]:
     """
     Analyzes an uploaded audio file (WAV, MP3, FLAC, OGG).
     Processes the recording using the 8-vector forensic detector ensemble and generates
-    a comprehensive forensic report with timeline graphs.
+    a forensic report with timeline graphs.
     """
     try:
-        content = await file.read()
+        # Enforce maximum upload size of 25MB to prevent memory exhaustion
+        MAX_UPLOAD_BYTES = 25 * 1024 * 1024
+        content = await file.read(MAX_UPLOAD_BYTES + 1)
+        if len(content) > MAX_UPLOAD_BYTES:
+            raise HTTPException(
+                status_code=413,
+                detail="Uploaded file exceeds 25 MB size limit.",
+            )
+
         audio_io = io.BytesIO(content)
         
         # Read audio via soundfile

@@ -66,7 +66,9 @@ class DetectionEngine:
         # 2. Run all 9 forensic detectors
         spectral_res = self.spectral_detector.analyze(caller_audio, sample_rate)
         prosody_res = self.prosody_detector.analyze(caller_audio, sample_rate)
-        breathing_res = self.breathing_detector.analyze(caller_audio, sample_rate)
+        breathing_res = self.breathing_detector.analyze(
+            caller_audio, sample_rate, hop_duration_sec=settings.HOP_DURATION_SEC
+        )
         acoustic_res = self.acoustic_detector.analyze(caller_audio, sample_rate)
         lfcc_res = self.lfcc_detector.analyze(caller_audio, sample_rate)
         glottal_res = self.glottal_detector.analyze(caller_audio, sample_rate)

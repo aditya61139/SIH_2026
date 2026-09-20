@@ -51,10 +51,16 @@ class Settings(BaseSettings):
     EMA_ALPHA: float = 0.35                 # Responsiveness vs smoothness factor
     SPIKE_DELTA_THRESHOLD: float = 0.28     # Rapid jump detection threshold
 
-    # CORS Settings
-    CORS_ORIGINS: List[str] = ["*"]
+    # Default local origins for React/Vite development server
+    CORS_ORIGINS: List[str] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
 
     model_config = SettingsConfigDict(env_prefix="VOXSENTINALX_", case_sensitive=True)
 
 
 settings = Settings()
+
