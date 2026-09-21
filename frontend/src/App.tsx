@@ -95,8 +95,10 @@ export const App: React.FC = () => {
       {/* Cyber-Security Footer */}
       <footer className="border-t border-[#2A2E37] bg-[#0D0E11] py-5 px-6 text-xs text-[#94A3B8] transition-colors">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center space-x-2">
-            <div className="h-2 w-2 rounded-full bg-[#10B981] animate-pulse"></div>
+          <div className="flex items-center space-x-2.5">
+            <div className="h-6 w-6 rounded-md bg-[#1A1C23] border border-[#10B981]/30 p-0.5 overflow-hidden flex items-center justify-center">
+              <img src="/Logo.png" alt="VoxSentinalX" className="h-full w-full object-cover rounded-sm" />
+            </div>
             <span className="font-semibold text-white">VoxSentinalX</span>
             <span className="text-[#64748B]">— Smart India Hackathon (SIH 2026 • Problem Statement #26104)</span>
           </div>

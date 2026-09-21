@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="Logo.png" alt="VoxSentinalX Logo" width="160" />
+</p>
+
 # 🛡️ VoxSentinalX — AI-Powered Real-Time Voice Cloning Detection & Prevention
 
 > **Smart India Hackathon (SIH) Problem Statement ID:** 26104  

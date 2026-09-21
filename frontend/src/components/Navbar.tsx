@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Activity, FileAudio, Settings as SettingsIcon, Mic, Radio, Cpu, LayoutGrid } from 'lucide-react';
+import { Activity, FileAudio, Settings as SettingsIcon, Mic, Radio, Cpu, LayoutGrid } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: 'overview' | 'live' | 'upload' | 'train' | 'settings';
@@ -25,8 +25,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand & Problem Statement ID */}
         <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('overview')}>
           <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-[#10B981] via-emerald-600 to-[#1A1C23] p-0.5 shadow-md shadow-[#10B981]/20">
-            <div className="flex h-full w-full items-center justify-center rounded-[10px] bg-[#1A1C23]">
-              <Shield className="h-5 w-5 text-[#10B981]" />
+            <div className="flex h-full w-full items-center justify-center rounded-[10px] bg-[#1A1C23] overflow-hidden">
+              <img src="/Logo.png" alt="VoxSentinalX Logo" className="h-full w-full object-cover" />
             </div>
             {isMonitoring && (
               <span className="absolute -top-1 -right-1 flex h-3 w-3">

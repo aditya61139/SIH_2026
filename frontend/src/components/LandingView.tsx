@@ -187,6 +187,14 @@ export const LandingView: React.FC<LandingViewProps> = ({
       {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden pt-4 pb-8">
         <div className="flex flex-col items-center text-center space-y-6 max-w-4xl mx-auto">
+          {/* Brand Crest */}
+          <div className="relative group">
+            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-[#10B981] to-emerald-500 opacity-30 blur-xl group-hover:opacity-60 transition duration-500"></div>
+            <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-2xl bg-[#1A1C23] border border-[#10B981]/40 p-2 shadow-2xl shadow-[#10B981]/20">
+              <img src="/Logo.png" alt="VoxSentinalX Brand Shield" className="h-full w-full object-contain rounded-xl" />
+            </div>
+          </div>
+
           {/* Badge */}
           <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full border text-xs font-mono font-medium backdrop-blur-md transition-all shadow-xs bg-[#10B981]/10 border-[#10B981]/30 text-[#10B981]">
             <span className="flex h-2 w-2 rounded-full bg-[#10B981] animate-ping"></span>
