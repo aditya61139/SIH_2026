@@ -36,18 +36,18 @@ export const ForensicRadar: React.FC<ForensicRadarProps> = ({ scores, riskLevel 
     return `${x},${y}`;
   }).join(' ');
 
-  let strokeColor = '#06b6d4'; // Cyan
-  let fillColor = 'rgba(6, 182, 212, 0.25)';
+  let strokeColor = '#15803D'; // Low risk / genuine
+  let fillColor = 'rgba(21, 128, 61, 0.18)';
 
   if (riskLevel === 'CRITICAL') {
-    strokeColor = '#ef4444';
-    fillColor = 'rgba(239, 68, 68, 0.35)';
+    strokeColor = '#DC2626';
+    fillColor = 'rgba(220, 38, 38, 0.30)';
   } else if (riskLevel === 'HIGH') {
-    strokeColor = '#f97316';
-    fillColor = 'rgba(249, 115, 22, 0.30)';
+    strokeColor = '#DC2626';
+    fillColor = 'rgba(220, 38, 38, 0.25)';
   } else if (riskLevel === 'MODERATE') {
-    strokeColor = '#f59e0b';
-    fillColor = 'rgba(245, 158, 11, 0.25)';
+    strokeColor = '#D97706';
+    fillColor = 'rgba(217, 119, 6, 0.20)';
   }
 
   return (
@@ -68,7 +68,7 @@ export const ForensicRadar: React.FC<ForensicRadarProps> = ({ scores, riskLevel 
               key={idx}
               points={gridPts}
               fill="none"
-              stroke="#1e293b"
+              stroke="#E7E2DA"
               strokeWidth="1"
               strokeDasharray={lvl < 1.0 ? "2 2" : "none"}
             />
@@ -90,7 +90,7 @@ export const ForensicRadar: React.FC<ForensicRadarProps> = ({ scores, riskLevel 
                 y1={center}
                 x2={x}
                 y2={y}
-                stroke="#1e293b"
+                stroke="#ECE8E1"
                 strokeWidth="1"
               />
               <text
@@ -98,7 +98,7 @@ export const ForensicRadar: React.FC<ForensicRadarProps> = ({ scores, riskLevel 
                 y={labelY}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className="text-[9px] font-mono fill-slate-400 font-semibold"
+                className="text-[9px] font-mono fill-[#64748B] font-semibold"
               >
                 {axis.label}
               </text>
@@ -135,7 +135,7 @@ export const ForensicRadar: React.FC<ForensicRadarProps> = ({ scores, riskLevel 
           );
         })}
       </svg>
-      <span className="text-[10px] font-mono uppercase text-slate-400 tracking-wider mt-1">
+      <span className="text-[10px] font-mono uppercase text-[#64748B] tracking-wider mt-1 font-medium">
         8-Axis Forensic Radar
       </span>
     </div>

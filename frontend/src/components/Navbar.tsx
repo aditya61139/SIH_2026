@@ -24,33 +24,40 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className={`sticky top-0 z-40 border-b backdrop-blur-xl transition-colors duration-200 ${
-      isDark ? 'border-slate-800/80 bg-[#070a10]/85' : 'border-slate-200 bg-white/90 shadow-sm'
+      isDark ? 'border-slate-800/80 bg-[#070a10]/90' : 'border-[#E7E2DA] bg-[#F8F5EF]/95 shadow-xs'
     }`}>
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+      {/* Patriotic Top Micro-Stripe */}
+      <div className="h-1 w-full bg-gradient-to-r from-[#C2410C] via-[#FFFFFF] to-[#15803D]" />
+
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6">
         {/* Brand & Problem Statement ID */}
         <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('overview')}>
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-500 via-teal-400 to-emerald-400 p-0.5 shadow-lg shadow-cyan-500/20">
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-[#C2410C] via-amber-500 to-[#15803D] p-0.5 shadow-md shadow-[#C2410C]/10">
             <div className={`flex h-full w-full items-center justify-center rounded-[10px] ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
-              <Shield className="h-5 w-5 text-cyan-400" />
+              <Shield className="h-5 w-5 text-[#C2410C]" />
             </div>
             {isMonitoring && (
               <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500"></span>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#15803D] opacity-75"></span>
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-[#15803D]"></span>
               </span>
             )}
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <h1 className={`text-lg font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                VoxSentinal<span className="text-cyan-400">X</span>
+              <h1 className={`text-lg font-bold tracking-tight ${isDark ? 'text-white' : 'text-[#1E293B]'}`}>
+                VoxSentinal<span className="text-[#C2410C]">X</span>
               </h1>
-              <span className="rounded bg-cyan-950/80 px-2 py-0.5 text-xs font-semibold text-cyan-300 border border-cyan-800/60">
+              <span className={`rounded px-2 py-0.5 text-xs font-semibold border ${
+                isDark
+                  ? 'bg-orange-950/80 text-orange-300 border-orange-800/60'
+                  : 'bg-[#FFF1E8] text-[#C2410C] border-[#E7E2DA]'
+              }`}>
                 SIH 26104
               </span>
             </div>
-            <p className={`text-xs hidden sm:block ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              AI-Powered Real-Time Voice Cloning Detection & Forensics
+            <p className={`text-xs hidden sm:block ${isDark ? 'text-slate-400' : 'text-[#64748B]'}`}>
+              AI Voice Cloning Defense & Acoustic Forensics
             </p>
           </div>
         </div>
@@ -62,10 +69,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setActiveTab('overview')}
             className={`flex items-center space-x-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'overview'
-                ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 glow-cyan'
+                ? isDark
+                  ? 'bg-[#C2410C]/20 text-orange-300 border border-[#C2410C]/40'
+                  : 'bg-[#FFF1E8] text-[#C2410C] border border-[#C2410C]/30 shadow-xs'
                 : isDark
                 ? 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                : 'text-[#64748B] hover:bg-[#EAE5DC] hover:text-[#1E293B]'
             }`}
           >
             <LayoutGrid className="h-4 w-4" />
@@ -77,10 +86,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setActiveTab('live')}
             className={`flex items-center space-x-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'live'
-                ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 glow-cyan'
+                ? isDark
+                  ? 'bg-[#C2410C]/20 text-orange-300 border border-[#C2410C]/40'
+                  : 'bg-[#FFF1E8] text-[#C2410C] border border-[#C2410C]/30 shadow-xs'
                 : isDark
                 ? 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                : 'text-[#64748B] hover:bg-[#EAE5DC] hover:text-[#1E293B]'
             }`}
           >
             <Activity className="h-4 w-4" />
@@ -92,10 +103,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setActiveTab('upload')}
             className={`flex items-center space-x-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'upload'
-                ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 glow-cyan'
+                ? isDark
+                  ? 'bg-[#C2410C]/20 text-orange-300 border border-[#C2410C]/40'
+                  : 'bg-[#FFF1E8] text-[#C2410C] border border-[#C2410C]/30 shadow-xs'
                 : isDark
                 ? 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                : 'text-[#64748B] hover:bg-[#EAE5DC] hover:text-[#1E293B]'
             }`}
           >
             <FileAudio className="h-4 w-4" />
@@ -107,10 +120,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setActiveTab('train')}
             className={`flex items-center space-x-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'train'
-                ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 glow-green'
+                ? isDark
+                  ? 'bg-[#15803D]/25 text-emerald-300 border border-[#15803D]/50'
+                  : 'bg-emerald-50 text-[#15803D] border border-[#15803D]/30 shadow-xs'
                 : isDark
                 ? 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                : 'text-[#64748B] hover:bg-[#EAE5DC] hover:text-[#1E293B]'
             }`}
           >
             <Cpu className="h-4 w-4" />
@@ -123,11 +138,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`flex items-center space-x-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-medium border transition-all ${
               isDark
                 ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border-slate-700/80'
-                : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
+                : 'bg-white hover:bg-[#FFF1E8] text-[#1E293B] border-[#E7E2DA] shadow-xs'
             }`}
             title="Calibrate your voice for speakerphone separation"
           >
-            <Mic className="h-4 w-4 text-emerald-400" />
+            <Mic className="h-4 w-4 text-[#15803D]" />
             <span className="hidden lg:inline">Calibration</span>
           </button>
 
@@ -136,10 +151,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setActiveTab('settings')}
             className={`rounded-xl p-2 text-sm font-medium transition-all ${
               activeTab === 'settings'
-                ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 glow-cyan'
+                ? isDark
+                  ? 'bg-[#C2410C]/20 text-orange-300 border border-[#C2410C]/40'
+                  : 'bg-[#FFF1E8] text-[#C2410C] border border-[#C2410C]/30 shadow-xs'
                 : isDark
                 ? 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                : 'text-[#64748B] hover:bg-[#EAE5DC] hover:text-[#1E293B]'
             }`}
             title="Settings"
           >
@@ -152,7 +169,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`rounded-xl p-2 text-sm font-medium border transition-all ${
               isDark
                 ? 'bg-slate-900/90 text-amber-300 hover:bg-slate-800 border-slate-800 shadow-sm'
-                : 'bg-slate-100 text-slate-800 hover:bg-slate-200 border-slate-300 shadow-sm'
+                : 'bg-white text-[#64748B] hover:bg-[#F8F5EF] hover:text-[#1E293B] border-[#E7E2DA] shadow-xs'
             }`}
             title={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
           >
@@ -161,11 +178,11 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Backend Status Indicator */}
-        <div className={`hidden xl:flex items-center space-x-2 border-l pl-4 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+        <div className={`hidden xl:flex items-center space-x-2 border-l pl-4 ${isDark ? 'border-slate-800' : 'border-[#E7E2DA]'}`}>
           <div className="flex items-center space-x-1.5">
-            <Radio className={`h-3.5 w-3.5 ${isConnected ? 'text-emerald-400 animate-pulse' : 'text-slate-400'}`} />
-            <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              Backend: {isConnected ? <span className="text-emerald-400 font-bold">Online (FastAPI)</span> : <span className="text-slate-400">Offline</span>}
+            <Radio className={`h-3.5 w-3.5 ${isConnected ? 'text-[#15803D] animate-pulse' : 'text-[#94A3B8]'}`} />
+            <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-[#64748B]'}`}>
+              Backend: {isConnected ? <span className="text-[#15803D] font-bold">Online (FastAPI)</span> : <span className="text-[#94A3B8]">Offline</span>}
             </span>
           </div>
         </div>

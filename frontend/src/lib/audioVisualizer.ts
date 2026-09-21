@@ -5,30 +5,34 @@ export class CanvasAudioVisualizer {
   private animId: number | null = null;
   private dataArray: Uint8Array<ArrayBuffer>;
   private freqArray: Uint8Array<ArrayBuffer>;
-  private riskColor: string = '#06b6d4'; // default cyan
+  private riskColor: string = '#C2410C'; // default active saffron
+  private isDark: boolean = false;
 
-  constructor(canvas: HTMLCanvasElement, analyser: AnalyserNode) {
+  constructor(canvas: HTMLCanvasElement, analyser: AnalyserNode, theme: 'dark' | 'light' = 'light') {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d')!;
     this.analyser = analyser;
     this.analyser.fftSize = 512;
     this.dataArray = new Uint8Array(new ArrayBuffer(this.analyser.fftSize));
     this.freqArray = new Uint8Array(new ArrayBuffer(this.analyser.frequencyBinCount));
+    this.isDark = theme === 'dark';
+  }
+
+  public setTheme(theme: 'dark' | 'light') {
+    this.isDark = theme === 'dark';
   }
 
   public setRiskLevel(level: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL') {
     switch (level) {
       case 'CRITICAL':
-        this.riskColor = '#ef4444'; // Red
-        break;
       case 'HIGH':
-        this.riskColor = '#f97316'; // Orange
+        this.riskColor = '#DC2626'; // High Risk / Cloned Voice / Critical
         break;
       case 'MODERATE':
-        this.riskColor = '#f59e0b'; // Amber
+        this.riskColor = '#D97706'; // Suspicious / Medium Risk
         break;
       default:
-        this.riskColor = '#10b981'; // Green
+        this.riskColor = '#15803D'; // Safe / Low Risk / Verified
     }
   }
 
@@ -51,7 +55,7 @@ export class CanvasAudioVisualizer {
   }
 
   private clear() {
-    this.ctx.fillStyle = '#0f172a';
+    this.ctx.fillStyle = this.isDark ? '#0f172a' : '#FFFFFF';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
@@ -62,12 +66,12 @@ export class CanvasAudioVisualizer {
     this.analyser.getByteTimeDomainData(this.dataArray);
     this.analyser.getByteFrequencyData(this.freqArray);
 
-    // Dark background with subtle grid
-    this.ctx.fillStyle = '#0a0d14';
+    // Background
+    this.ctx.fillStyle = this.isDark ? '#0a0d14' : '#FFFFFF';
     this.ctx.fillRect(0, 0, width, height);
 
-    // Draw grid
-    this.ctx.strokeStyle = '#1e293b';
+    // Subtle Grid (Dividers: #ECE8E1)
+    this.ctx.strokeStyle = this.isDark ? '#1e293b' : '#ECE8E1';
     this.ctx.lineWidth = 1;
     this.ctx.beginPath();
     for (let x = 0; x < width; x += 40) {
@@ -85,7 +89,7 @@ export class CanvasAudioVisualizer {
     let barX = 0;
     for (let i = 0; i < this.freqArray.length; i++) {
       const barHeight = (this.freqArray[i] / 255) * (height * 0.7);
-      this.ctx.fillStyle = `${this.riskColor}22`; // 15% opacity
+      this.ctx.fillStyle = `${this.riskColor}20`; // subtle opacity
       this.ctx.fillRect(barX, height - barHeight, barWidth, barHeight);
       barX += barWidth + 1;
     }
@@ -93,7 +97,7 @@ export class CanvasAudioVisualizer {
     // 2. Draw Live Oscilloscope Waveform Line
     this.ctx.lineWidth = 2.5;
     this.ctx.strokeStyle = this.riskColor;
-    this.ctx.shadowBlur = 12;
+    this.ctx.shadowBlur = 8;
     this.ctx.shadowColor = this.riskColor;
 
     this.ctx.beginPath();

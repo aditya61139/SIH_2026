@@ -28,3 +28,15 @@
 - Added unit tests for `/api/training/metrics` and 25MB upload limit.
 - Verified test suite: 22/22 pytest tests passing in 7.14s.
 - Verified frontend build (`npm run build`): 1,595 modules transformed with zero errors.
+
+## Phase 6: Swadesi & Patriotic UI Overhaul [COMPLETED]
+- Replaced dark cyberpunk styling with official Swadesi / Made in Bharat palette:
+  - Page Background `#FDFBF7`, Secondary `#F8F5EF`, Cards `#FFFFFF`.
+  - Primary Headings `#1E293B`, Secondary Text `#64748B`, Disabled `#94A3B8`.
+  - Primary Buttons & Active Tabs `#C2410C`, Button Hover `#9A3412`, Active Pill `#FFF1E8`.
+  - Waveforms: Active `#C2410C`, Inactive `#94A3B8`, Verified `#15803D`.
+  - Verification & Backend Connected `#15803D`, Suspicious `#D97706`, Critical Alert `#DC2626`.
+  - Borders `#E7E2DA`, Dividers `#ECE8E1`.
+- Dignified Tiranga micro-stripe accents and SIH 2026 Smart India Hackathon emblem.
+- High-appeal, clean, uncluttered components across Navbar, Hero Visualizer, Live Call Monitor, Radar, Risk Gauge, and Modals.
+- Production build and automated test verification.
