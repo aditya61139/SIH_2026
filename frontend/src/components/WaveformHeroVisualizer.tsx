@@ -28,8 +28,8 @@ export const WaveformHeroVisualizer: React.FC<WaveformHeroVisualizerProps> = () 
 
       ctx.clearRect(0, 0, width, height);
 
-      // Draw subtle background grid within canvas
-      ctx.strokeStyle = 'rgba(231, 226, 218, 0.6)'; // #E7E2DA border tone
+      // Draw subtle background grid within canvas (Divider: #252830)
+      ctx.strokeStyle = 'rgba(37, 40, 48, 0.8)';
       ctx.lineWidth = 1;
       const step = 32 * window.devicePixelRatio;
       for (let x = 0; x < width; x += step) {
@@ -64,29 +64,29 @@ export const WaveformHeroVisualizer: React.FC<WaveformHeroVisualizerProps> = () 
 
         const grad = ctx.createLinearGradient(0, y, 0, y + barH);
         if (isInterceptActive) {
-          grad.addColorStop(0, 'rgba(220, 38, 38, 0.85)'); // #DC2626
-          grad.addColorStop(0.5, 'rgba(217, 119, 6, 0.7)'); // #D97706
-          grad.addColorStop(1, 'rgba(220, 38, 38, 0.15)');
+          grad.addColorStop(0, 'rgba(239, 68, 68, 0.85)'); // #EF4444
+          grad.addColorStop(0.5, 'rgba(245, 158, 11, 0.7)'); // #F59E0B
+          grad.addColorStop(1, 'rgba(239, 68, 68, 0.15)');
         } else {
-          grad.addColorStop(0, 'rgba(194, 65, 12, 0.85)'); // #C2410C Saffron
-          grad.addColorStop(0.5, 'rgba(21, 128, 61, 0.7)'); // #15803D Green
-          grad.addColorStop(1, 'rgba(194, 65, 12, 0.12)');
+          grad.addColorStop(0, 'rgba(16, 185, 129, 0.85)'); // #10B981 Emerald
+          grad.addColorStop(0.5, 'rgba(5, 150, 105, 0.7)');
+          grad.addColorStop(1, 'rgba(16, 185, 129, 0.12)');
         }
 
         ctx.fillStyle = grad;
         ctx.fillRect(x, y, barWidth, barH);
       }
 
-      // 2. Draw Continuous Harmonic Sine Wave
+      // 2. Draw Continuous Harmonic Sine Wave (Active: #10B981)
       ctx.beginPath();
       ctx.lineWidth = 2.5 * window.devicePixelRatio;
       ctx.strokeStyle = isInterceptActive
-        ? 'rgba(220, 38, 38, 0.9)' // #DC2626
-        : 'rgba(194, 65, 12, 0.9)'; // #C2410C Active Audio Waveform
+        ? 'rgba(239, 68, 68, 0.95)' // #EF4444
+        : 'rgba(16, 185, 129, 0.95)'; // #10B981 Active Audio Waveform
       ctx.shadowColor = isInterceptActive
-        ? 'rgba(220, 38, 38, 0.35)'
-        : 'rgba(194, 65, 12, 0.35)';
-      ctx.shadowBlur = 8 * window.devicePixelRatio;
+        ? 'rgba(239, 68, 68, 0.45)'
+        : 'rgba(16, 185, 129, 0.45)';
+      ctx.shadowBlur = 10 * window.devicePixelRatio;
 
       for (let x = 0; x < width; x += 4) {
         const normX = x / width;
@@ -104,7 +104,7 @@ export const WaveformHeroVisualizer: React.FC<WaveformHeroVisualizerProps> = () 
       // 3. Draw Carrier Scan Line
       const scanX = ((phase * 80) % width);
       ctx.beginPath();
-      ctx.strokeStyle = 'rgba(194, 65, 12, 0.25)';
+      ctx.strokeStyle = 'rgba(16, 185, 129, 0.3)';
       ctx.lineWidth = 1.5;
       ctx.moveTo(scanX, height * 0.1);
       ctx.lineTo(scanX, height * 0.9);
@@ -138,33 +138,33 @@ export const WaveformHeroVisualizer: React.FC<WaveformHeroVisualizerProps> = () 
   };
 
   return (
-    <div className="relative w-full rounded-2xl overflow-hidden bg-white border border-[#E7E2DA] shadow-xs p-4 sm:p-6 transition-all duration-300">
+    <div className="relative w-full rounded-2xl overflow-hidden bg-[#1A1C23] border border-[#2A2E37] shadow-xl p-4 sm:p-6 transition-all duration-300">
       {/* HUD Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ECE8E1] pb-3 mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#252830] pb-3 mb-4">
         <div className="flex items-center space-x-2.5">
           <div className="relative flex h-3 w-3">
-            <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${isInterceptActive ? 'bg-red-400' : 'bg-[#15803D]'}`}></span>
-            <span className={`relative inline-flex h-3 w-3 rounded-full ${isInterceptActive ? 'bg-[#DC2626]' : 'bg-[#15803D]'}`}></span>
+            <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${isInterceptActive ? 'bg-red-400' : 'bg-[#10B981]'}`}></span>
+            <span className={`relative inline-flex h-3 w-3 rounded-full ${isInterceptActive ? 'bg-[#EF4444]' : 'bg-[#10B981]'}`}></span>
           </div>
-          <span className="text-xs font-mono font-bold tracking-wider uppercase text-[#1E293B]">
+          <span className="text-xs font-mono font-bold tracking-wider uppercase text-white">
             Acoustic Telemetry Scanner
           </span>
-          <span className="hidden sm:inline-flex rounded bg-[#FFF1E8] px-2 py-0.5 text-[10px] font-mono text-[#C2410C] border border-[#E7E2DA] font-semibold">
+          <span className="hidden sm:inline-flex rounded bg-[#10B981]/10 px-2 py-0.5 text-[10px] font-mono text-[#10B981] border border-[#10B981]/30 font-semibold">
             16 kHz Int16 PCM • 512-pt FFT
           </span>
         </div>
 
         <div className="flex items-center space-x-3 text-xs font-mono">
-          <div className="flex items-center space-x-1.5 text-[#64748B]">
-            <Activity className="h-3.5 w-3.5 text-[#C2410C]" />
-            <span>F0: <strong className="text-[#1E293B]">{activeFrequency} Hz</strong></span>
+          <div className="flex items-center space-x-1.5 text-[#94A3B8]">
+            <Activity className="h-3.5 w-3.5 text-[#10B981]" />
+            <span>F0: <strong className="text-white">{activeFrequency} Hz</strong></span>
           </div>
           <button
             onClick={toggleThreatMode}
             className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center space-x-1.5 ${
               isInterceptActive
-                ? 'bg-red-50 text-[#DC2626] border-red-300 font-bold'
-                : 'bg-[#F8F5EF] hover:bg-[#FFF1E8] text-[#1E293B] border-[#E7E2DA]'
+                ? 'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/40 font-bold'
+                : 'bg-[#15171C] hover:bg-[#10B981]/10 text-[#E2E8F0] hover:text-[#10B981] border-[#2A2E37]'
             }`}
           >
             <Zap className="h-3 w-3" />
@@ -174,26 +174,26 @@ export const WaveformHeroVisualizer: React.FC<WaveformHeroVisualizerProps> = () 
       </div>
 
       {/* Real-Time Canvas Waveform Area */}
-      <div className="relative w-full h-44 sm:h-56 rounded-xl overflow-hidden bg-[#FDFBF7] border border-[#E7E2DA]">
+      <div className="relative w-full h-44 sm:h-56 rounded-xl overflow-hidden bg-[#15171C] border border-[#2A2E37]">
         <canvas ref={canvasRef} className="w-full h-full block" />
 
         {/* Floating Scan Overlay Pills */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-2 pointer-events-none">
-          <div className="bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[11px] font-mono flex items-center space-x-1.5 text-[#1E293B] border border-[#E7E2DA] shadow-xs">
-            <Radio className="h-3 w-3 text-[#15803D] animate-pulse" />
-            <span>Phase Coherence: <strong className="text-[#15803D]">98.4%</strong></span>
+          <div className="bg-[#1A1C23]/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[11px] font-mono flex items-center space-x-1.5 text-[#E2E8F0] border border-[#2A2E37] shadow-xs">
+            <Radio className="h-3 w-3 text-[#10B981] animate-pulse" />
+            <span>Phase Coherence: <strong className="text-[#10B981]">98.4%</strong></span>
           </div>
-          <div className="bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[11px] font-mono flex items-center space-x-1.5 text-[#1E293B] border border-[#E7E2DA] shadow-xs">
-            <ShieldCheck className="h-3 w-3 text-[#15803D]" />
-            <span>NAQ Glottal Flow: <strong className="text-[#15803D]">0.141 (Natural)</strong></span>
+          <div className="bg-[#1A1C23]/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[11px] font-mono flex items-center space-x-1.5 text-[#E2E8F0] border border-[#2A2E37] shadow-xs">
+            <ShieldCheck className="h-3 w-3 text-[#10B981]" />
+            <span>NAQ Glottal Flow: <strong className="text-[#10B981]">0.141 (Natural)</strong></span>
           </div>
         </div>
 
         <div className="absolute bottom-3 right-3 pointer-events-none">
           <div className={`px-3 py-1.5 rounded-lg border text-xs font-mono font-bold shadow-xs ${
             isInterceptActive
-              ? 'bg-red-50 text-[#DC2626] border-red-300'
-              : 'bg-emerald-50 text-[#15803D] border-emerald-300'
+              ? 'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30'
+              : 'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30'
           }`}>
             Risk Score: {simulatedScore}% • {isInterceptActive ? '⚠️ SYNTHETIC DEEPFAKE' : '✅ AUTHENTIC HUMAN'}
           </div>

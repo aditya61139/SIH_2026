@@ -5,7 +5,7 @@ export class CanvasAudioVisualizer {
   private animId: number | null = null;
   private dataArray: Uint8Array<ArrayBuffer>;
   private freqArray: Uint8Array<ArrayBuffer>;
-  private riskColor: string = '#C2410C'; // default active saffron
+  private riskColor: string = '#10B981'; // default active emerald signal
 
   constructor(canvas: HTMLCanvasElement, analyser: AnalyserNode) {
     this.canvas = canvas;
@@ -19,14 +19,16 @@ export class CanvasAudioVisualizer {
   public setRiskLevel(level: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL') {
     switch (level) {
       case 'CRITICAL':
+        this.riskColor = '#DC2626'; // Critical Error (#DC2626)
+        break;
       case 'HIGH':
-        this.riskColor = '#DC2626'; // High Risk / Cloned Voice / Critical
+        this.riskColor = '#EF4444'; // High Risk / Synthetic (#EF4444)
         break;
       case 'MODERATE':
-        this.riskColor = '#D97706'; // Suspicious / Medium Risk
+        this.riskColor = '#F59E0B'; // Medium Risk / Suspicious (#F59E0B)
         break;
       default:
-        this.riskColor = '#15803D'; // Safe / Low Risk / Verified
+        this.riskColor = '#10B981'; // Low Risk / Safe / Verified (#10B981)
     }
   }
 
@@ -49,7 +51,7 @@ export class CanvasAudioVisualizer {
   }
 
   private clear() {
-    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.fillStyle = '#15171C';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
@@ -60,12 +62,12 @@ export class CanvasAudioVisualizer {
     this.analyser.getByteTimeDomainData(this.dataArray);
     this.analyser.getByteFrequencyData(this.freqArray);
 
-    // Background
-    this.ctx.fillStyle = '#FFFFFF';
+    // Canvas Background (#15171C)
+    this.ctx.fillStyle = '#15171C';
     this.ctx.fillRect(0, 0, width, height);
 
-    // Subtle Grid (Dividers: #ECE8E1)
-    this.ctx.strokeStyle = '#ECE8E1';
+    // Subtle Grid (Divider: #252830)
+    this.ctx.strokeStyle = '#252830';
     this.ctx.lineWidth = 1;
     this.ctx.beginPath();
     for (let x = 0; x < width; x += 40) {
@@ -83,15 +85,15 @@ export class CanvasAudioVisualizer {
     let barX = 0;
     for (let i = 0; i < this.freqArray.length; i++) {
       const barHeight = (this.freqArray[i] / 255) * (height * 0.7);
-      this.ctx.fillStyle = `${this.riskColor}20`; // subtle opacity
+      this.ctx.fillStyle = `${this.riskColor}25`; // subtle opacity
       this.ctx.fillRect(barX, height - barHeight, barWidth, barHeight);
       barX += barWidth + 1;
     }
 
-    // 2. Draw Live Oscilloscope Waveform Line
+    // 2. Draw Live Oscilloscope Waveform Line (Active: #10B981)
     this.ctx.lineWidth = 2.5;
     this.ctx.strokeStyle = this.riskColor;
-    this.ctx.shadowBlur = 8;
+    this.ctx.shadowBlur = 10;
     this.ctx.shadowColor = this.riskColor;
 
     this.ctx.beginPath();

@@ -39,7 +39,7 @@ export const App: React.FC = () => {
   }, [apiBaseUrl]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FDFBF7] text-[#1E293B] selection:bg-[#FFF1E8] selection:text-[#C2410C]">
+    <div className="min-h-screen flex flex-col bg-[#0D0E11] text-[#E2E8F0] selection:bg-[#10B981]/20 selection:text-[#10B981]">
       {/* Top Navigation */}
       <Navbar
         activeTab={activeTab}
@@ -92,28 +92,28 @@ export const App: React.FC = () => {
         apiBaseUrl={apiBaseUrl}
       />
 
-      {/* Swadesi Footer */}
-      <footer className="border-t border-[#E7E2DA] bg-[#F8F5EF] py-5 px-6 text-xs text-[#64748B] transition-colors">
+      {/* Cyber-Security Footer */}
+      <footer className="border-t border-[#2A2E37] bg-[#0D0E11] py-5 px-6 text-xs text-[#94A3B8] transition-colors">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center space-x-2">
-            <div className="h-2 w-2 rounded-full bg-[#15803D]"></div>
-            <span className="font-semibold text-[#1E293B]">VoxSentinalX</span>
-            <span>— Smart India Hackathon (SIH 2026 • Problem Statement #26104)</span>
+            <div className="h-2 w-2 rounded-full bg-[#10B981] animate-pulse"></div>
+            <span className="font-semibold text-white">VoxSentinalX</span>
+            <span className="text-[#64748B]">— Smart India Hackathon (SIH 2026 • Problem Statement #26104)</span>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3 text-xs">
-            <div className="flex items-center space-x-1.5 text-[#64748B]">
-              <Sparkles className="h-3.5 w-3.5 text-[#C2410C]" />
+            <div className="flex items-center space-x-1.5 text-[#94A3B8]">
+              <Sparkles className="h-3.5 w-3.5 text-[#10B981]" />
               <span>8-Vector Forensic Suite</span>
             </div>
-            <span className="text-[#CBD5E1] hidden sm:inline">•</span>
-            <div className="flex items-center space-x-1.5 text-[#64748B]">
-              <Cpu className="h-3.5 w-3.5 text-[#15803D]" />
+            <span className="text-[#374151] hidden sm:inline">•</span>
+            <div className="flex items-center space-x-1.5 text-[#94A3B8]">
+              <Cpu className="h-3.5 w-3.5 text-[#10B981]" />
               <span>PyTorch LCNN Neural Classifier</span>
             </div>
-            <span className="text-[#CBD5E1] hidden sm:inline">•</span>
-            <div className="flex items-center space-x-1.5 text-[#64748B]">
-              <Radio className="h-3.5 w-3.5 text-[#C2410C]" />
+            <span className="text-[#374151] hidden sm:inline">•</span>
+            <div className="flex items-center space-x-1.5 text-[#94A3B8]">
+              <Radio className="h-3.5 w-3.5 text-[#10B981]" />
               <span>16 kHz Streaming Analysis</span>
             </div>
           </div>

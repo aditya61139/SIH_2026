@@ -36,24 +36,24 @@ export const ForensicRadar: React.FC<ForensicRadarProps> = ({ scores, riskLevel 
     return `${x},${y}`;
   }).join(' ');
 
-  let strokeColor = '#15803D'; // Low risk / genuine
-  let fillColor = 'rgba(21, 128, 61, 0.18)';
+  let strokeColor = '#10B981'; // Low risk / genuine (#10B981)
+  let fillColor = 'rgba(16, 185, 129, 0.20)';
 
   if (riskLevel === 'CRITICAL') {
-    strokeColor = '#DC2626';
-    fillColor = 'rgba(220, 38, 38, 0.30)';
+    strokeColor = '#DC2626'; // Critical Error (#DC2626)
+    fillColor = 'rgba(220, 38, 38, 0.32)';
   } else if (riskLevel === 'HIGH') {
-    strokeColor = '#DC2626';
-    fillColor = 'rgba(220, 38, 38, 0.25)';
+    strokeColor = '#EF4444'; // High Risk / Clone Detected (#EF4444)
+    fillColor = 'rgba(239, 68, 68, 0.25)';
   } else if (riskLevel === 'MODERATE') {
-    strokeColor = '#D97706';
-    fillColor = 'rgba(217, 119, 6, 0.20)';
+    strokeColor = '#F59E0B'; // Medium Risk / Suspicious (#F59E0B)
+    fillColor = 'rgba(245, 158, 11, 0.22)';
   }
 
   return (
     <div className="flex flex-col items-center justify-center p-3">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
-        {/* Concentric Grid Octagons */}
+        {/* Concentric Grid Octagons (Standard Border: #2A2E37) */}
         {gridLevels.map((lvl, idx) => {
           const gridPts = axes.map((_, i) => {
             const angle = (i * 2 * Math.PI) / numAxes - Math.PI / 2;
@@ -68,14 +68,14 @@ export const ForensicRadar: React.FC<ForensicRadarProps> = ({ scores, riskLevel 
               key={idx}
               points={gridPts}
               fill="none"
-              stroke="#E7E2DA"
+              stroke="#2A2E37"
               strokeWidth="1"
               strokeDasharray={lvl < 1.0 ? "2 2" : "none"}
             />
           );
         })}
 
-        {/* Axis Lines & Labels */}
+        {/* Axis Lines & Labels (Divider: #252830) */}
         {axes.map((axis, i) => {
           const angle = (i * 2 * Math.PI) / numAxes - Math.PI / 2;
           const x = center + radius * Math.cos(angle);
@@ -90,7 +90,7 @@ export const ForensicRadar: React.FC<ForensicRadarProps> = ({ scores, riskLevel 
                 y1={center}
                 x2={x}
                 y2={y}
-                stroke="#ECE8E1"
+                stroke="#252830"
                 strokeWidth="1"
               />
               <text
@@ -98,7 +98,7 @@ export const ForensicRadar: React.FC<ForensicRadarProps> = ({ scores, riskLevel 
                 y={labelY}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className="text-[9px] font-mono fill-[#64748B] font-semibold"
+                className="text-[9px] font-mono fill-[#94A3B8] font-semibold"
               >
                 {axis.label}
               </text>

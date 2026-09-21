@@ -353,22 +353,22 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
   return (
     <div className="space-y-8 pb-10">
       {/* 1. Header & Dual-Engine Overview */}
-      <div className="rounded-3xl bg-white p-6 sm:p-8 border border-[#E7E2DA] shadow-xs">
+      <div className="rounded-3xl bg-[#1A1C23] p-6 sm:p-8 border border-[#2A2E37] shadow-xl">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="flex items-start space-x-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FFF1E8] border border-[#E7E2DA] text-[#C2410C] shrink-0 shadow-xs">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#15171C] border border-[#2A2E37] text-[#10B981] shrink-0 shadow-xs">
               <Cpu className="h-7 w-7" />
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-1">
-                <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B]">
+                <h2 className="text-xl sm:text-2xl font-bold text-white">
                   Deep Neural LCNN Classifier & Training Studio
                 </h2>
-                <span className="rounded-full px-2.5 py-0.5 text-xs font-bold font-mono bg-emerald-50 text-[#15803D] border border-emerald-200">
+                <span className="rounded-full px-2.5 py-0.5 text-xs font-bold font-mono bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/30">
                   Dual-Engine Fusion Active
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-[#64748B] max-w-3xl leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#94A3B8] max-w-3xl leading-relaxed">
                 VoxSentinalX pairs an <strong>8-Vector Acoustic Physics Engine</strong> (glottal airflow, vocal fold jitter, breathing cadence, bispectrum) with an end-to-end <strong>Light-CNN (LCNN) + BiLSTM + Self-Attention</strong> neural model to expose imperceptible neural vocoder distortions across 12 Indic languages and 8 voice-cloning engines.
               </p>
             </div>
@@ -378,14 +378,14 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
             <button
               onClick={fetchCatalogAndMetrics}
               disabled={loadingDatasets}
-              className="flex items-center space-x-1.5 rounded-xl bg-[#F8F5EF] hover:bg-[#FFF1E8] py-2.5 px-4 text-xs font-semibold text-[#1E293B] border border-[#E7E2DA] transition-all shadow-xs"
+              className="flex items-center space-x-1.5 rounded-xl bg-[#15171C] hover:bg-[#1A1C23] py-2.5 px-4 text-xs font-semibold text-white border border-[#2A2E37] transition-all shadow-xs"
             >
-              <RefreshCw className={`h-3.5 w-3.5 ${loadingDatasets ? 'animate-spin text-[#C2410C]' : 'text-[#64748B]'}`} />
+              <RefreshCw className={`h-3.5 w-3.5 ${loadingDatasets ? 'animate-spin text-[#10B981]' : 'text-[#94A3B8]'}`} />
               <span>Refresh Telemetry</span>
             </button>
             <a
               href="#playground"
-              className="flex items-center space-x-1.5 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white py-2.5 px-4 text-xs font-bold transition-all shadow-md shadow-[#C2410C]/20"
+              className="flex items-center space-x-1.5 rounded-xl bg-[#10B981] hover:bg-[#059669] text-[#0D0E11] py-2.5 px-4 text-xs font-bold transition-all shadow-lg shadow-[#10B981]/25"
             >
               <Zap className="h-3.5 w-3.5" />
               <span>Test-Drive Model</span>
@@ -394,8 +394,8 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
         </div>
 
         {statusMsg && (
-          <div className="mt-4 rounded-xl bg-[#FFF1E8] p-3.5 border border-[#E7E2DA] text-xs text-[#C2410C] flex items-center space-x-2 font-medium">
-            <Sparkles className="h-4 w-4 shrink-0 text-[#C2410C]" />
+          <div className="mt-4 rounded-xl bg-[#10B981]/10 p-3.5 border border-[#10B981]/30 text-xs text-[#10B981] flex items-center space-x-2 font-medium">
+            <Sparkles className="h-4 w-4 shrink-0 text-[#10B981]" />
             <span>{statusMsg}</span>
           </div>
         )}
@@ -405,11 +405,11 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-bold text-[#1E293B] uppercase tracking-wider flex items-center space-x-2">
-              <BarChart3 className="h-4 w-4 text-[#C2410C]" />
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
+              <BarChart3 className="h-4 w-4 text-[#10B981]" />
               <span>Model Performance Intelligence & Benchmark Metrics</span>
             </h3>
-            <p className="text-xs text-[#64748B] mt-0.5">
+            <p className="text-xs text-[#94A3B8] mt-0.5">
               Evaluated on the unified multi-lingual corpus of {totalSamples.toLocaleString()} bona fide human and neural deepfake voice clips.
             </p>
           </div>
@@ -418,65 +418,65 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
         {/* 4 Metric Cards with Plain English Tooltips */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Accuracy */}
-          <div className="rounded-2xl bg-white p-5 border border-[#E7E2DA] shadow-xs hover:border-[#C2410C]/40 transition-all">
+          <div className="rounded-2xl bg-[#1A1C23] p-5 border border-[#2A2E37] shadow-xl hover:border-[#374151] transition-all">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-[#64748B] uppercase font-bold tracking-wider">Test Accuracy</span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-[#15803D] border border-emerald-200">
+              <span className="text-xs text-[#94A3B8] uppercase font-bold tracking-wider">Test Accuracy</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/30">
                 Cross-Validated
               </span>
             </div>
-            <div className="text-3xl sm:text-4xl font-black font-mono text-[#15803D] mt-2">
+            <div className="text-3xl sm:text-4xl font-black font-mono text-[#10B981] mt-2">
               {testAcc}%
             </div>
-            <p className="text-[11px] text-[#64748B] mt-2 leading-relaxed">
+            <p className="text-[11px] text-[#94A3B8] mt-2 leading-relaxed">
               <strong>What this means:</strong> {testAcc}% of all tested voice recordings (both genuine callers and AI clones) were correctly classified.
             </p>
           </div>
 
           {/* Equal Error Rate */}
-          <div className="rounded-2xl bg-white p-5 border border-[#E7E2DA] shadow-xs hover:border-[#C2410C]/40 transition-all">
+          <div className="rounded-2xl bg-[#1A1C23] p-5 border border-[#2A2E37] shadow-xl hover:border-[#374151] transition-all">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-[#64748B] uppercase font-bold tracking-wider">Equal Error Rate (EER)</span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#FFF1E8] text-[#C2410C] border border-[#E7E2DA]">
+              <span className="text-xs text-[#94A3B8] uppercase font-bold tracking-wider">Equal Error Rate (EER)</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/30">
                 Lower is Better
               </span>
             </div>
-            <div className="text-3xl sm:text-4xl font-black font-mono text-[#C2410C] mt-2">
+            <div className="text-3xl sm:text-4xl font-black font-mono text-[#10B981] mt-2">
               {eer}%
             </div>
-            <p className="text-[11px] text-[#64748B] mt-2 leading-relaxed">
+            <p className="text-[11px] text-[#94A3B8] mt-2 leading-relaxed">
               <strong>ASVspoof standard:</strong> The equilibrium point where false alarms equal missed deepfakes. <strong>6.86% EER</strong> outperforms commercial phone baselines (~11.5%).
             </p>
           </div>
 
           {/* Precision */}
-          <div className="rounded-2xl bg-white p-5 border border-[#E7E2DA] shadow-xs hover:border-[#C2410C]/40 transition-all">
+          <div className="rounded-2xl bg-[#1A1C23] p-5 border border-[#2A2E37] shadow-xl hover:border-[#374151] transition-all">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-[#64748B] uppercase font-bold tracking-wider">Precision</span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#F8F5EF] text-[#1E293B] border border-[#E7E2DA]">
+              <span className="text-xs text-[#94A3B8] uppercase font-bold tracking-wider">Precision</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#15171C] text-[#E2E8F0] border border-[#2A2E37]">
                 Low False Alarms
               </span>
             </div>
-            <div className="text-3xl sm:text-4xl font-black font-mono text-[#1E293B] mt-2">
+            <div className="text-3xl sm:text-4xl font-black font-mono text-white mt-2">
               {precision}%
             </div>
-            <p className="text-[11px] text-[#64748B] mt-2 leading-relaxed">
+            <p className="text-[11px] text-[#94A3B8] mt-2 leading-relaxed">
               <strong>High trust:</strong> When VoxSentinalX sounds a deepfake siren, it is genuine synthetic fraud {precision}% of the time, avoiding panic for real family callers.
             </p>
           </div>
 
           {/* Recall */}
-          <div className="rounded-2xl bg-white p-5 border border-[#E7E2DA] shadow-xs hover:border-[#C2410C]/40 transition-all">
+          <div className="rounded-2xl bg-[#1A1C23] p-5 border border-[#2A2E37] shadow-xl hover:border-[#374151] transition-all">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-[#64748B] uppercase font-bold tracking-wider">Attack Recall</span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#F8F5EF] text-[#1E293B] border border-[#E7E2DA]">
+              <span className="text-xs text-[#94A3B8] uppercase font-bold tracking-wider">Attack Recall</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#15171C] text-[#E2E8F0] border border-[#2A2E37]">
                 Threat Capture
               </span>
             </div>
-            <div className="text-3xl sm:text-4xl font-black font-mono text-[#1E293B] mt-2">
+            <div className="text-3xl sm:text-4xl font-black font-mono text-white mt-2">
               {recall}%
             </div>
-            <p className="text-[11px] text-[#64748B] mt-2 leading-relaxed">
+            <p className="text-[11px] text-[#94A3B8] mt-2 leading-relaxed">
               <strong>Interception rate:</strong> Intercepts {recall}% of all simulated voice-cloning attacks, even across noisy speakerphone acoustic environments.
             </p>
           </div>
@@ -485,87 +485,87 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
         {/* 2x2 Confusion Matrix & Industry Benchmark Comparison */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Confusion Matrix Card (2 cols) */}
-          <div className="lg:col-span-2 rounded-3xl bg-white p-6 sm:p-7 border border-[#E7E2DA] shadow-xs">
+          <div className="lg:col-span-2 rounded-3xl bg-[#1A1C23] p-6 sm:p-7 border border-[#2A2E37] shadow-xl">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h4 className="text-sm font-bold text-[#1E293B] uppercase tracking-wider flex items-center space-x-2">
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
                   <span>2x2 Confusion Matrix Breakdown</span>
-                  <span className="text-xs font-mono font-normal text-[#64748B]">({totalSamples.toLocaleString()} samples)</span>
+                  <span className="text-xs font-mono font-normal text-[#94A3B8]">({totalSamples.toLocaleString()} samples)</span>
                 </h4>
-                <p className="text-xs text-[#64748B] mt-0.5">
+                <p className="text-xs text-[#94A3B8] mt-0.5">
                   Visual mapping of actual speaker identity versus model classification decision.
                 </p>
               </div>
-              <span className="text-[11px] font-mono text-[#15803D] bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 font-bold">
+              <span className="text-[11px] font-mono text-[#10B981] bg-[#10B981]/10 px-2.5 py-1 rounded-lg border border-[#10B981]/30 font-bold">
                 87.0% Overall True Rate
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-3 mt-4">
               {/* True Negative: Genuine Verified */}
-              <div className="rounded-2xl bg-[#F8F5EF] p-4 border border-emerald-200/80">
+              <div className="rounded-2xl bg-[#15171C] p-4 border border-[#10B981]/30">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#15803D] flex items-center gap-1.5">
+                  <span className="font-bold text-[#10B981] flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4" />
                     True Genuine (Human)
                   </span>
-                  <span className="font-mono text-xs font-bold text-[#15803D]">87.0%</span>
+                  <span className="font-mono text-xs font-bold text-[#10B981]">87.0%</span>
                 </div>
-                <div className="text-2xl font-black font-mono text-[#1E293B] mt-2">
-                  {confMatrix.true_negatives_genuine.toLocaleString()} <span className="text-xs font-normal text-[#64748B]">samples</span>
+                <div className="text-2xl font-black font-mono text-white mt-2">
+                  {confMatrix.true_negatives_genuine.toLocaleString()} <span className="text-xs font-normal text-[#94A3B8]">samples</span>
                 </div>
-                <p className="text-[11px] text-[#64748B] mt-1">
+                <p className="text-[11px] text-[#94A3B8] mt-1">
                   Real biological human voices correctly allowed without interruption.
                 </p>
               </div>
 
               {/* False Positive: Real Flagged as Fake */}
-              <div className="rounded-2xl bg-[#F8F5EF] p-4 border border-amber-200">
+              <div className="rounded-2xl bg-[#15171C] p-4 border border-[#F59E0B]/30">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#D97706] flex items-center gap-1.5">
+                  <span className="font-bold text-[#F59E0B] flex items-center gap-1.5">
                     <AlertCircle className="h-4 w-4" />
                     False Impersonation Alarm
                   </span>
-                  <span className="font-mono text-xs font-bold text-[#D97706]">13.0%</span>
+                  <span className="font-mono text-xs font-bold text-[#F59E0B]">13.0%</span>
                 </div>
-                <div className="text-2xl font-black font-mono text-[#1E293B] mt-2">
-                  {confMatrix.false_positives.toLocaleString()} <span className="text-xs font-normal text-[#64748B]">samples</span>
+                <div className="text-2xl font-black font-mono text-white mt-2">
+                  {confMatrix.false_positives.toLocaleString()} <span className="text-xs font-normal text-[#94A3B8]">samples</span>
                 </div>
-                <p className="text-[11px] text-[#64748B] mt-1">
+                <p className="text-[11px] text-[#94A3B8] mt-1">
                   Genuine human voices flagged due to severe phone line codec noise or echo.
                 </p>
               </div>
 
               {/* False Negative: Clone Missed */}
-              <div className="rounded-2xl bg-[#F8F5EF] p-4 border border-amber-200">
+              <div className="rounded-2xl bg-[#15171C] p-4 border border-[#F59E0B]/30">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#D97706] flex items-center gap-1.5">
+                  <span className="font-bold text-[#F59E0B] flex items-center gap-1.5">
                     <AlertCircle className="h-4 w-4" />
                     Missed Synthetic Clone
                   </span>
-                  <span className="font-mono text-xs font-bold text-[#D97706]">13.0%</span>
+                  <span className="font-mono text-xs font-bold text-[#F59E0B]">13.0%</span>
                 </div>
-                <div className="text-2xl font-black font-mono text-[#1E293B] mt-2">
-                  {confMatrix.false_negatives.toLocaleString()} <span className="text-xs font-normal text-[#64748B]">samples</span>
+                <div className="text-2xl font-black font-mono text-white mt-2">
+                  {confMatrix.false_negatives.toLocaleString()} <span className="text-xs font-normal text-[#94A3B8]">samples</span>
                 </div>
-                <p className="text-[11px] text-[#64748B] mt-1">
+                <p className="text-[11px] text-[#94A3B8] mt-1">
                   Subtle clones that escaped neural detection (intercepted by acoustic physics layer).
                 </p>
               </div>
 
               {/* True Positive: Attack Intercepted */}
-              <div className="rounded-2xl bg-[#FFF1E8] p-4 border border-[#E7E2DA]">
+              <div className="rounded-2xl bg-[#15171C] p-4 border border-[#EF4444]/30">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#DC2626] flex items-center gap-1.5">
+                  <span className="font-bold text-[#EF4444] flex items-center gap-1.5">
                     <ShieldCheck className="h-4 w-4" />
                     True Clones Intercepted
                   </span>
-                  <span className="font-mono text-xs font-bold text-[#DC2626]">87.0%</span>
+                  <span className="font-mono text-xs font-bold text-[#EF4444]">87.0%</span>
                 </div>
-                <div className="text-2xl font-black font-mono text-[#DC2626] mt-2">
-                  {confMatrix.true_positives_synthetic.toLocaleString()} <span className="text-xs font-normal text-[#64748B]">samples</span>
+                <div className="text-2xl font-black font-mono text-[#EF4444] mt-2">
+                  {confMatrix.true_positives_synthetic.toLocaleString()} <span className="text-xs font-normal text-[#94A3B8]">samples</span>
                 </div>
-                <p className="text-[11px] text-[#64748B] mt-1">
+                <p className="text-[11px] text-[#94A3B8] mt-1">
                   ElevenLabs, XTTS, and diffusion deepfake clones caught in real-time.
                 </p>
               </div>
@@ -573,54 +573,54 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
           </div>
 
           {/* Industry Comparison Benchmark */}
-          <div className="rounded-3xl bg-white p-6 sm:p-7 border border-[#E7E2DA] shadow-xs flex flex-col justify-between">
+          <div className="rounded-3xl bg-[#1A1C23] p-6 sm:p-7 border border-[#2A2E37] shadow-xl flex flex-col justify-between">
             <div>
-              <h4 className="text-sm font-bold text-[#1E293B] uppercase tracking-wider mb-1">
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-1">
                 EER vs Industry Benchmarks
               </h4>
-              <p className="text-xs text-[#64748B] mb-5">
+              <p className="text-xs text-[#94A3B8] mb-5">
                 Comparing Equal Error Rate against commercial standards on unseen speakerphone speech.
               </p>
 
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-xs font-medium mb-1">
-                    <span className="text-[#15803D] font-bold flex items-center gap-1">
+                    <span className="text-[#10B981] font-bold flex items-center gap-1">
                       <span>VoxSentinalX (Dual-Engine)</span>
                     </span>
-                    <span className="font-mono font-bold text-[#15803D]">6.86% EER</span>
+                    <span className="font-mono font-bold text-[#10B981]">6.86% EER</span>
                   </div>
-                  <div className="w-full bg-[#F8F5EF] rounded-full h-2.5 overflow-hidden border border-[#E7E2DA]">
-                    <div className="bg-[#15803D] h-full rounded-full" style={{ width: '35%' }}></div>
+                  <div className="w-full bg-[#15171C] rounded-full h-2.5 overflow-hidden border border-[#2A2E37]">
+                    <div className="bg-[#10B981] h-full rounded-full" style={{ width: '35%' }}></div>
                   </div>
-                  <span className="text-[10px] text-[#64748B] mt-0.5 block">Best-in-class for real-time mobile/browser detection</span>
+                  <span className="text-[10px] text-[#94A3B8] mt-0.5 block">Best-in-class for real-time mobile/browser detection</span>
                 </div>
 
                 <div>
                   <div className="flex justify-between text-xs font-medium mb-1">
-                    <span className="text-[#64748B]">Typical Commercial Call Defense</span>
-                    <span className="font-mono text-[#64748B]">11.5% EER</span>
+                    <span className="text-[#94A3B8]">Typical Commercial Call Defense</span>
+                    <span className="font-mono text-[#F59E0B]">11.5% EER</span>
                   </div>
-                  <div className="w-full bg-[#F8F5EF] rounded-full h-2.5 overflow-hidden border border-[#E7E2DA]">
-                    <div className="bg-[#D97706] h-full rounded-full" style={{ width: '58%' }}></div>
+                  <div className="w-full bg-[#15171C] rounded-full h-2.5 overflow-hidden border border-[#2A2E37]">
+                    <div className="bg-[#F59E0B] h-full rounded-full" style={{ width: '58%' }}></div>
                   </div>
                   <span className="text-[10px] text-[#64748B] mt-0.5 block">Industry standard on compressed cellular calls</span>
                 </div>
 
                 <div>
                   <div className="flex justify-between text-xs font-medium mb-1">
-                    <span className="text-[#94A3B8]">Raw Uncalibrated LCNN Baseline</span>
-                    <span className="font-mono text-[#94A3B8]">14.2% EER</span>
+                    <span className="text-[#64748B]">Raw Uncalibrated LCNN Baseline</span>
+                    <span className="font-mono text-[#64748B]">14.2% EER</span>
                   </div>
-                  <div className="w-full bg-[#F8F5EF] rounded-full h-2.5 overflow-hidden border border-[#E7E2DA]">
-                    <div className="bg-[#94A3B8] h-full rounded-full" style={{ width: '71%' }}></div>
+                  <div className="w-full bg-[#15171C] rounded-full h-2.5 overflow-hidden border border-[#2A2E37]">
+                    <div className="bg-[#64748B] h-full rounded-full" style={{ width: '71%' }}></div>
                   </div>
-                  <span className="text-[10px] text-[#94A3B8] mt-0.5 block">Standard LCNN without BiLSTM Attention or physics fusion</span>
+                  <span className="text-[10px] text-[#64748B] mt-0.5 block">Standard LCNN without BiLSTM Attention or physics fusion</span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-[#ECE8E1] text-[11px] text-[#64748B]">
+            <div className="mt-6 pt-4 border-t border-[#252830] text-[11px] text-[#94A3B8]">
               💡 <em>Lower EER represents superior forensic separation between genuine biological human phonation and synthetic speech.</em>
             </div>
           </div>
@@ -628,111 +628,111 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
       </div>
 
       {/* 3. Inside the LCNN Engine Architecture Guide */}
-      <div className="rounded-3xl bg-white p-6 sm:p-8 border border-[#E7E2DA] shadow-xs">
+      <div className="rounded-3xl bg-[#1A1C23] p-6 sm:p-8 border border-[#2A2E37] shadow-xl">
         <div
           className="flex items-center justify-between cursor-pointer"
           onClick={() => setShowArchDetails(!showArchDetails)}
         >
           <div className="flex items-center space-x-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF1E8] text-[#C2410C]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#15171C] text-[#10B981] border border-[#2A2E37]">
               <Layers className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm sm:text-base font-bold text-[#1E293B] uppercase tracking-wider">
+              <h3 className="text-sm sm:text-base font-bold text-white uppercase tracking-wider">
                 Inside the LCNN Engine: How Light-CNN Detects Clones
               </h3>
-              <p className="text-xs text-[#64748B]">
+              <p className="text-xs text-[#94A3B8]">
                 Interactive walkthrough of the 4-stage neural pipeline designed for Smart India Hackathon #26104.
               </p>
             </div>
           </div>
-          <button className="p-2 rounded-lg text-[#64748B] hover:text-[#1E293B]">
+          <button className="p-2 rounded-lg text-[#94A3B8] hover:text-white">
             {showArchDetails ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
           </button>
         </div>
 
         {showArchDetails && (
-          <div className="mt-6 pt-6 border-t border-[#ECE8E1] space-y-6">
+          <div className="mt-6 pt-6 border-t border-[#252830] space-y-6">
             {/* 4 Steps Architecture Pipeline Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Step 1 */}
-              <div className="rounded-2xl bg-[#F8F5EF] p-5 border border-[#E7E2DA] flex flex-col justify-between">
+              <div className="rounded-2xl bg-[#15171C] p-5 border border-[#2A2E37] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold font-mono text-[#C2410C]">STAGE 01</span>
-                    <span className="text-[10px] font-mono text-[#64748B] bg-white px-2 py-0.5 rounded border border-[#E7E2DA]">16 kHz Audio</span>
+                    <span className="text-xs font-bold font-mono text-[#10B981]">STAGE 01</span>
+                    <span className="text-[10px] font-mono text-[#94A3B8] bg-[#1A1C23] px-2 py-0.5 rounded border border-[#2A2E37]">16 kHz Audio</span>
                   </div>
-                  <h5 className="text-sm font-bold text-[#1E293B] mb-2">Log-Mel Filterbank Extraction</h5>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
+                  <h5 className="text-sm font-bold text-white mb-2">Log-Mel Filterbank Extraction</h5>
+                  <p className="text-xs text-[#94A3B8] leading-relaxed">
                     Audio window (2.0s) is transformed into an <strong>80-channel Log-Mel Spectrogram</strong>. Captures both low-pitch glottal fundamentals and high-frequency vocoder distortions.
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-[#ECE8E1] text-[10px] font-mono text-[#94A3B8]">
+                <div className="mt-4 pt-3 border-t border-[#252830] text-[10px] font-mono text-[#64748B]">
                   Input: [Batch, 1, 80, Time]
                 </div>
               </div>
 
               {/* Step 2 */}
-              <div className="rounded-2xl bg-[#F8F5EF] p-5 border border-[#E7E2DA] flex flex-col justify-between">
+              <div className="rounded-2xl bg-[#15171C] p-5 border border-[#2A2E37] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold font-mono text-[#C2410C]">STAGE 02</span>
-                    <span className="text-[10px] font-mono text-[#64748B] bg-white px-2 py-0.5 rounded border border-[#E7E2DA]">MFM Activation</span>
+                    <span className="text-xs font-bold font-mono text-[#10B981]">STAGE 02</span>
+                    <span className="text-[10px] font-mono text-[#94A3B8] bg-[#1A1C23] px-2 py-0.5 rounded border border-[#2A2E37]">MFM Activation</span>
                   </div>
-                  <h5 className="text-sm font-bold text-[#1E293B] mb-2">Max-Feature-Map (MFM) Conv Blocks</h5>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
+                  <h5 className="text-sm font-bold text-white mb-2">Max-Feature-Map (MFM) Conv Blocks</h5>
+                  <p className="text-xs text-[#94A3B8] leading-relaxed">
                     Replaces standard ReLU with <strong>Max-Feature-Map activation</strong>: h_i = max(x_2i-1, x_2i). Acts as a competitive filter that suppresses random noise and isolates synthetic vocoder glitches.
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-[#ECE8E1] text-[10px] font-mono text-[#94A3B8]">
+                <div className="mt-4 pt-3 border-t border-[#252830] text-[10px] font-mono text-[#64748B]">
                   5 Convolutional MFM Layers
                 </div>
               </div>
 
               {/* Step 3 */}
-              <div className="rounded-2xl bg-[#F8F5EF] p-5 border border-[#E7E2DA] flex flex-col justify-between">
+              <div className="rounded-2xl bg-[#15171C] p-5 border border-[#2A2E37] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold font-mono text-[#C2410C]">STAGE 03</span>
-                    <span className="text-[10px] font-mono text-[#64748B] bg-white px-2 py-0.5 rounded border border-[#E7E2DA]">Temporal Flow</span>
+                    <span className="text-xs font-bold font-mono text-[#10B981]">STAGE 03</span>
+                    <span className="text-[10px] font-mono text-[#94A3B8] bg-[#1A1C23] px-2 py-0.5 rounded border border-[#2A2E37]">Temporal Flow</span>
                   </div>
-                  <h5 className="text-sm font-bold text-[#1E293B] mb-2">Bidirectional LSTM Cadence</h5>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
+                  <h5 className="text-sm font-bold text-white mb-2">Bidirectional LSTM Cadence</h5>
+                  <p className="text-xs text-[#94A3B8] leading-relaxed">
                     Evaluates voice cadence in both forward and backward time directions. Exposes <strong>unnatural prosodic rhythm</strong>, robotic syllable timing, and unnatural breathing gaps in AI clones.
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-[#ECE8E1] text-[10px] font-mono text-[#94A3B8]">
+                <div className="mt-4 pt-3 border-t border-[#252830] text-[10px] font-mono text-[#64748B]">
                   Hidden Dim: 128 (Bi-directional)
                 </div>
               </div>
 
               {/* Step 4 */}
-              <div className="rounded-2xl bg-[#F8F5EF] p-5 border border-[#E7E2DA] flex flex-col justify-between">
+              <div className="rounded-2xl bg-[#15171C] p-5 border border-[#2A2E37] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold font-mono text-[#15803D]">STAGE 04</span>
-                    <span className="text-[10px] font-mono text-[#15803D] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Final Verdict</span>
+                    <span className="text-xs font-bold font-mono text-[#10B981]">STAGE 04</span>
+                    <span className="text-[10px] font-mono text-[#10B981] bg-[#10B981]/15 px-2 py-0.5 rounded border border-[#10B981]/30">Final Verdict</span>
                   </div>
-                  <h5 className="text-sm font-bold text-[#1E293B] mb-2">Self-Attention & Focal Loss</h5>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
+                  <h5 className="text-sm font-bold text-white mb-2">Self-Attention & Focal Loss</h5>
+                  <p className="text-xs text-[#94A3B8] leading-relaxed">
                     <strong>Multi-Head Self-Attention</strong> focuses on the critical phoneme transitions where voice synthesis models struggle, outputting a calibrated 0-100% deepfake impersonation score.
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-[#ECE8E1] text-[10px] font-mono text-[#15803D]">
+                <div className="mt-4 pt-3 border-t border-[#252830] text-[10px] font-mono text-[#10B981]">
                   Dual Class: Bona Fide vs Clone
                 </div>
               </div>
             </div>
 
             {/* Why Dual-Engine Callout */}
-            <div className="rounded-2xl bg-[#FFF1E8] p-5 border border-[#E7E2DA] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="rounded-2xl bg-[#15171C] p-5 border border-[#2A2E37] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-start space-x-3">
-                <ShieldCheck className="h-6 w-6 text-[#C2410C] shrink-0 mt-0.5" />
+                <ShieldCheck className="h-6 w-6 text-[#10B981] shrink-0 mt-0.5" />
                 <div>
-                  <h5 className="text-xs sm:text-sm font-bold text-[#1E293B]">
+                  <h5 className="text-xs sm:text-sm font-bold text-white">
                     Why Defense-in-Depth? (Acoustic Physics + Deep Neural LCNN)
                   </h5>
-                  <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">
+                  <p className="text-xs text-[#94A3B8] mt-0.5 leading-relaxed">
                     Neural models can sometimes be fooled by clever studio post-processing; physical acoustics detectors can struggle with noisy phone lines. By combining both with <strong>Exponential Moving Average (EMA) Fusion</strong>, VoxSentinalX guarantees that if an attacker circumvents one engine, the other triggers the emergency countermeasure.
                   </p>
                 </div>
@@ -743,18 +743,18 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
       </div>
 
       {/* 4. Model Playground (Test-Drive the LCNN) */}
-      <div id="playground" className="rounded-3xl bg-white p-6 sm:p-8 border border-[#E7E2DA] shadow-xs scroll-mt-24">
+      <div id="playground" className="rounded-3xl bg-[#1A1C23] p-6 sm:p-8 border border-[#2A2E37] shadow-xl scroll-mt-24">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
-            <h3 className="text-base sm:text-lg font-bold text-[#1E293B] flex items-center space-x-2">
-              <Zap className="h-5 w-5 text-[#C2410C]" />
+            <h3 className="text-base sm:text-lg font-bold text-white flex items-center space-x-2">
+              <Zap className="h-5 w-5 text-[#10B981]" />
               <span>Interactive LCNN Inference Playground (Test-Drive)</span>
             </h3>
-            <p className="text-xs text-[#64748B] mt-0.5">
+            <p className="text-xs text-[#94A3B8] mt-0.5">
               Click any benchmark sample or upload your own audio clip to observe real-time Light-CNN classification.
             </p>
           </div>
-          <span className="text-xs font-mono px-3 py-1 rounded-xl bg-[#FFF1E8] text-[#C2410C] border border-[#E7E2DA] font-semibold self-start sm:self-auto">
+          <span className="text-xs font-mono px-3 py-1 rounded-xl bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/30 font-semibold self-start sm:self-auto">
             Live Checkpoint Active
           </span>
         </div>
@@ -770,23 +770,23 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
                 disabled={playgroundTesting}
                 className={`p-4 rounded-2xl border text-left transition-all ${
                   isSelected
-                    ? 'border-[#C2410C] bg-[#FFF1E8]/60 shadow-xs'
-                    : 'border-[#E7E2DA] bg-[#F8F5EF] hover:border-[#C2410C]/40 hover:bg-white'
+                    ? 'border-[#10B981] bg-[#10B981]/10 shadow-lg shadow-[#10B981]/15'
+                    : 'border-[#2A2E37] bg-[#15171C] hover:border-[#374151] hover:bg-[#1A1C23]'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                     sample.type === 'genuine'
-                      ? 'bg-emerald-50 text-[#15803D] border-emerald-200'
-                      : 'bg-red-50 text-[#DC2626] border-red-200'
+                      ? 'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30'
+                      : 'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30'
                   }`}>
                     {sample.type === 'genuine' ? 'GENUINE PHONATION' : 'SYNTHETIC CLONE'}
                   </span>
-                  <span className="text-[10px] font-mono text-[#64748B]">{sample.language}</span>
+                  <span className="text-[10px] font-mono text-[#94A3B8]">{sample.language}</span>
                 </div>
-                <h5 className="text-xs font-bold text-[#1E293B] mb-1 leading-snug">{sample.name}</h5>
-                <p className="text-[11px] text-[#64748B] line-clamp-2">{sample.description}</p>
-                <div className="mt-3 flex items-center justify-between text-[11px] text-[#C2410C] font-semibold">
+                <h5 className="text-xs font-bold text-white mb-1 leading-snug">{sample.name}</h5>
+                <p className="text-[11px] text-[#94A3B8] line-clamp-2">{sample.description}</p>
+                <div className="mt-3 flex items-center justify-between text-[11px] text-[#10B981] font-semibold">
                   <span>Run LCNN Inference</span>
                   <ArrowRight className="h-3 w-3" />
                 </div>
@@ -796,13 +796,13 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
         </div>
 
         {/* Or Upload Custom Audio */}
-        <div className="rounded-2xl border border-dashed border-[#E7E2DA] bg-[#FDFBF7] p-5 text-center mb-6">
+        <div className="rounded-2xl border border-dashed border-[#2A2E37] bg-[#15171C] p-5 text-center mb-6">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Upload className="h-5 w-5 text-[#C2410C]" />
-            <span className="text-xs font-semibold text-[#1E293B]">
+            <Upload className="h-5 w-5 text-[#10B981]" />
+            <span className="text-xs font-semibold text-white">
               Want to test custom audio? Drop or select any WAV, MP3, or M4A recording:
             </span>
-            <label className="cursor-pointer px-4 py-1.5 rounded-xl bg-white hover:bg-[#FFF1E8] border border-[#E7E2DA] text-xs font-bold text-[#C2410C] transition-all shadow-xs">
+            <label className="cursor-pointer px-4 py-1.5 rounded-xl bg-[#1A1C23] hover:bg-[#10B981]/10 border border-[#2A2E37] text-xs font-bold text-[#10B981] transition-all shadow-xs">
               <span>Choose Audio File</span>
               <input
                 type="file"
@@ -812,7 +812,7 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
               />
             </label>
             {uploadedFile && (
-              <span className="text-xs font-mono text-[#15803D] font-bold">
+              <span className="text-xs font-mono text-[#10B981] font-bold">
                 ✓ {uploadedFile.name}
               </span>
             )}
@@ -821,51 +821,51 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
 
         {/* Playground Result Card */}
         {playgroundTesting && (
-          <div className="rounded-2xl bg-[#F8F5EF] p-6 border border-[#E7E2DA] text-center space-y-3">
-            <RefreshCw className="h-6 w-6 animate-spin text-[#C2410C] mx-auto" />
-            <p className="text-xs font-bold text-[#1E293B]">Processing 80-bin Log-Mel Spectrogram through LCNN-BiLSTM...</p>
-            <p className="text-[11px] text-[#64748B]">Calculating multi-head attention weights and MFM feature competition.</p>
+          <div className="rounded-2xl bg-[#15171C] p-6 border border-[#2A2E37] text-center space-y-3">
+            <RefreshCw className="h-6 w-6 animate-spin text-[#10B981] mx-auto" />
+            <p className="text-xs font-bold text-white">Processing 80-bin Log-Mel Spectrogram through LCNN-BiLSTM...</p>
+            <p className="text-[11px] text-[#94A3B8]">Calculating multi-head attention weights and MFM feature competition.</p>
           </div>
         )}
 
         {playgroundResult && !playgroundTesting && (
           <div className={`rounded-2xl p-6 border transition-all ${
             playgroundResult.score >= 0.50
-              ? 'bg-red-50/70 border-red-200'
-              : 'bg-emerald-50/70 border-emerald-200'
+              ? 'bg-[#EF4444]/15 border-[#EF4444]/40'
+              : 'bg-[#10B981]/15 border-[#10B981]/40'
           }`}>
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <span className={`text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
                     playgroundResult.score >= 0.50
-                      ? 'bg-red-100 text-[#DC2626] border-red-300'
-                      : 'bg-emerald-100 text-[#15803D] border-emerald-300'
+                      ? 'bg-[#EF4444]/20 text-[#EF4444] border-[#EF4444]/40'
+                      : 'bg-[#10B981]/20 text-[#10B981] border-[#10B981]/40'
                   }`}>
                     {playgroundResult.verdict === 'SYNTHETIC_VOICE_CLONE' ? '⚠️ SYNTHETIC VOICE CLONE DETECTED' : '✅ GENUINE BIOLOGICAL SPEECH'}
                   </span>
-                  <span className="text-xs font-mono text-[#64748B]">
+                  <span className="text-xs font-mono text-[#94A3B8]">
                     {playgroundResult.architecture}
                   </span>
                 </div>
 
-                <h4 className="text-xl font-bold text-[#1E293B]">
+                <h4 className="text-xl font-bold text-white">
                   Test Sample: {playgroundResult.name}
                 </h4>
 
-                <p className="text-xs text-[#64748B]">
+                <p className="text-xs text-[#94A3B8]">
                   {playgroundResult.melSpectrogramStatus}
                 </p>
 
                 {/* Detected Features Bullet Points */}
                 <div className="pt-2">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#1E293B] block mb-1">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-white block mb-1">
                     Neural Forensic Observations:
                   </span>
                   <ul className="space-y-1">
                     {playgroundResult.detectedFeatures.map((feat: string, i: number) => (
-                      <li key={i} className="text-xs flex items-start space-x-2 text-[#1E293B]">
-                        <span className={`font-bold ${playgroundResult.score >= 0.5 ? 'text-[#DC2626]' : 'text-[#15803D]'}`}>•</span>
+                      <li key={i} className="text-xs flex items-start space-x-2 text-[#E2E8F0]">
+                        <span className={`font-bold ${playgroundResult.score >= 0.5 ? 'text-[#EF4444]' : 'text-[#10B981]'}`}>•</span>
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -874,22 +874,22 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
               </div>
 
               {/* Score Gauge Badge */}
-              <div className="p-5 rounded-2xl bg-white border border-[#E7E2DA] shadow-xs text-center shrink-0 min-w-[200px]">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
+              <div className="p-5 rounded-2xl bg-[#15171C] border border-[#2A2E37] shadow-xl text-center shrink-0 min-w-[200px]">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] block">
                   LCNN Impersonation Score
                 </span>
                 <div className={`text-4xl font-black font-mono mt-1 ${
-                  playgroundResult.score >= 0.5 ? 'text-[#DC2626]' : 'text-[#15803D]'
+                  playgroundResult.score >= 0.5 ? 'text-[#EF4444]' : 'text-[#10B981]'
                 }`}>
                   {Math.round(playgroundResult.score * 100)}%
                 </div>
-                <div className="mt-2 text-[10px] font-mono font-semibold text-[#64748B]">
+                <div className="mt-2 text-[10px] font-mono font-semibold text-[#94A3B8]">
                   Confidence: {Math.round(playgroundResult.confidence * 100)}%
                 </div>
-                <div className="w-full bg-[#F8F5EF] rounded-full h-2 mt-2 overflow-hidden border border-[#ECE8E1]">
+                <div className="w-full bg-[#1A1C23] rounded-full h-2 mt-2 overflow-hidden border border-[#252830]">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
-                      playgroundResult.score >= 0.5 ? 'bg-[#DC2626]' : 'bg-[#15803D]'
+                      playgroundResult.score >= 0.5 ? 'bg-[#EF4444]' : 'bg-[#10B981]'
                     }`}
                     style={{ width: `${Math.round(playgroundResult.score * 100)}%` }}
                   ></div>
@@ -901,20 +901,20 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
       </div>
 
       {/* 5. Intuitive Training & Fine-Tuning Studio */}
-      <div className="rounded-3xl bg-white p-6 sm:p-8 border border-[#E7E2DA] shadow-xs space-y-6">
+      <div className="rounded-3xl bg-[#1A1C23] p-6 sm:p-8 border border-[#2A2E37] shadow-xl space-y-6">
         <div>
-          <h3 className="text-base sm:text-lg font-bold text-[#1E293B] flex items-center space-x-2">
-            <Sliders className="h-5 w-5 text-[#C2410C]" />
+          <h3 className="text-base sm:text-lg font-bold text-white flex items-center space-x-2">
+            <Sliders className="h-5 w-5 text-[#10B981]" />
             <span>LCNN Model Retraining & Fine-Tuning Studio</span>
           </h3>
-          <p className="text-xs text-[#64748B] mt-0.5">
+          <p className="text-xs text-[#94A3B8] mt-0.5">
             Fine-tune the neural checkpoint on local voice data using Focal Loss, AdamW, and Cosine Annealing.
           </p>
         </div>
 
         {/* Preset Selector */}
         <div>
-          <label className="text-xs font-bold text-[#1E293B] block mb-2">
+          <label className="text-xs font-bold text-white block mb-2">
             Select Training Run Profile:
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
@@ -922,42 +922,42 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
               onClick={() => handlePresetSelect('quick')}
               className={`p-3.5 rounded-xl border text-left transition-all ${
                 trainingPreset === 'quick'
-                  ? 'border-[#C2410C] bg-[#FFF1E8] text-[#C2410C]'
-                  : 'border-[#E7E2DA] bg-[#F8F5EF] hover:bg-white text-[#1E293B]'
+                  ? 'border-[#10B981] bg-[#10B981]/10 text-[#10B981]'
+                  : 'border-[#2A2E37] bg-[#15171C] hover:bg-[#1A1C23] text-white'
               }`}
             >
               <div className="font-bold text-xs">⚡ Quick Demo Test</div>
-              <div className="text-[10px] text-[#64748B] mt-0.5">3 Epochs (~10s)</div>
+              <div className="text-[10px] text-[#94A3B8] mt-0.5">3 Epochs (~10s)</div>
             </button>
 
             <button
               onClick={() => handlePresetSelect('standard')}
               className={`p-3.5 rounded-xl border text-left transition-all ${
                 trainingPreset === 'standard'
-                  ? 'border-[#C2410C] bg-[#FFF1E8] text-[#C2410C]'
-                  : 'border-[#E7E2DA] bg-[#F8F5EF] hover:bg-white text-[#1E293B]'
+                  ? 'border-[#10B981] bg-[#10B981]/10 text-[#10B981]'
+                  : 'border-[#2A2E37] bg-[#15171C] hover:bg-[#1A1C23] text-white'
               }`}
             >
               <div className="font-bold text-xs">🎯 Balanced Fine-Tuning</div>
-              <div className="text-[10px] text-[#64748B] mt-0.5">10 Epochs (~30s)</div>
+              <div className="text-[10px] text-[#94A3B8] mt-0.5">10 Epochs (~30s)</div>
             </button>
 
             <button
               onClick={() => handlePresetSelect('deep')}
               className={`p-3.5 rounded-xl border text-left transition-all ${
                 trainingPreset === 'deep'
-                  ? 'border-[#C2410C] bg-[#FFF1E8] text-[#C2410C]'
-                  : 'border-[#E7E2DA] bg-[#F8F5EF] hover:bg-white text-[#1E293B]'
+                  ? 'border-[#10B981] bg-[#10B981]/10 text-[#10B981]'
+                  : 'border-[#2A2E37] bg-[#15171C] hover:bg-[#1A1C23] text-white'
               }`}
             >
               <div className="font-bold text-xs">🔬 Deep Convergence</div>
-              <div className="text-[10px] text-[#64748B] mt-0.5">25 Epochs (~60s)</div>
+              <div className="text-[10px] text-[#94A3B8] mt-0.5">25 Epochs (~60s)</div>
             </button>
 
-            <div className="p-3.5 rounded-xl border border-[#E7E2DA] bg-[#F8F5EF] flex items-center justify-between">
+            <div className="p-3.5 rounded-xl border border-[#2A2E37] bg-[#15171C] flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-[#1E293B] block">Custom:</span>
-                <span className="text-[10px] text-[#64748B]">Epoch count</span>
+                <span className="text-xs font-bold text-white block">Custom:</span>
+                <span className="text-[10px] text-[#94A3B8]">Epoch count</span>
               </div>
               <input
                 type="number"
@@ -968,7 +968,7 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
                   setEpochs(parseInt(e.target.value) || 10);
                   setTrainingPreset('custom');
                 }}
-                className="w-16 rounded-lg bg-white border border-[#E7E2DA] px-2.5 py-1 text-xs font-mono font-bold text-[#1E293B] text-center focus:border-[#C2410C] focus:outline-none"
+                className="w-16 rounded-lg bg-[#1A1C23] border border-[#2A2E37] px-2.5 py-1 text-xs font-mono font-bold text-white text-center focus:border-[#10B981] focus:outline-none"
               />
             </div>
           </div>
@@ -979,7 +979,7 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
           <button
             onClick={handleGenerateCorpus}
             disabled={generating || training}
-            className="w-full sm:w-auto flex items-center justify-center space-x-2 rounded-xl bg-[#F8F5EF] hover:bg-[#FFF1E8] disabled:opacity-50 py-3 px-5 text-xs font-bold text-[#C2410C] border border-[#E7E2DA] transition-all shadow-xs"
+            className="w-full sm:w-auto flex items-center justify-center space-x-2 rounded-xl bg-[#15171C] hover:bg-[#1A1C23] disabled:opacity-50 py-3 px-5 text-xs font-bold text-[#10B981] border border-[#2A2E37] transition-all shadow-xs"
           >
             <Sparkles className={`h-4 w-4 ${generating ? 'animate-spin' : ''}`} />
             <span>{generating ? 'Generating Data...' : 'Generate Synthetic Samples'}</span>
@@ -988,7 +988,7 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
           <button
             onClick={handleStartTraining}
             disabled={training || generating}
-            className="w-full sm:flex-1 flex items-center justify-center space-x-2 rounded-xl bg-[#15803D] hover:bg-emerald-700 disabled:opacity-50 py-3 px-6 text-xs font-bold text-white shadow-md shadow-[#15803D]/20 transition-all"
+            className="w-full sm:flex-1 flex items-center justify-center space-x-2 rounded-xl bg-[#10B981] hover:bg-[#059669] disabled:opacity-50 py-3 px-6 text-xs font-bold text-[#0D0E11] shadow-lg shadow-[#10B981]/25 transition-all"
           >
             <Play className={`h-4 w-4 fill-current ${training ? 'animate-spin' : ''}`} />
             <span>{training ? `Training LCNN (Epoch ${currentEpoch}/${epochs})...` : `Start LCNN Training Run (${epochs} Epochs)`}</span>
@@ -997,27 +997,27 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
 
         {/* Progress Stepper & Terminal Log */}
         {(training || trainingLogs.length > 0) && (
-          <div className="rounded-2xl bg-[#F8F5EF] p-5 border border-[#E7E2DA] space-y-4">
+          <div className="rounded-2xl bg-[#15171C] p-5 border border-[#2A2E37] space-y-4">
             <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-[#1E293B] flex items-center gap-2">
-                <Terminal className="h-4 w-4 text-[#C2410C]" />
+              <span className="text-white flex items-center gap-2">
+                <Terminal className="h-4 w-4 text-[#10B981]" />
                 Training Execution Stepper & Terminal Stream
               </span>
-              <span className="font-mono text-[#C2410C] font-bold">
+              <span className="font-mono text-[#10B981] font-bold">
                 {training ? `Running: ${trainingProgress}%` : 'Execution Completed'}
               </span>
             </div>
 
             {/* Progress bar */}
-            <div className="w-full bg-white rounded-full h-2.5 overflow-hidden border border-[#ECE8E1]">
+            <div className="w-full bg-[#1A1C23] rounded-full h-2.5 overflow-hidden border border-[#252830]">
               <div
-                className="bg-gradient-to-r from-[#C2410C] to-emerald-600 h-full rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-[#10B981] to-emerald-400 h-full rounded-full transition-all duration-300"
                 style={{ width: `${trainingProgress}%` }}
               ></div>
             </div>
 
             {/* Console Log Window */}
-            <div className="rounded-xl bg-[#1E293B] p-4 text-[11px] font-mono text-emerald-400 space-y-1 max-h-48 overflow-y-auto border border-[#E7E2DA]">
+            <div className="rounded-xl bg-[#0D0E11] p-4 text-[11px] font-mono text-[#10B981] space-y-1 max-h-48 overflow-y-auto border border-[#2A2E37]">
               {trainingLogs.map((log, idx) => (
                 <div key={idx} className="leading-relaxed">
                   {log}
@@ -1029,20 +1029,20 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
       </div>
 
       {/* 6. Multi-Corpus & Indic Benchmark Explorer */}
-      <div className="rounded-3xl bg-white p-6 sm:p-8 border border-[#E7E2DA] shadow-xs">
+      <div className="rounded-3xl bg-[#1A1C23] p-6 sm:p-8 border border-[#2A2E37] shadow-xl">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2.5">
-            <Database className="h-5 w-5 text-[#C2410C]" />
+            <Database className="h-5 w-5 text-[#10B981]" />
             <div>
-              <h3 className="text-base font-bold text-[#1E293B] uppercase tracking-wider">
+              <h3 className="text-base font-bold text-white uppercase tracking-wider">
                 Multi-Corpus & Indic anti-Spoofing Benchmark Repositories
               </h3>
-              <p className="text-xs text-[#64748B]">
+              <p className="text-xs text-[#94A3B8]">
                 Organized to fulfill SIH 26104 multi-dialect voice cloning defense specifications.
               </p>
             </div>
           </div>
-          <span className="hidden sm:inline-block text-xs font-mono font-bold text-[#15803D] bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+          <span className="hidden sm:inline-block text-xs font-mono font-bold text-[#10B981] bg-[#10B981]/10 px-2.5 py-1 rounded-lg border border-[#10B981]/30">
             5,497 Samples Unified
           </span>
         </div>
@@ -1051,20 +1051,20 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
           {Object.entries(datasets).map(([key, item]) => (
             <div
               key={key}
-              className="rounded-2xl bg-[#F8F5EF] p-5 border border-[#E7E2DA] hover:border-[#C2410C]/40 transition-all flex flex-col justify-between"
+              className="rounded-2xl bg-[#15171C] p-5 border border-[#2A2E37] hover:border-[#374151] transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-bold text-[#1E293B]">{item.name}</span>
+                  <span className="text-xs font-bold text-white">{item.name}</span>
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded border shrink-0 ${
                     item.installed
-                      ? 'bg-emerald-50 text-[#15803D] border-emerald-200'
-                      : 'bg-white text-[#64748B] border-[#E7E2DA]'
+                      ? 'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30'
+                      : 'bg-[#1A1C23] text-[#94A3B8] border-[#2A2E37]'
                   }`}>
                     {item.installed ? 'VERIFIED ACTIVE' : 'AVAILABLE'}
                   </span>
                 </div>
-                <p className="text-xs text-[#64748B] mt-2.5 leading-relaxed">
+                <p className="text-xs text-[#94A3B8] mt-2.5 leading-relaxed">
                   {item.description}
                 </p>
 
@@ -1072,33 +1072,33 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
                 <div className="flex flex-wrap gap-1.5 mt-3">
                   {key === 'indic_synth' && (
                     <>
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-white text-[#1E293B] border border-[#E7E2DA]">Hindi</span>
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-white text-[#1E293B] border border-[#E7E2DA]">Tamil</span>
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-white text-[#1E293B] border border-[#E7E2DA]">Telugu</span>
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-white text-[#1E293B] border border-[#E7E2DA]">Bengali</span>
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-white text-[#1E293B] border border-[#E7E2DA]">Marathi</span>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#1A1C23] text-[#E2E8F0] border border-[#252830]">Hindi</span>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#1A1C23] text-[#E2E8F0] border border-[#252830]">Tamil</span>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#1A1C23] text-[#E2E8F0] border border-[#252830]">Telugu</span>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#1A1C23] text-[#E2E8F0] border border-[#252830]">Bengali</span>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#1A1C23] text-[#E2E8F0] border border-[#252830]">Marathi</span>
                     </>
                   )}
                   {key === 'unified_corpus' && (
                     <>
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#FFF1E8] text-[#C2410C] border border-[#E7E2DA]">ElevenLabs</span>
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#FFF1E8] text-[#C2410C] border border-[#E7E2DA]">XTTS</span>
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#FFF1E8] text-[#C2410C] border border-[#E7E2DA]">VALL-E</span>
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#FFF1E8] text-[#C2410C] border border-[#E7E2DA]">VoiceBox</span>
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#FFF1E8] text-[#C2410C] border border-[#E7E2DA]">FlashSpeech</span>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20">ElevenLabs</span>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20">XTTS</span>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20">VALL-E</span>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20">VoiceBox</span>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20">FlashSpeech</span>
                     </>
                   )}
                 </div>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-[#ECE8E1] flex items-center justify-between text-[11px] font-mono">
-                <span className="text-[#94A3B8]">Format: {item.type}</span>
+              <div className="mt-5 pt-3 border-t border-[#252830] flex items-center justify-between text-[11px] font-mono">
+                <span className="text-[#64748B]">Format: {item.type}</span>
                 {item.url && (
                   <a
                     href={item.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[#C2410C] hover:underline font-semibold flex items-center gap-1"
+                    className="text-[#10B981] hover:underline font-semibold flex items-center gap-1"
                   >
                     <span>View Benchmark</span>
                     <ArrowRight className="h-3 w-3" />
