@@ -13,7 +13,7 @@ class AudioDeepfakeDataset(Dataset):
     """
     PyTorch Dataset for Real vs Deepfake Audio classification.
     Supports:
-    - Multi-generator datasets (e.g., K:\\dataSet\\archive with real_samples, OpenAI, xTTS, VALL-E, VoiceBox, etc.)
+    - Multi-generator datasets (e.g., data/unified_corpus with real_samples, OpenAI, xTTS, VALL-E, VoiceBox, etc.)
     - Standard real/fake folder structures
     - Precomputed Mel filterbank for maximum throughput
     - SpecAugment (Time & Frequency masking)

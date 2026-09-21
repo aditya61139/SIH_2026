@@ -95,7 +95,10 @@ def train_model(
     valid_paths = [p for p in paths if os.path.exists(p)]
 
     if not valid_paths:
-        alt_dirs = ["data/unified_corpus", r"K:\dataSet\archive", "data/synthetic_corpus"]
+        alt_dirs = [
+            os.path.abspath(os.path.join(root_dir, "data", "unified_corpus")),
+            os.path.abspath(os.path.join(root_dir, "data", "synthetic_corpus")),
+        ]
         for candidate in alt_dirs:
             if os.path.exists(candidate):
                 data_dir = candidate

@@ -56,10 +56,10 @@ DATASET_CONFIGS = {
         "repo_id": "HaninZ/SpoofDetection_ASVspoof2017_TTS",
         "type": "huggingface_parquet",
     },
-    "local_archive": {
-        "name": "Local High-Capacity Deepfake Archive (K:\\dataSet\\archive)",
-        "description": "4,447 real and deepfake samples (OpenAI, VALL-E, VoiceBox, XTTS, Seed-TTS, FlashSpeech, NaturalSpeech3).",
-        "local_path": r"K:\dataSet\archive",
+    "synthetic_corpus": {
+        "name": "Local High-Capacity Adversarial Archive",
+        "description": "Adversarial benchmark samples (OpenAI, VALL-E, VoiceBox, XTTS, Seed-TTS, FlashSpeech, NaturalSpeech3).",
+        "local_path": os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "synthetic_corpus")),
         "type": "local_directory",
     }
 }

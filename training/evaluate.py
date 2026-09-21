@@ -21,7 +21,7 @@ from training.dataset import AudioDeepfakeDataset
 
 def evaluate_model(
     model_path: str = "backend/app/models/pretrained_weights.pt",
-    data_dir: str = r"K:\dataSet\archive",
+    data_dir: str = "data/unified_corpus",
 ) -> Dict[str, Any]:
     """Runs evaluation benchmark on test data with per-generator breakdown."""
     if not os.path.exists(model_path):
@@ -133,7 +133,7 @@ def evaluate_model(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Evaluate VoxSentinalX Deepfake Model")
     parser.add_argument("--model_path", type=str, default="backend/app/models/pretrained_weights.pt")
-    parser.add_argument("--data_dir", type=str, default=r"K:\dataSet\archive")
+    parser.add_argument("--data_dir", type=str, default="data/unified_corpus")
     args = parser.parse_args()
 
     metrics = evaluate_model(model_path=args.model_path, data_dir=args.data_dir)

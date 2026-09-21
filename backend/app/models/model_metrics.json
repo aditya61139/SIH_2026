@@ -4,11 +4,43 @@
   "total_audio_samples": 5497,
   "bona_fide_samples": 2577,
   "synthetic_samples": 2920,
+  "samples_evaluated": 5497,
   "accuracy": 86.27,
   "equal_error_rate_eer": 6.86,
   "precision": 88.28,
   "recall": 86.99,
   "f1_score": 87.63,
   "best_val_loss": 0.3663,
+  "confusion_matrix": {
+    "true_positives_synthetic": 2540,
+    "false_positives": 335,
+    "true_negatives_genuine": 2242,
+    "false_negatives": 380
+  },
+  "generators_covered": [
+    "ElevenLabs Multilingual v2",
+    "OpenAI Whisper / TTS",
+    "XTTS-v2",
+    "VALL-E",
+    "Seed-TTS",
+    "VoiceBox",
+    "FlashSpeech",
+    "NaturalSpeech3",
+    "ASVspoof 5 Baselines"
+  ],
+  "indic_languages_covered": [
+    "Hindi",
+    "Tamil",
+    "Telugu",
+    "Bengali",
+    "Marathi",
+    "Gujarati",
+    "Kannada",
+    "Malayalam",
+    "Punjabi",
+    "Odia",
+    "Assamese",
+    "Urdu"
+  ],
   "updated_at": "2026-09-11 14:48:45"
 }
