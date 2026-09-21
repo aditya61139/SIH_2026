@@ -7,7 +7,6 @@ interface CalibrationModalProps {
   onClose: () => void;
   captureEngine: VoxSentinalAudioCapture;
   apiBaseUrl?: string;
-  theme?: 'dark' | 'light';
 }
 
 interface CalibProfile {
@@ -21,7 +20,6 @@ export const CalibrationModal: React.FC<CalibrationModalProps> = ({
   onClose,
   captureEngine,
   apiBaseUrl = 'http://localhost:8000',
-  theme = 'light',
 }) => {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -33,7 +31,6 @@ export const CalibrationModal: React.FC<CalibrationModalProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const timerRef = useRef<any>(null);
-  const isDark = theme === 'dark';
 
   // Cleanup timer and recording on unmount / modal close
   useEffect(() => {
@@ -135,15 +132,11 @@ export const CalibrationModal: React.FC<CalibrationModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in">
-      <div className={`relative w-full max-w-lg rounded-2xl border p-6 shadow-xl transition-all ${
-        isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-white border-[#E7E2DA] text-[#1E293B]'
-      }`}>
+      <div className="relative w-full max-w-lg rounded-2xl border p-6 shadow-xl transition-all bg-white border-[#E7E2DA] text-[#1E293B]">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className={`absolute top-4 right-4 p-1.5 rounded-lg transition-colors ${
-            isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-[#64748B] hover:text-[#1E293B] hover:bg-[#F8F5EF]'
-          }`}
+          className="absolute top-4 right-4 p-1.5 rounded-lg transition-colors text-[#64748B] hover:text-[#1E293B] hover:bg-[#F8F5EF]"
           title="Close Modal"
         >
           <X className="h-5 w-5" />
@@ -151,44 +144,34 @@ export const CalibrationModal: React.FC<CalibrationModalProps> = ({
 
         {/* Modal Header */}
         <div className="flex items-center space-x-3">
-          <div className={`flex h-11 w-11 items-center justify-center rounded-xl border ${
-            isDark ? 'bg-orange-500/10 border-orange-500/20 text-orange-400' : 'bg-[#FFF1E8] border-[#E7E2DA] text-[#C2410C]'
-          }`}>
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border bg-[#FFF1E8] border-[#E7E2DA] text-[#C2410C]">
             <Mic className="h-6 w-6" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-[#1E293B]'}`}>
+              <h3 className="text-base font-bold text-[#1E293B]">
                 Speaker Separation Calibration
               </h3>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                isDark ? 'bg-orange-500/10 text-orange-300 border-orange-500/30' : 'bg-[#FFF1E8] text-[#C2410C] border-[#E7E2DA]'
-              }`}>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-[#FFF1E8] text-[#C2410C] border-[#E7E2DA]">
                 Near-Field Isolation
               </span>
             </div>
-            <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-[#64748B]'}`}>
+            <p className="text-xs text-[#64748B]">
               Record your voice to isolate local mic speech and focus detection solely on caller audio.
             </p>
           </div>
         </div>
 
         {/* Guided Calibration Prompt */}
-        <div className={`mt-5 rounded-xl p-4 border text-xs ${
-          isDark ? 'bg-slate-900/90 border-slate-800 text-slate-300' : 'bg-[#F8F5EF] border-[#E7E2DA] text-[#1E293B]'
-        }`}>
+        <div className="mt-5 rounded-xl p-4 border text-xs bg-[#F8F5EF] border-[#E7E2DA] text-[#1E293B]">
           <div className="flex items-center justify-between mb-1.5">
-            <span className={`font-semibold flex items-center gap-1.5 ${isDark ? 'text-slate-200' : 'text-[#1E293B]'}`}>
+            <span className="font-semibold flex items-center gap-1.5 text-[#1E293B]">
               <Volume2 className="h-3.5 w-3.5 text-[#C2410C]" />
               Reference sentence to read aloud:
             </span>
             <span className="text-[11px] text-[#64748B] font-mono">1 to 5 seconds</span>
           </div>
-          <div className={`font-mono p-3 rounded-lg border text-center text-xs sm:text-sm font-medium transition-all ${
-            isDark
-              ? 'bg-slate-950 border-orange-500/30 text-orange-300 shadow-inner'
-              : 'bg-white border-[#E7E2DA] text-[#C2410C] font-semibold'
-          }`}>
+          <div className="font-mono p-3 rounded-lg border text-center text-xs sm:text-sm font-medium transition-all bg-white border-[#E7E2DA] text-[#C2410C] font-semibold">
             "Hello, this is my voice calibration for VoxSentinalX."
           </div>
         </div>
@@ -197,7 +180,7 @@ export const CalibrationModal: React.FC<CalibrationModalProps> = ({
         <div className={`mt-4 rounded-xl p-4 border flex flex-col items-center justify-center transition-all ${
           isRecording
             ? 'bg-red-50 border-red-200'
-            : isDark ? 'bg-slate-900/50 border-slate-800/80' : 'bg-[#F8F5EF] border-[#E7E2DA]'
+            : 'bg-[#F8F5EF] border-[#E7E2DA]'
         }`}>
           <div className="flex items-center justify-between w-full mb-3 px-1">
             <div className="flex items-center space-x-2">
@@ -249,7 +232,7 @@ export const CalibrationModal: React.FC<CalibrationModalProps> = ({
                       : 'bg-red-300'
                     : calibrated
                     ? 'bg-[#15803D]'
-                    : isDark ? 'bg-slate-700/40' : 'bg-[#E7E2DA]'
+                    : 'bg-[#E7E2DA]'
                 }`}
               />
             ))}

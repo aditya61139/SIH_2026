@@ -15,14 +15,8 @@ export const App: React.FC = () => {
   const [wsUrl, setWsUrl] = useState<string>('ws://localhost:8000/ws/analyze');
   const [apiBaseUrl, setApiBaseUrl] = useState<string>('http://localhost:8000');
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [theme, setTheme] = useState<'dark' | 'light'>('light');
 
   const captureEngine = useMemo(() => new VoxSentinalAudioCapture(), []);
-
-  const toggleTheme = () => {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(nextTheme);
-  };
 
   // Periodic Backend Health Check
   useEffect(() => {
@@ -53,8 +47,6 @@ export const App: React.FC = () => {
         onOpenCalibration={() => setIsCalibrationOpen(true)}
         isConnected={isConnected}
         isMonitoring={captureEngine.active}
-        theme={theme}
-        onToggleTheme={toggleTheme}
       />
 
       {/* Main Content Area */}
@@ -63,7 +55,6 @@ export const App: React.FC = () => {
           <LandingView
             onNavigate={setActiveTab}
             onOpenCalibration={() => setIsCalibrationOpen(true)}
-            theme={theme}
           />
         )}
 
@@ -76,7 +67,7 @@ export const App: React.FC = () => {
         )}
 
         {activeTab === 'upload' && (
-          <FileAnalyzer apiBaseUrl={apiBaseUrl} theme={theme} />
+          <FileAnalyzer apiBaseUrl={apiBaseUrl} />
         )}
 
         {activeTab === 'train' && (
@@ -99,7 +90,6 @@ export const App: React.FC = () => {
         onClose={() => setIsCalibrationOpen(false)}
         captureEngine={captureEngine}
         apiBaseUrl={apiBaseUrl}
-        theme={theme}
       />
 
       {/* Swadesi Footer */}

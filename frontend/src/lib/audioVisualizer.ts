@@ -6,20 +6,14 @@ export class CanvasAudioVisualizer {
   private dataArray: Uint8Array<ArrayBuffer>;
   private freqArray: Uint8Array<ArrayBuffer>;
   private riskColor: string = '#C2410C'; // default active saffron
-  private isDark: boolean = false;
 
-  constructor(canvas: HTMLCanvasElement, analyser: AnalyserNode, theme: 'dark' | 'light' = 'light') {
+  constructor(canvas: HTMLCanvasElement, analyser: AnalyserNode) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d')!;
     this.analyser = analyser;
     this.analyser.fftSize = 512;
     this.dataArray = new Uint8Array(new ArrayBuffer(this.analyser.fftSize));
     this.freqArray = new Uint8Array(new ArrayBuffer(this.analyser.frequencyBinCount));
-    this.isDark = theme === 'dark';
-  }
-
-  public setTheme(theme: 'dark' | 'light') {
-    this.isDark = theme === 'dark';
   }
 
   public setRiskLevel(level: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL') {
@@ -55,7 +49,7 @@ export class CanvasAudioVisualizer {
   }
 
   private clear() {
-    this.ctx.fillStyle = this.isDark ? '#0f172a' : '#FFFFFF';
+    this.ctx.fillStyle = '#FFFFFF';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
@@ -67,11 +61,11 @@ export class CanvasAudioVisualizer {
     this.analyser.getByteFrequencyData(this.freqArray);
 
     // Background
-    this.ctx.fillStyle = this.isDark ? '#0a0d14' : '#FFFFFF';
+    this.ctx.fillStyle = '#FFFFFF';
     this.ctx.fillRect(0, 0, width, height);
 
     // Subtle Grid (Dividers: #ECE8E1)
-    this.ctx.strokeStyle = this.isDark ? '#1e293b' : '#ECE8E1';
+    this.ctx.strokeStyle = '#ECE8E1';
     this.ctx.lineWidth = 1;
     this.ctx.beginPath();
     for (let x = 0; x < width; x += 40) {

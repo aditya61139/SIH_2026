@@ -4,10 +4,9 @@ import { FileAnalysisReport } from '../types';
 
 interface FileAnalyzerProps {
   apiBaseUrl: string;
-  theme?: 'dark' | 'light';
 }
 
-export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 'light' }) => {
+export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl }) => {
   const [file, setFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [isVideo, setIsVideo] = useState<boolean>(false);
@@ -17,7 +16,6 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 
   const [activeTimestamp, setActiveTimestamp] = useState<number | null>(null);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const isDark = theme === 'dark';
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -89,21 +87,17 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 
   return (
     <div className="space-y-6">
       {/* Upload Box */}
-      <div className={`rounded-3xl p-6 sm:p-8 border transition-all ${
-        isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-[#E7E2DA] shadow-xs'
-      }`}>
+      <div className="rounded-3xl p-6 sm:p-8 border transition-all bg-white border-[#E7E2DA] shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
           <div>
-            <h2 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-[#1E293B]'}`}>
+            <h2 className="text-lg font-bold text-[#1E293B]">
               Forensic Audio & MP4 Video Analyzer
             </h2>
-            <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-[#64748B]'}`}>
+            <p className="text-xs mt-1 text-[#64748B]">
               Upload phone calls, intercepted voicemails, or <strong>MP4 video recordings</strong> to extract and analyze vocal tract biometrics.
             </p>
           </div>
-          <span className={`text-xs font-bold px-3 py-1 rounded-xl border self-start sm:self-auto ${
-            isDark ? 'text-orange-400 bg-orange-500/10 border-orange-500/20' : 'text-[#C2410C] bg-[#FFF1E8] border-[#E7E2DA]'
-          }`}>
+          <span className="text-xs font-bold px-3 py-1 rounded-xl border self-start sm:self-auto text-[#C2410C] bg-[#FFF1E8] border-[#E7E2DA]">
             WAV, MP3, MP4, FLAC, OGG, WebM
           </span>
         </div>
@@ -111,11 +105,7 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 
         <div
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
-          className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 text-center transition-all cursor-pointer ${
-            isDark
-              ? 'border-slate-700 bg-slate-950/60 hover:border-orange-500/50 hover:bg-slate-950/80'
-              : 'border-[#E7E2DA] bg-[#F8F5EF] hover:border-[#C2410C] hover:bg-[#FFF1E8]/30'
-          }`}
+          className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 text-center transition-all cursor-pointer border-[#E7E2DA] bg-[#F8F5EF] hover:border-[#C2410C] hover:bg-[#FFF1E8]/30"
           onClick={() => document.getElementById('file-upload-input')?.click()}
         >
           <input
@@ -125,22 +115,20 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 
             onChange={handleFileChange}
             className="hidden"
           />
-          <div className={`flex h-14 w-14 items-center justify-center rounded-2xl border mb-3 shadow-xs ${
-            isDark ? 'bg-orange-500/10 border-orange-500/20 text-orange-400' : 'bg-[#FFF1E8] border-[#E7E2DA] text-[#C2410C]'
-          }`}>
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border mb-3 shadow-xs bg-[#FFF1E8] border-[#E7E2DA] text-[#C2410C]">
             {isVideo ? <Video className="h-7 w-7" /> : <Upload className="h-7 w-7" />}
           </div>
-          <p className={`text-sm font-bold ${isDark ? 'text-slate-200' : 'text-[#1E293B]'}`}>
+          <p className="text-sm font-bold text-[#1E293B]">
             {file ? file.name : 'Click to select or drag and drop Audio or MP4 Video'}
           </p>
-          <p className={`text-xs mt-1.5 ${isDark ? 'text-slate-500' : 'text-[#64748B]'}`}>
+          <p className="text-xs mt-1.5 text-[#64748B]">
             {file ? `${(file.size / 1024 / 1024).toFixed(2)} MB (${isVideo ? 'MP4 Video Container' : 'Audio File'})` : 'Supports MP4, WAV, MP3, FLAC, OGG, WebM up to 100MB'}
           </p>
         </div>
 
         {file && (
           <div className="mt-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className={`flex items-center space-x-2 text-xs ${isDark ? 'text-slate-300' : 'text-[#1E293B]'}`}>
+            <div className="flex items-center space-x-2 text-xs text-[#1E293B]">
               {isVideo ? <Film className="h-4 w-4 text-[#C2410C]" /> : <FileAudio className="h-4 w-4 text-[#C2410C]" />}
               <span>Selected: <strong>{file.name}</strong></span>
             </div>
@@ -173,13 +161,11 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 
 
       {/* Synchronized MP4 Video Player Preview (if MP4 is uploaded) */}
       {isVideo && videoUrl && (
-        <div className={`rounded-3xl p-6 border transition-all ${
-          isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-[#E7E2DA] shadow-xs'
-        }`}>
+        <div className="rounded-3xl p-6 border transition-all bg-white border-[#E7E2DA] shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               <Video className="h-5 w-5 text-[#C2410C]" />
-              <h3 className={`text-sm font-bold uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#1E293B]'}`}>
+              <h3 className="text-sm font-bold uppercase tracking-wider text-[#1E293B]">
                 Synchronized MP4 Media Playback
               </h3>
             </div>
@@ -205,43 +191,41 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 
           {/* Summary Banner */}
           <div className={`rounded-3xl p-6 sm:p-8 border transition-all ${
             report.risk_level === 'CRITICAL'
-              ? isDark ? 'bg-red-950/40 border-red-500/40' : 'bg-red-50 border-red-200'
+              ? 'bg-red-50 border-red-200'
               : report.risk_level === 'HIGH'
-              ? isDark ? 'bg-orange-950/40 border-orange-500/40' : 'bg-orange-50 border-orange-200'
+              ? 'bg-orange-50 border-orange-200'
               : report.risk_level === 'MODERATE'
-              ? isDark ? 'bg-amber-950/40 border-amber-500/40' : 'bg-amber-50 border-amber-200'
-              : isDark ? 'bg-emerald-950/30 border-emerald-500/30' : 'bg-emerald-50 border-emerald-200'
+              ? 'bg-amber-50 border-amber-200'
+              : 'bg-emerald-50 border-emerald-200'
           }`}>
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div>
-                <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-[#64748B]'}`}>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#64748B]">
                   Audit Result for: {report.filename} ({report.duration_seconds}s)
                 </span>
-                <h3 className={`text-2xl sm:text-3xl font-black mt-1 ${isDark ? 'text-white' : 'text-[#1E293B]'}`}>
+                <h3 className="text-2xl sm:text-3xl font-black mt-1 text-[#1E293B]">
                   Verdict: <span className={
                     report.risk_level === 'CRITICAL' ? 'text-[#DC2626]' :
                     report.risk_level === 'HIGH' ? 'text-[#DC2626]' :
                     report.risk_level === 'MODERATE' ? 'text-[#D97706]' : 'text-[#15803D]'
                   }>{report.overall_verdict.replace(/_/g, ' ')}</span>
                 </h3>
-                <p className={`text-xs sm:text-sm mt-2 max-w-2xl leading-relaxed ${isDark ? 'text-slate-300' : 'text-[#64748B]'}`}>
+                <p className="text-xs sm:text-sm mt-2 max-w-2xl leading-relaxed text-[#64748B]">
                   {report.recommendation}
                 </p>
               </div>
 
               {/* Score Badges */}
-              <div className={`flex items-center space-x-4 p-4 rounded-2xl border ${
-                isDark ? 'bg-slate-950/80 border-slate-800' : 'bg-white border-[#E7E2DA] shadow-xs'
-              }`}>
+              <div className="flex items-center space-x-4 p-4 rounded-2xl border bg-white border-[#E7E2DA] shadow-xs">
                 <div className="text-center px-2">
-                  <span className={`text-[10px] block uppercase font-bold ${isDark ? 'text-slate-400' : 'text-[#64748B]'}`}>Peak Risk</span>
+                  <span className="text-[10px] block uppercase font-bold text-[#64748B]">Peak Risk</span>
                   <span className="text-2xl font-mono font-bold text-[#DC2626]">
                     {Math.round(report.peak_risk_score * 100)}%
                   </span>
                 </div>
-                <div className={`h-8 w-px ${isDark ? 'bg-slate-800' : 'bg-[#ECE8E1]'}`} />
+                <div className="h-8 w-px bg-[#ECE8E1]" />
                 <div className="text-center px-2">
-                  <span className={`text-[10px] block uppercase font-bold ${isDark ? 'text-slate-400' : 'text-[#64748B]'}`}>Average Risk</span>
+                  <span className="text-[10px] block uppercase font-bold text-[#64748B]">Average Risk</span>
                   <span className="text-2xl font-mono font-bold text-[#C2410C]">
                     {Math.round(report.average_risk_score * 100)}%
                   </span>
@@ -251,23 +235,19 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 
           </div>
 
           {/* Timeline Risk Chart with Clickable Seeking */}
-          <div className={`rounded-3xl p-6 sm:p-8 border transition-all ${
-            isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-[#E7E2DA] shadow-xs'
-          }`}>
+          <div className="rounded-3xl p-6 sm:p-8 border transition-all bg-white border-[#E7E2DA] shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <div>
-                <h4 className={`text-sm font-bold uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#1E293B]'}`}>
+                <h4 className="text-sm font-bold uppercase tracking-wider text-[#1E293B]">
                   Temporal Risk Trajectory (2.0s Sliding Windows)
                 </h4>
-                <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-[#64748B]'}`}>
+                <p className="text-xs mt-0.5 text-[#64748B]">
                   Click on any bar to jump the video/audio player to that exact second.
                 </p>
               </div>
             </div>
 
-            <div className={`h-48 flex items-end space-x-1.5 p-4 rounded-2xl border overflow-x-auto ${
-              isDark ? 'bg-slate-950 border-slate-800/80' : 'bg-[#FDFBF7] border-[#ECE8E1]'
-            }`}>
+            <div className="h-48 flex items-end space-x-1.5 p-4 rounded-2xl border overflow-x-auto bg-[#FDFBF7] border-[#ECE8E1]">
               {report.timeline.map((item, idx) => {
                 const heightPercent = Math.max(item.risk_score * 100, 6);
                 let barColor = 'bg-[#15803D] hover:bg-[#15803D]/80';
@@ -291,7 +271,7 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 
                       }`}
                       style={{ height: `${heightPercent}%` }}
                     />
-                    <span className={`text-[9px] font-mono mt-1 ${isSelected ? 'text-[#C2410C] font-bold' : isDark ? 'text-slate-500' : 'text-[#64748B]'}`}>
+                    <span className={`text-[9px] font-mono mt-1 ${isSelected ? 'text-[#C2410C] font-bold' : 'text-[#64748B]'}`}>
                       {item.timestamp}
                     </span>
 
@@ -308,11 +288,9 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 
           </div>
 
           {/* Unique Anomalies Breakdown */}
-          <div className={`rounded-3xl p-6 sm:p-8 border transition-all ${
-            isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-[#E7E2DA] shadow-xs'
-          }`}>
+          <div className="rounded-3xl p-6 sm:p-8 border transition-all bg-white border-[#E7E2DA] shadow-xs">
             <div className="flex items-center justify-between mb-4">
-              <h4 className={`text-sm font-bold uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#1E293B]'}`}>
+              <h4 className="text-sm font-bold uppercase tracking-wider text-[#1E293B]">
                 Forensic Anomaly Breakdown ({report.unique_anomalies_detected.length})
               </h4>
               <button
@@ -325,9 +303,7 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 
                   dlAnchor.click();
                   dlAnchor.remove();
                 }}
-                className={`flex items-center space-x-1.5 rounded-xl px-4 py-2 text-xs font-semibold border transition-all ${
-                  isDark ? 'bg-slate-800 hover:bg-slate-700 text-orange-400 border-slate-700' : 'bg-[#F8F5EF] hover:bg-[#FFF1E8] text-[#C2410C] border-[#E7E2DA]'
-                }`}
+                className="flex items-center space-x-1.5 rounded-xl px-4 py-2 text-xs font-semibold border transition-all bg-[#F8F5EF] hover:bg-[#FFF1E8] text-[#C2410C] border-[#E7E2DA]"
               >
                 <FileDown className="h-4 w-4" />
                 <span>Export Report JSON</span>
@@ -336,21 +312,17 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl, theme = 
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {report.unique_anomalies_detected.map((anom, i) => (
-                <div key={i} className={`rounded-2xl p-4 border ${
-                  isDark ? 'bg-slate-950/70 border-slate-800' : 'bg-[#F8F5EF] border-[#E7E2DA]'
-                }`}>
+                <div key={i} className="rounded-2xl p-4 border bg-[#F8F5EF] border-[#E7E2DA]">
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs font-bold ${isDark ? 'text-white' : 'text-[#1E293B]'}`}>{anom.metric_name}</span>
+                    <span className="text-xs font-bold text-[#1E293B]">{anom.metric_name}</span>
                     <span className="text-[10px] font-bold text-[#DC2626] bg-red-50 px-2 py-0.5 rounded border border-red-200">
                       {anom.severity}
                     </span>
                   </div>
-                  <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-300' : 'text-[#64748B]'}`}>
+                  <p className="text-xs mt-2 leading-relaxed text-[#64748B]">
                     {anom.description}
                   </p>
-                  <div className={`mt-3 text-[10px] font-mono p-2 rounded-lg border ${
-                    isDark ? 'text-slate-400 bg-slate-900/80 border-slate-800' : 'text-[#1E293B] bg-white border-[#E7E2DA]'
-                  }`}>
+                  <div className="mt-3 text-[10px] font-mono p-2 rounded-lg border text-[#1E293B] bg-white border-[#E7E2DA]">
                     Threshold: {anom.threshold}
                   </div>
                 </div>
