@@ -24,6 +24,17 @@ def test_detection_engine_sliding_window():
     assert "diagnostics" in res
     assert "layer_scores" in res
 
+    # Verify all 10 forensic vectors are present
+    expected_vectors = {
+        "spectral", "prosody", "breathing", "acoustic_artifacts",
+        "lfcc", "glottal", "perturbation", "bispectrum",
+        "neural_lcnn", "replay_attack"
+    }
+    assert set(res["layer_scores"].keys()) == expected_vectors
+    assert len(res["layer_scores"]) == 10
+    for vec, score in res["layer_scores"].items():
+        assert 0.0 <= score <= 1.0, f"Layer score for {vec} out of bounds: {score}"
+
 
 def test_voice_swap_spike_detection():
     engine = DetectionEngine()

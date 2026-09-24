@@ -1,6 +1,26 @@
 import React, { useState, useRef } from 'react';
-import { Upload, FileAudio, Video, AlertTriangle, ShieldAlert, FileDown, Loader2, RefreshCw, Play, Film } from 'lucide-react';
+import {
+  Upload,
+  FileAudio,
+  Video,
+  AlertTriangle,
+  ShieldAlert,
+  FileDown,
+  Loader2,
+  RefreshCw,
+  Play,
+  Film,
+  Globe,
+  ShieldCheck,
+  CheckCircle2,
+  Copy,
+  Check,
+  Radio,
+  Award,
+  Volume2,
+} from 'lucide-react';
 import { FileAnalysisReport } from '../types';
+import { DetectionTimeline } from './DetectionTimeline';
 
 interface FileAnalyzerProps {
   apiBaseUrl: string;
@@ -14,8 +34,15 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl }) => {
   const [report, setReport] = useState<FileAnalysisReport | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTimestamp, setActiveTimestamp] = useState<number | null>(null);
+  const [copiedHash, setCopiedHash] = useState<boolean>(false);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedHash(true);
+    setTimeout(() => setCopiedHash(false), 2000);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -200,9 +227,27 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl }) => {
           }`}>
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#94A3B8]">
-                  Audit Result for: {report.filename} ({report.duration_seconds}s)
-                </span>
+                <div className="flex flex-wrap items-center gap-2 mb-1">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#94A3B8]">
+                    Audit Result for: {report.filename} ({report.duration_seconds}s)
+                  </span>
+                  {/* Language Profile Pill */}
+                  {report.language_profile?.estimated_language && (
+                    <span className="flex items-center space-x-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30">
+                      <Globe className="w-3 h-3" />
+                      <span>{report.language_profile.estimated_language}</span>
+                    </span>
+                  )}
+                  {/* Replay Pill */}
+                  {((report.layer_scores?.replay_attack || 0) >= 0.65 ||
+                    (report.replay_profile?.replay_probability || 0) >= 0.65) && (
+                    <span className="flex items-center space-x-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#8B5CF6]/20 text-[#C4B5FD] border border-[#8B5CF6]/40 animate-pulse">
+                      <Volume2 className="w-3 h-3" />
+                      <span>PHYSICAL REPLAY ATTACK</span>
+                    </span>
+                  )}
+                </div>
+
                 <h3 className="text-2xl sm:text-3xl font-black mt-1 text-white">
                   Verdict: <span className={
                     report.risk_level === 'CRITICAL' ? 'text-[#DC2626]' :
@@ -230,61 +275,90 @@ export const FileAnalyzer: React.FC<FileAnalyzerProps> = ({ apiBaseUrl }) => {
                     {Math.round(report.average_risk_score * 100)}%
                   </span>
                 </div>
+                {report.replay_profile && (
+                  <>
+                    <div className="h-8 w-px bg-[#252830]" />
+                    <div className="text-center px-2">
+                      <span className="text-[10px] block uppercase font-bold text-[#C4B5FD]">Replay Prob</span>
+                      <span className="text-2xl font-mono font-bold text-[#8B5CF6]">
+                        {Math.round(report.replay_profile.replay_probability * 100)}%
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Timeline Risk Chart with Clickable Seeking */}
-          <div className="rounded-3xl p-6 sm:p-8 border transition-all bg-[#1A1C23] border-[#2A2E37] shadow-xl">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-              <div>
-                <h4 className="text-sm font-bold uppercase tracking-wider text-white">
-                  Temporal Risk Trajectory (2.0s Sliding Windows)
-                </h4>
-                <p className="text-xs mt-0.5 text-[#94A3B8]">
-                  Click on any bar to jump the video/audio player to that exact second.
-                </p>
+          {/* Cryptographic Evidence Seal & Compliance Banner */}
+          <div className="rounded-3xl p-5 border transition-all bg-[#15171C] border-[#2A2E37] shadow-lg">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-start space-x-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/30">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs font-bold text-white uppercase tracking-wider">
+                      Cryptographic Evidence Certificate
+                    </span>
+                    <span className="text-[10px] font-mono text-[#10B981] bg-[#10B981]/15 px-2 py-0.5 rounded border border-[#10B981]/30">
+                      BSA 2023 / Sec 65B Certified
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <span className="text-[11px] font-mono text-[#94A3B8]">
+                      SHA-256 Digest:
+                    </span>
+                    <span className="text-[11px] font-mono text-[#E2E8F0] select-all truncate max-w-[240px] sm:max-w-md">
+                      {report.sha256_evidence_hash || report.audit_certificate?.media_metadata?.sha256_evidence_hash || 'Computed'}
+                    </span>
+                    <button
+                      onClick={() =>
+                        copyToClipboard(
+                          report.sha256_evidence_hash ||
+                            report.audit_certificate?.media_metadata?.sha256_evidence_hash ||
+                            ''
+                        )
+                      }
+                      className="p-1 text-[#94A3B8] hover:text-white transition-colors"
+                      title="Copy SHA-256 hash"
+                    >
+                      {copiedHash ? <Check className="w-3.5 h-3.5 text-[#10B981]" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => {
+                    const certData = report.audit_certificate || report;
+                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(certData, null, 2));
+                    const dlAnchor = document.createElement('a');
+                    dlAnchor.setAttribute("href", dataStr);
+                    dlAnchor.setAttribute("download", `VoxSentinalX_Forensic_Seal_${report.filename}.json`);
+                    document.body.appendChild(dlAnchor);
+                    dlAnchor.click();
+                    dlAnchor.remove();
+                  }}
+                  className="flex items-center space-x-1.5 rounded-xl px-4 py-2 text-xs font-semibold border transition-all bg-[#1A1C23] hover:bg-[#10B981]/10 text-[#10B981] border-[#2A2E37] shadow-xs"
+                >
+                  <Award className="h-4 w-4" />
+                  <span>Download Audit Certificate (.json)</span>
+                </button>
               </div>
             </div>
+          </div>
 
-            <div className="h-48 flex items-end space-x-1.5 p-4 rounded-2xl border overflow-x-auto bg-[#15171C] border-[#252830]">
-              {report.timeline.map((item, idx) => {
-                const heightPercent = Math.max(item.risk_score * 100, 6);
-                let barColor = 'bg-[#10B981] hover:bg-[#10B981]/80';
-                if (item.risk_level === 'CRITICAL') barColor = 'bg-[#DC2626] hover:bg-[#DC2626]/80';
-                else if (item.risk_level === 'HIGH') barColor = 'bg-[#EF4444] hover:bg-[#EF4444]/80';
-                else if (item.risk_level === 'MODERATE') barColor = 'bg-[#F59E0B] hover:bg-[#F59E0B]/80';
-
-                const timestampSec = idx * 1.0;
-                const isSelected = activeTimestamp === timestampSec;
-
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => handleSeek(timestampSec)}
-                    className="flex-1 flex flex-col items-center group relative min-w-[28px] focus:outline-none"
-                    title={`Timestamp: ${item.timestamp} | Risk: ${Math.round(item.risk_score * 100)}%`}
-                  >
-                    <div
-                      className={`w-full rounded-t transition-all cursor-pointer ${barColor} ${
-                        isSelected ? 'ring-2 ring-[#10B981] brightness-125' : ''
-                      }`}
-                      style={{ height: `${heightPercent}%` }}
-                    />
-                    <span className={`text-[9px] font-mono mt-1 ${isSelected ? 'text-[#10B981] font-bold' : 'text-[#64748B]'}`}>
-                      {item.timestamp}
-                    </span>
-
-                    {/* Hover Tooltip */}
-                    <div className="absolute bottom-full mb-2 hidden group-hover:flex flex-col bg-[#0D0E11] text-white text-[10px] p-2 rounded-lg border border-[#2A2E37] shadow-2xl z-20 w-36 pointer-events-none">
-                      <span className="font-bold text-[#10B981]">{item.timestamp}</span>
-                      <span>Risk: {Math.round(item.risk_score * 100)}% ({item.risk_level})</span>
-                      <span className="text-[#94A3B8]">{item.diagnostics.length} Anomalies</span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+          {/* Interactive Detection Timeline */}
+          <div className="rounded-3xl p-6 sm:p-8 border transition-all bg-[#1A1C23] border-[#2A2E37] shadow-xl">
+            <DetectionTimeline
+              timeline={report.timeline}
+              activeTimestamp={activeTimestamp}
+              onSeek={handleSeek}
+              durationSeconds={report.duration_seconds}
+            />
           </div>
 
           {/* Unique Anomalies Breakdown */}

@@ -19,7 +19,7 @@ export const CalibrationModal: React.FC<CalibrationModalProps> = ({
   isOpen,
   onClose,
   captureEngine,
-  apiBaseUrl = 'http://localhost:8000',
+  apiBaseUrl = (typeof window !== 'undefined' && window.location.hostname ? `${window.location.protocol}//${window.location.hostname}:8000` : 'http://localhost:8000'),
 }) => {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);

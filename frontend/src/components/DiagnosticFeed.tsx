@@ -62,7 +62,7 @@ export const DiagnosticFeed: React.FC<DiagnosticFeedProps> = ({
       )}
 
       {/* Scrolling Diagnostic Cards List */}
-      <div className="mt-4 flex-1 space-y-3 overflow-y-auto pr-1 max-h-[380px]">
+      <div className="mt-4 flex-1 space-y-3 overflow-y-auto pr-1 max-h-[340px]">
         {anomalies.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-10 text-center">
             <CheckCircle2 className="h-8 w-8 text-[#10B981] mb-2" />

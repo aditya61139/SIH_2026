@@ -14,8 +14,10 @@ export const ForensicRadar: React.FC<ForensicRadarProps> = ({ scores, riskLevel 
     { key: 'acoustic_artifacts', label: 'Vocoder' },
     { key: 'lfcc', label: 'LFCC' },
     { key: 'glottal', label: 'Glottal' },
-    { key: 'perturbation', label: 'Jitter/Shimmer' },
+    { key: 'perturbation', label: 'Jitter/Shim' },
     { key: 'bispectrum', label: 'Bispectrum' },
+    { key: 'replay_attack', label: 'Replay' },
+    { key: 'neural_lcnn', label: 'Neural LCNN' },
   ];
 
   const size = 260;
@@ -136,7 +138,7 @@ export const ForensicRadar: React.FC<ForensicRadarProps> = ({ scores, riskLevel 
         })}
       </svg>
       <span className="text-[10px] font-mono uppercase text-[#64748B] tracking-wider mt-1 font-medium">
-        8-Axis Forensic Radar
+        10-Axis Forensic Radar
       </span>
     </div>
   );

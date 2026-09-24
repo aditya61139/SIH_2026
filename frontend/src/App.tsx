@@ -12,8 +12,16 @@ import { Shield, Sparkles, Cpu, Radio } from 'lucide-react';
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'live' | 'upload' | 'train' | 'settings'>('overview');
   const [isCalibrationOpen, setIsCalibrationOpen] = useState<boolean>(false);
-  const [wsUrl, setWsUrl] = useState<string>('ws://localhost:8000/ws/analyze');
-  const [apiBaseUrl, setApiBaseUrl] = useState<string>('http://localhost:8000');
+  const [wsUrl, setWsUrl] = useState<string>(() => {
+    const host = typeof window !== 'undefined' && window.location.hostname ? window.location.hostname : 'localhost';
+    const protocol = typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    return `${protocol}//${host}:8000/ws/analyze`;
+  });
+  const [apiBaseUrl, setApiBaseUrl] = useState<string>(() => {
+    const host = typeof window !== 'undefined' && window.location.hostname ? window.location.hostname : 'localhost';
+    const protocol = typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'https:' : 'http:';
+    return `${protocol}//${host}:8000`;
+  });
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   const captureEngine = useMemo(() => new VoxSentinalAudioCapture(), []);
@@ -106,7 +114,7 @@ export const App: React.FC = () => {
           <div className="flex flex-wrap items-center justify-center gap-3 text-xs">
             <div className="flex items-center space-x-1.5 text-[#94A3B8]">
               <Sparkles className="h-3.5 w-3.5 text-[#10B981]" />
-              <span>8-Vector Forensic Suite</span>
+              <span>10-Vector Forensic Suite</span>
             </div>
             <span className="text-[#374151] hidden sm:inline">•</span>
             <div className="flex items-center space-x-1.5 text-[#94A3B8]">

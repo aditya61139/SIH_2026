@@ -40,3 +40,27 @@
 - Dignified Tiranga micro-stripe accents and SIH 2026 Smart India Hackathon emblem.
 - High-appeal, clean, uncluttered components across Navbar, Hero Visualizer, Live Call Monitor, Radar, Risk Gauge, and Modals.
 - Production build and automated test verification.
+
+## Phase 7: Advanced Forensics Expansion (Multilingual, Replay Attack & Interactive Timeline) [COMPLETED]
+- **Multilingual Forensic Support**: Formant space & phoneme tracking across Indian language families (Indo-Aryan, Dravidian, English) with adaptive threshold calibration.
+- **Physical Replay Attack Detection**: Detects genuine voice playback through loudspeakers via Total Harmonic Distortion (THD), dual-room reverberation ($RT_{60}$ decay mismatch), and transducer coloration.
+- **Interactive Detection Timeline**: Scrubbable temporal risk trajectory with timestamped event pins, threat ribbons, and live rolling call history.
+- **VoIP / Cellular Codec Normalization**: Compensates for standard GSM/AMR/Opus compression to eliminate false positive vocoder alarms.
+- **Cryptographic Forensic Audit Exporter**: Generates verifiable PDF/JSON compliance certificates with SHA-256 evidence seals.
+
+## Phase 8: Robust Loudspeaker Replay Calibration & Model Training [COMPLETED]
+- **Acoustic Physics Re-Engineering**: Replaced naive formant-harmonic THD with frame-based short-term autocorrelation Harmonics-to-Noise Ratio (HNR) (Praat formulation) and pitch-conditioned intermodulation distortion.
+- **Pitch-Conditioned Sub-Bass Analysis**: Eliminated false transducer coloration penalties for high/elevated pitch speech ($F_0 > 145\text{ Hz}$).
+- **Pre-Speech Plosive Gating**: Gated DAC transient detection strictly to silent intervals ($< 15\%$ peak RMS) to prevent loud speech plosives from triggering false DAC pops.
+- **Dual-Evidence Co-Occurrence**: Enforced simultaneous acoustic room decay ($RT_{60} > 1.45$) mismatch and physical transducer distortion to flag replay attacks.
+- **Model Training on Loud Voice vs Replay**: Augmented dataset generator with loud authentic human speech (Lombard effect, elevated pitch, formant resonance) and physical loudspeaker replay samples, calibrated thresholds to 0.65 across backend and frontend, and verified with 32/32 tests passing.
+
+## Phase 9: System-Wide 10-Vector Forensic Integration & Live Monitor Layout Alignment [COMPLETED]
+- **10-Vector Architecture Alignment**: Elevated platform from 8-vector to 10-vector architecture across frontend types (`LayerScores`), Bento Grid matrix (10 cards across 5 columns $\times$ 2 rows), threat simulation scenarios (`neural_lcnn` and `replay` added + dedicated *Physical Loudspeaker Replay* scenario), training scripts, docstrings, and documentation.
+- **Live Call Monitor Cockpit Realignment**: Restructured `LiveCallMonitor.tsx` into a balanced 3-Tier Cockpit Layout:
+  - **Tier 1 (Cockpit Monitoring Bar)**: `Live Audio Telemetry & Oscilloscope` (6 cols) + `10-Axis Forensic Radar` (3 cols) + `Risk Score Gauge` (3 cols) with uniform horizontal heights.
+  - **Tier 2 (Deep Forensics & Diagnostics)**: `10-Vector Forensic Decomposition` (7 cols, 5 cols $\times$ 2 rows) adjacent to `Diagnostic Forensics Feed` (5 cols, scroll-capped container), completely eliminating the blank space on the left.
+  - **Tier 3 (Historical Timeline)**: Full-width `Forensic Detection Timeline` sitting directly below Tier 2 without being pushed down the page.
+- **Training Pipeline & Automated Verification**: Updated `extract_forensic_features` to compute Vector 9 (Replay HNR / sub-bass) and Vector 10 (Multilingual formant / rhythm), added unit tests for 10-vector completeness, and verified full test suite and frontend build.
+
+

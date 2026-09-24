@@ -41,6 +41,8 @@ interface ThreatScenario {
     glottal: number;
     perturbation: number;
     bispectrum: number;
+    neural_lcnn: number;
+    replay: number;
   };
   detectedAnomalies: string[];
 }
@@ -66,6 +68,8 @@ export const LandingView: React.FC<LandingViewProps> = ({
         glottal: 85,
         perturbation: 92,
         bispectrum: 95,
+        neural_lcnn: 96,
+        replay: 12,
       },
       detectedAnomalies: [
         'Missing 8-12 Hz involuntary vocal micro-tremors',
@@ -89,12 +93,38 @@ export const LandingView: React.FC<LandingViewProps> = ({
         glottal: 7,
         perturbation: 6,
         bispectrum: 8,
+        neural_lcnn: 5,
+        replay: 4,
       },
       detectedAnomalies: [
         'Glottal pulse shape aligns with physiological vocal folds',
         'Organic 0.42% period-to-period jitter',
         'Inhalation pauses detected every 3.8s',
         'Harmonic quadratic phase coupling confirmed'
+      ]
+    },
+    {
+      id: 'replay_loudspeaker',
+      name: '⚠️ Physical Loudspeaker Replay Attack',
+      type: 'fake',
+      description: 'Pre-recorded genuine voice played back through a mobile loudspeaker with secondary room echo and transducer saturation.',
+      riskScore: 89,
+      vectors: {
+        spectral: 22,
+        prosody: 18,
+        breathing: 15,
+        vocoder: 25,
+        lfcc: 48,
+        glottal: 19,
+        perturbation: 24,
+        bispectrum: 31,
+        neural_lcnn: 42,
+        replay: 93,
+      },
+      detectedAnomalies: [
+        'Dual-room Schroeder energy decay curve mismatch (RT60 = 1.82s)',
+        'Degraded short-term autocorrelation HNR (6.4 dB) from loudspeaker distortion',
+        'Physical transducer low-frequency acoustic cutoff below 150 Hz',
       ]
     },
     {
@@ -112,6 +142,8 @@ export const LandingView: React.FC<LandingViewProps> = ({
         glottal: 81,
         perturbation: 84,
         bispectrum: 80,
+        neural_lcnn: 91,
+        replay: 9,
       },
       detectedAnomalies: [
         'LFCC delta-delta coefficients reveal Mel-filter quantization',
@@ -180,6 +212,20 @@ export const LandingView: React.FC<LandingViewProps> = ({
       icon: Layers,
       badge: 'Bicoherence'
     },
+    {
+      layer: 'Layer 9',
+      title: 'Deep Neural LCNN & Attention',
+      desc: 'Evaluates 80-bin Mel-spectrogram time-frequency patterns using Light-CNN with Max-Feature-Map activation and BiLSTM temporal self-attention.',
+      icon: Cpu,
+      badge: 'MFM LCNN'
+    },
+    {
+      layer: 'Layer 10',
+      title: 'Physical Loudspeaker Replay',
+      desc: 'Quantifies secondary acoustic room impulse response (RT60 decay mismatch), autocorrelation HNR degradation, and transducer physical coloration.',
+      icon: Radio,
+      badge: 'Loudspeaker THD'
+    },
   ];
 
   return (
@@ -213,7 +259,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
           {/* Subtitle */}
           <p className="text-sm sm:text-lg max-w-2xl mx-auto leading-relaxed text-[#94A3B8]">
-            Combines an <strong className="text-[#10B981] font-semibold">8-Vector Forensic Suite</strong> (vocal fold glottal flow, respiration cadence, pitch micro-tremors, and bispectral phase coupling) with a deep neural <strong className="text-[#10B981] font-semibold">Light-CNN Classifier</strong> to identify synthetic speech in real time.
+            Combines a <strong className="text-[#10B981] font-semibold">10-Vector Forensic Suite</strong> (vocal fold glottal flow, respiration cadence, pitch micro-tremors, bispectral coupling, and loudspeaker replay acoustics) with a deep neural <strong className="text-[#10B981] font-semibold">Light-CNN Classifier</strong> to identify synthetic speech in real time.
           </p>
 
           {/* Action CTAs */}
@@ -251,7 +297,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
         </div>
       </section>
 
-      {/* 2. 8-VECTOR FORENSIC BENTO MATRIX */}
+      {/* 2. 10-VECTOR FORENSIC BENTO MATRIX */}
       <section className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b pb-4 border-[#252830]">
           <div>
@@ -260,7 +306,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <span>Forensic Architecture</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold mt-1 text-white">
-              8-Vector Multi-Layer Decomposition
+              10-Vector Multi-Layer Decomposition
             </h2>
             <p className="text-xs sm:text-sm mt-1 max-w-xl text-[#94A3B8]">
               Beyond simple binary classifications: VoxSentinalX isolates physical, acoustic, and mathematical artifacts across independent forensic dimensions.
@@ -275,8 +321,8 @@ export const LandingView: React.FC<LandingViewProps> = ({
           </div>
         </div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Bento Grid (5 Columns x 2 Rows) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {forensicCards.map((card, idx) => {
             const Icon = card.icon;
             return (
@@ -401,10 +447,10 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
           </div>
 
-          {/* Middle: 8 Vector Micro Telemetry Bars */}
+          {/* Middle: 10 Vector Micro Telemetry Bars */}
           <div className="lg:col-span-2 space-y-3 p-6 rounded-xl border bg-[#15171C] border-[#2A2E37]">
             <div className="flex items-center justify-between text-xs font-mono pb-1 border-b border-[#252830]">
-              <span className="font-bold text-white">8-Vector Forensic Decomposition Metrics</span>
+              <span className="font-bold text-white">10-Vector Forensic Decomposition Metrics</span>
               <span className="text-[#64748B]">Threshold: &gt;50% Anomaly</span>
             </div>
 
@@ -490,9 +536,9 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <span className="text-2xl font-black text-[#10B981]/25">03</span>
               <Cpu className="h-5 w-5 text-[#10B981]" />
             </div>
-            <h3 className="font-bold text-sm text-white">8-Vector & LCNN Inference</h3>
+            <h3 className="font-bold text-sm text-white">10-Vector & LCNN Inference</h3>
             <p className="text-xs leading-relaxed text-[#94A3B8]">
-              Dual-engine extraction: 8 deterministic forensic algorithms fused with deep PyTorch Light-CNN (MFM + BiLSTM + Self-Attention).
+              Dual-engine extraction: 10 deterministic forensic algorithms fused with deep PyTorch Light-CNN (MFM + BiLSTM + Self-Attention).
             </p>
           </div>
 

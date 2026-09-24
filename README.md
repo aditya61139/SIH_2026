@@ -15,7 +15,7 @@
 **VoxSentinalX** is a real-time voice cloning and synthetic speech detection platform developed for the Smart India Hackathon (SIH 2026). It combines signal-processing physical acoustic analysis with deep neural representations to identify synthetic speech and protect individuals, contact centers, and organizations from voice impersonation attacks.
 
 ### 🎯 Key Engineering Innovations
-1. **8-Vector Decomposed Forensic Suite**:
+1. **10-Vector Decomposed Forensic Suite**:
    - **Layer 1: Spectral & STFT Phase Coherence**: Unnatural spectral flatness and STFT inversion phase discontinuities.
    - **Layer 2: Prosodic Dynamics**: Fundamental frequency ($F_0$) pitch variance ($\sigma$) and 8–12 Hz involuntary vocal micro-tremors.
    - **Layer 3: Respiration Dynamics**: Unbroken continuous speech duration lacking natural human inhalation pauses.
@@ -24,7 +24,8 @@
    - **Layer 6: Biomechanical Glottal Flow (LPC-NAQ)**: Vocal fold inverse filtering and Normalized Amplitude Quotient (NAQ) compliance.
    - **Layer 7: Laryngeal Perturbation (Jitter & Shimmer)**: Period-to-period micro-instability (Jitter local, RAP) and amplitude perturbation (Shimmer local, APQ3).
    - **Layer 8: Higher-Order Bispectral Phase Coupling (QPC)**: Non-linear bicoherence across vocal harmonic frequencies.
-   - **Deep Neural Ensemble**: Multi-Layer Perceptron (MLP) & Light-CNN with Max-Feature-Map (MFM), BiLSTM, and Self-Attention.
+   - **Layer 9: Deep Neural LCNN-BiLSTM-Attention**: End-to-end time-frequency representation learning on 80-band Mel spectrograms.
+   - **Layer 10: Physical Loudspeaker Replay Forensics**: Autocorrelation HNR degradation, dual-room Schroeder $RT_{60}$ decay mismatch, and transducer bass rolloff.
 2. **Speakerphone Audio Ingestion with Voiceprint Separation**: Browser microphone audio capture on speakerphone with **dynamic voiceprint calibration** to isolate the incoming caller's voice from the user's voice.
 3. **Unified 5,490+ Audio Forensic Corpus**: Multi-generator dataset covering OpenAI Voice Engine, Coqui XTTS v2, ByteDance Seed-TTS, ASVspoof, FlashSpeech, VoiceBox, VALL-E, and Indic languages.
 4. **Actionable Diagnostic Telemetry**: Measured telemetry, thresholds, and clear security countermeasures rather than opaque black-box labels.
@@ -46,7 +47,7 @@ graph TB
         F --> G["Speaker Separator (Calibrated Voiceprint)"]
     end
 
-    subgraph 8-Vector Forensic Engine
+    subgraph 10-Vector Forensic Engine
         G --> H1["L1: Spectral Flatness & Phase"]
         G --> H2["L2: Prosody & Micro-Tremors"]
         G --> H3["L3: Breathing Cadence"]
@@ -55,18 +56,19 @@ graph TB
         G --> H6["L6: Glottal Flow LPC-NAQ"]
         G --> H7["L7: Jitter & Shimmer"]
         G --> H8["L8: Bispectrum Bicoherence"]
-        G --> H9["Deep Neural Ensemble & LCNN"]
+        G --> H9["L9: Deep Neural LCNN (MFM-BiLSTM)"]
+        G --> H10["L10: Loudspeaker Replay Forensics"]
     end
 
     subgraph Dynamic Fusion & Diagnostics
-        H1 & H2 & H3 & H4 & H5 & H6 & H7 & H8 & H9 --> I["Weighted Fusion & EMA Temporal Smoothing"]
+        H1 & H2 & H3 & H4 & H5 & H6 & H7 & H8 & H9 & H10 --> I["Weighted Fusion & EMA Temporal Smoothing"]
         I --> J["Diagnostic Explainer & Countermeasure Generator"]
     end
 
     subgraph Dashboard UI
         J -->|WebSocket JSON Push| K["🚨 Live Call Monitor & Oscilloscope"]
         J --> L["📊 Dynamic Radial Risk Gauge"]
-        J --> M["🕸️ 8-Axis SVG Forensic Radar"]
+        J --> M["🕸️ 10-Axis SVG Forensic Radar"]
         J --> N["📝 Granular Diagnostic Feed & Emergency Overlay"]
         J --> O["🧠 Model & Training Dashboard"]
     end
@@ -142,13 +144,13 @@ npm run dev
 1. **🌟 Showcase Landing Page (`/`)**:
    - High-impact cybernetic overview of the system architecture.
    - Interactive **Waveform Hero Visualizer** with live audio frequency bars and threat testing toggle.
-   - **8-Vector Forensic Bento Matrix**: Interactive breakdown of each physical & acoustic layer.
-   - **Live Threat Simulation Sandbox**: Switch between real-world scenarios (*Wire Fraud Clones*, *Authentic Human Callers*, *Indic Dialect Clones*) with dynamic radial risk gauge animations.
+   - **10-Vector Forensic Bento Matrix**: Interactive breakdown of each physical & acoustic layer.
+   - **Live Threat Simulation Sandbox**: Switch between real-world scenarios (*Wire Fraud Clones*, *Authentic Human Callers*, *Loudspeaker Replay*, *Indic Dialect Clones*) with dynamic radial risk gauge animations.
 
 2. **🚨 Live Call Monitor Tab**:
    - Place your phone on **speakerphone** next to your laptop/PC microphone.
    - Click **`Start Live Monitoring`** to stream 16 kHz audio via WebSockets.
-   - Real-time oscilloscope, 8-axis forensic radar, radial risk gauge, and emergency alert countermeasure overlays.
+   - Real-time oscilloscope, 10-axis forensic radar, radial risk gauge, 10-vector decomposition breakdown, and emergency alert countermeasure overlays.
 
 3. **📁 Audio & Video File Analyzer Tab**:
    - Drag & drop any suspect `.mp3`, `.wav`, `.flac`, or `.mp4` video recording.
@@ -170,7 +172,7 @@ The forensic ensemble comes **pre-trained on 5,497 audio files** ([`data/unified
 
 To retrain the neural model on your system:
 ```cmd
-# 1. Train the 8-Vector Forensic Ensemble on unified_corpus
+# 1. Train the 10-Vector Forensic Ensemble on unified_corpus
 python training/train_acoustic_ensemble.py
 
 # 2. Or generate additional adversarial AI voice samples (HiFi-GAN, Diffusion, Zero-Shot, Brickwall, Indic)

@@ -369,7 +369,7 @@ export const ModelTrainingSuite: React.FC<ModelTrainingSuiteProps> = ({ apiBaseU
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-[#94A3B8] max-w-3xl leading-relaxed">
-                VoxSentinalX pairs an <strong>8-Vector Acoustic Physics Engine</strong> (glottal airflow, vocal fold jitter, breathing cadence, bispectrum) with an end-to-end <strong>Light-CNN (LCNN) + BiLSTM + Self-Attention</strong> neural model to expose imperceptible neural vocoder distortions across 12 Indic languages and 8 voice-cloning engines.
+                VoxSentinalX pairs a <strong>10-Vector Forensic & Acoustic Physics Suite</strong> (glottal airflow, vocal fold jitter, breathing cadence, bispectrum, loudspeaker replay acoustics) with an end-to-end <strong>Light-CNN (LCNN) + BiLSTM + Self-Attention</strong> neural model to expose imperceptible neural vocoder distortions across 12 Indic languages and 8 voice-cloning engines.
               </p>
             </div>
           </div>

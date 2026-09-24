@@ -1,11 +1,11 @@
-"""Core configuration module for VoxSentinalX with 8-Vector Forensic Decomposition."""
+"""Core configuration module for VoxSentinalX with 10-Vector Forensic Decomposition."""
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Dict, List
 
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "VoxSentinalX"
-    VERSION: str = "2.0.0"
+    VERSION: str = "2.1.0"
     API_V1_STR: str = "/api"
     DEBUG: bool = True
 
@@ -34,18 +34,23 @@ class Settings(BaseSettings):
     RISK_THRESHOLD_HIGH: float = 0.80       # 0.60 - 0.80: Warning / Probable Fake
     # 0.80 - 1.00: Critical Alert / Synthetic
 
-    # Dynamic Weightings for 8-Vector Forensic Fusion Layer
+    # Dynamic Weightings for 10-Vector Forensic Fusion Layer
     DETECTOR_WEIGHTS: Dict[str, float] = {
-        "spectral": 0.14,
-        "prosody": 0.12,
-        "breathing": 0.10,
-        "acoustic_artifacts": 0.10,
-        "lfcc": 0.16,
-        "glottal": 0.12,
-        "perturbation": 0.12,
-        "bispectrum": 0.08,
-        "neural_lcnn": 0.16,
+        "spectral": 0.12,
+        "prosody": 0.10,
+        "breathing": 0.08,
+        "acoustic_artifacts": 0.08,
+        "lfcc": 0.14,
+        "glottal": 0.10,
+        "perturbation": 0.10,
+        "bispectrum": 0.06,
+        "neural_lcnn": 0.12,
+        "replay_attack": 0.10,
     }
+
+    # Cellular / VoIP Codec Normalization
+    ENABLE_CODEC_COMPENSATION: bool = True
+    CELLULAR_BANDWIDTH_CUTOFF_HZ: float = 3400.0  # Standard AMR-NB / G.711 telephony cutoff
 
     # Temporal Smoothing (Exponential Moving Average)
     EMA_ALPHA: float = 0.35                 # Responsiveness vs smoothness factor

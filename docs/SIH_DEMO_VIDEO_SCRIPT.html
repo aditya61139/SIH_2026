@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VoxSentinalX — SIH 2026 Demo Video Script</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #4a4a6a;
+    --accent: #10B981;
+    --accent-dark: #059669;
+    --accent-light: #D1FAE5;
+    --red: #EF4444;
+    --red-light: #FEE2E2;
+    --amber: #F59E0B;
+    --amber-light: #FEF3C7;
+    --purple: #8B5CF6;
+    --border: #E5E7EB;
+    --card-bg: #F9FAFB;
+    --code-bg: #1E293B;
+    --code-text: #E2E8F0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @page {
+    size: A4;
+    margin: 20mm 18mm 20mm 18mm;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── HEADINGS ── */
+  h1 {
+    font-size: 22pt;
+    font-weight: 900;
+    color: var(--text);
+    margin: 0 0 4pt 0;
+    letter-spacing: -0.5px;
+    border-bottom: 3px solid var(--accent);
+    padding-bottom: 10pt;
+    page-break-after: avoid;
+  }
+
+  h1 code { background: none; color: inherit; font-size: inherit; }
+
+  h2 {
+    font-size: 14pt;
+    font-weight: 700;
+    color: var(--accent-dark);
+    margin: 22pt 0 8pt 0;
+    padding: 6pt 10pt;
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    font-size: 12pt;
+    font-weight: 700;
+    color: var(--text);
+    margin: 16pt 0 6pt 0;
+    page-break-after: avoid;
+  }
+
+  h4 {
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 12pt 0 4pt 0;
+  }
+
+  /* ── PARAGRAPHS & TEXT ── */
+  p {
+    margin: 6pt 0;
+    text-align: justify;
+  }
+
+  strong { font-weight: 700; color: var(--text); }
+
+  /* ── BLOCKQUOTES (voiceover narration) ── */
+  blockquote {
+    margin: 10pt 0;
+    padding: 10pt 14pt;
+    background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-style: normal;
+    position: relative;
+  }
+
+  blockquote p {
+    margin: 4pt 0;
+    text-align: left;
+  }
+
+  blockquote em {
+    font-style: normal;
+    color: #15803D;
+    font-weight: 500;
+  }
+
+  blockquote strong {
+    color: var(--accent-dark);
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── TABLES ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10pt 0;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+
+  thead {
+    background: var(--code-bg);
+    color: white;
+  }
+
+  th {
+    padding: 8pt 10pt;
+    text-align: left;
+    font-weight: 600;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    padding: 7pt 10pt;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tbody tr:nth-child(even) {
+    background: var(--card-bg);
+  }
+
+  tbody tr:hover {
+    background: var(--accent-light);
+  }
+
+  /* ── CODE BLOCKS ── */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 12pt 14pt;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-size: 9pt;
+    line-height: 1.6;
+    margin: 10pt 0;
+    page-break-inside: avoid;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-size: 9pt;
+    background: #F1F5F9;
+    padding: 1pt 4pt;
+    border-radius: 3px;
+    color: #0F172A;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    color: var(--code-text);
+  }
+
+  /* ── LISTS ── */
+  ul, ol {
+    margin: 6pt 0 6pt 18pt;
+  }
+
+  li {
+    margin: 3pt 0;
+  }
+
+  /* ── HORIZONTAL RULES ── */
+  hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), var(--accent), var(--border), transparent);
+    margin: 18pt 0;
+  }
+
+  /* ── EMOJI scene markers ── */
+  h2 em { font-style: normal; }
+
+  /* ── PAGE BREAK HINTS ── */
+  h1, h2, h3 { page-break-after: avoid; }
+  table, pre, blockquote { page-break-inside: avoid; }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 30pt;
+    padding-top: 10pt;
+    border-top: 2px solid var(--accent);
+    text-align: center;
+    font-size: 8.5pt;
+    color: var(--text-secondary);
+  }
+</style>
+</head>
+<body>
+<h1>🎬 VoxSentinalX — SIH 2026 Demo Video Script</h1>
+<h3>Problem Statement #26104 | Real-Time AI Voice Deepfake Detection</h3>
+<h3>Target Duration: 2:30 – 2:50</h3>
+<hr />
+<h2>📋 Pre-Recording Setup Checklist</h2>
+<p>Before pressing record, have everything ready:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Item</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Backend running</strong></td>
+<td><code>run_all.bat</code> or manually: <code>cd backend &amp;&amp; python run.py</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Frontend running</strong></td>
+<td>Should auto-open at <code>http://localhost:3000</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Browser</strong></td>
+<td>Chrome fullscreen (F11), 90% zoom, dark mode</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Screen resolution</strong></td>
+<td>1920×1080 (16:9)</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Screen recorder</strong></td>
+<td>OBS Studio recommended (1080p, 60fps)</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Mic</strong></td>
+<td>Headset mic preferred (avoids feedback during speakerphone demo)</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Phone ready</strong></td>
+<td>Load a deepfake audio sample (e.g., AI-cloned Elon Musk from <code>dataset_samples/</code>)</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Real voice</strong></td>
+<td>You&rsquo;ll speak naturally into the mic as contrast</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Tabs open</strong></td>
+<td>Tab 1: Landing page (<code>localhost:3000</code>), nothing else visible</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Notifications</strong></td>
+<td>Close all — no popups, no Discord, no Windows notifications</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🎬 SCENE 1 — The Hook</h2>
+<p><strong>⏱️ 0:00 – 0:20 (20 seconds)</strong></p>
+<p><strong>[SCREEN: Showcase Landing Page — hero section with animated waveform visualizer]</strong></p>
+<blockquote>
+<p><strong>🎙️ VOICEOVER</strong> <em>(speak naturally, slightly urgent):</em></p>
+<p>&ldquo;Imagine getting a phone call from your bank manager — the voice sounds exactly like them, the tone, the accent, everything matches. But it&rsquo;s not them. It&rsquo;s an AI-generated deepfake clone, and they&rsquo;re about to steal your life savings.&rdquo;</p>
+</blockquote>
+<p><strong>📌 What to do on screen:</strong>
+- Let the landing page load with the animated waveform hero visualizer playing
+- The VoxSentinalX logo and tagline are visible
+- Slowly scroll down to reveal the <strong>10-Vector Forensic Bento Grid</strong></p>
+<blockquote>
+<p><strong>🎙️ VOICEOVER:</strong></p>
+<p>&ldquo;This is the problem we&rsquo;re solving. Meet VoxSentinalX — a real-time AI voice deepfake detection platform built for SIH 2026.&rdquo;</p>
+</blockquote>
+<hr />
+<h2>🎬 SCENE 2 — The 10-Layer Engine</h2>
+<p><strong>⏱️ 0:20 – 0:50 (30 seconds)</strong></p>
+<p><strong>[SCREEN: Still on Landing Page — Forensic Bento Grid]</strong></p>
+<blockquote>
+<p><strong>🎙️ VOICEOVER</strong> <em>(confident, educational):</em></p>
+<p>&ldquo;Unlike traditional detectors that rely on a single model, VoxSentinalX runs 10 forensic detection layers simultaneously.&rdquo;</p>
+</blockquote>
+<p><strong>📌 What to do on screen:</strong>
+- Hover over / click through 4 key bento cards:</p>
+<table>
+<thead>
+<tr>
+<th>Card to highlight</th>
+<th>What to say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Spectral Flatness &amp; Phase</strong></td>
+<td>&ldquo;We check if the frequency spectrum is unnaturally flat — something AI voices always get wrong.&rdquo;</td>
+</tr>
+<tr>
+<td><strong>Breathing Cadence</strong></td>
+<td>&ldquo;Real humans breathe. AI doesn&rsquo;t. We detect the absence of natural respiratory pauses.&rdquo;</td>
+</tr>
+<tr>
+<td><strong>Jitter &amp; Shimmer</strong></td>
+<td>&ldquo;Human vocal cords have micro-imperfections — tiny pitch wobbles. AI voices are too perfect.&rdquo;</td>
+</tr>
+<tr>
+<td><strong>Deep Neural LCNN</strong></td>
+<td>&ldquo;And our neural network — an LCNN with BiLSTM and attention — learns patterns no handcrafted feature can catch.&rdquo;</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>🎙️ VOICEOVER:</strong></p>
+<p>&ldquo;Each layer produces a score. A weighted fusion engine combines them into one real-time risk verdict.&rdquo;</p>
+</blockquote>
+<p><strong>📌 Then quickly:</strong>
+- Scroll to the <strong>Threat Simulation Sandbox</strong>
+- Click <strong>&ldquo;Wire Fraud Clone&rdquo;</strong> → radial risk gauge animates to HIGH (red)
+- Click <strong>&ldquo;Authentic Human Caller&rdquo;</strong> → gauge drops to LOW (green)</p>
+<hr />
+<h2>🎬 SCENE 3 — Live Call Detection Demo ⭐</h2>
+<p><strong>⏱️ 0:50 – 1:40 (50 seconds) — THE MONEY SHOT</strong></p>
+<p><strong>[SCREEN: Click &ldquo;Live Monitor&rdquo; tab in the navbar]</strong></p>
+<blockquote>
+<p><strong>🎙️ VOICEOVER</strong> <em>(building energy):</em></p>
+<p>&ldquo;But let me show you the real magic — live, real-time detection.&rdquo;</p>
+</blockquote>
+<p><strong>📌 Step-by-step actions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Action</th>
+<th>What to say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Click <strong>&ldquo;Live Call Monitor&rdquo;</strong> in navbar</td>
+<td>—</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Dashboard opens — oscilloscope flat, radar empty</td>
+<td>—</td>
+</tr>
+<tr>
+<td>3</td>
+<td>—</td>
+<td>&ldquo;Here&rsquo;s the scenario: I receive a suspicious phone call. I put my phone on speaker next to my laptop mic.&rdquo;</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Click <strong>&ldquo;Start Live Monitoring&rdquo;</strong> → Allow mic</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Oscilloscope starts showing ambient noise</td>
+<td>—</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>▶️ Play deepfake audio from your phone speaker</strong></td>
+<td>&ldquo;I&rsquo;m now playing an AI-cloned voice through my phone speaker — watch what happens.&rdquo;</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>⚡ THE WOW MOMENT</strong> — watch the dashboard light up:</td>
+<td><em>(Pause 2-3 sec. Let the visuals speak.)</em></td>
+</tr>
+<tr>
+<td></td>
+<td>• Oscilloscope shows waveform</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 10-axis radar expands with LOW breathing/jitter</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• Risk gauge climbs green → yellow → <strong>RED</strong></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• Diagnostic feed shows alerts</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• Emergency overlay may trigger at &gt;85%</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td>—</td>
+<td>&ldquo;Instantly — spectral flatness flagged, breathing patterns absent, jitter too stable. The system classified this as a deepfake with 92% confidence. And it shows exactly WHY — not just a black-box label.&rdquo;</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Stop deepfake. <strong>Speak into mic yourself</strong> (few sentences)</td>
+<td>&ldquo;Now listen to a real human voice — mine.&rdquo;</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Radar fills out, gauge drops to <strong>green</strong></td>
+<td>&ldquo;Full breathing cadence, natural pitch variance, organic jitter. Verified human. That&rsquo;s the difference.&rdquo;</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Click <strong>&ldquo;Stop Monitoring&rdquo;</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🎬 SCENE 4 — File Upload Analysis</h2>
+<p><strong>⏱️ 1:40 – 2:10 (30 seconds)</strong></p>
+<p><strong>[SCREEN: Click &ldquo;File Analyzer&rdquo; tab]</strong></p>
+<blockquote>
+<p><strong>🎙️ VOICEOVER</strong> <em>(fast but clear):</em></p>
+<p>&ldquo;We also support offline forensic analysis. Drag and drop any audio or video file.&rdquo;</p>
+</blockquote>
+<p><strong>📌 What to do on screen:</strong>
+1. Click <strong>&ldquo;Audio &amp; Video Analyzer&rdquo;</strong> tab
+2. Drag <code>dataset_samples/Elon Musk.wav</code> into the upload zone
+3. Analysis runs — loading animation plays
+4. Results appear: forensic timeline, 10-vector breakdown, risk peaks, diagnostic report</p>
+<blockquote>
+<p><strong>🎙️ VOICEOVER:</strong></p>
+<p>&ldquo;In under 3 seconds, we get a complete forensic timeline — every second scored across all 10 vectors. Risk peaks are highlighted, and actionable countermeasures are generated automatically.&rdquo;</p>
+</blockquote>
+<hr />
+<h2>🎬 SCENE 5 — Training &amp; Benchmarks + Close</h2>
+<p><strong>⏱️ 2:10 – 2:40 (30 seconds)</strong></p>
+<p><strong>[SCREEN: Click &ldquo;LCNN Training&rdquo; tab]</strong></p>
+<blockquote>
+<p><strong>🎙️ VOICEOVER</strong> <em>(proud, closing):</em></p>
+<p>&ldquo;Our model is trained on a unified corpus of over 5,400 audio files — covering OpenAI, Coqui XTTS, Seed-TTS, VALL-E, ASVspoof, and Indic language generators.&rdquo;</p>
+</blockquote>
+<p><strong>📌 What to do on screen:</strong>
+1. Click <strong>&ldquo;LCNN Training&rdquo;</strong> tab
+2. Show metrics: accuracy 86.27%, EER 6.86%, F1 87.63%
+3. Scroll to show benchmark comparison chart</p>
+<blockquote>
+<p><strong>🎙️ VOICEOVER:</strong></p>
+<p>&ldquo;86% accuracy. 6.8% equal error rate. Tested against 11 different voice cloning engines. And it runs in real-time — no cloud dependency, no GPU required.&rdquo;</p>
+</blockquote>
+<p><strong>📌 Final shot:</strong>
+- Scroll back to landing page hero
+- Hold on the VoxSentinalX logo for 3 seconds</p>
+<blockquote>
+<p><strong>🎙️ VOICEOVER</strong> <em>(mic drop energy):</em></p>
+<p>&ldquo;VoxSentinalX — because in a world where any voice can be faked, trust needs to be verified. Thank you.&rdquo;</p>
+</blockquote>
+<p><strong>[Fade to black]</strong></p>
+<hr />
+<h2>💡 Pro Tips for Natural Delivery</h2>
+<ol>
+<li><strong>Don&rsquo;t read word-for-word</strong> — internalize the key points and speak naturally</li>
+<li><strong>Pause after the detection moment</strong> — let the visual do the talking for 2–3 seconds before narrating</li>
+<li><strong>Show genuine reaction</strong> — a subtle &ldquo;Whoa, look at that&rdquo; or &ldquo;There it is&rdquo; when the gauge goes red feels authentic</li>
+<li><strong>Vary your pace</strong> — slow down for the hook and detection moment, speed up for tech specs</li>
+<li><strong>Use your cursor as a pointer</strong> — hover over key UI elements as you explain them</li>
+<li><strong>Record in one take</strong> — cuts in a 2-min video feel jarring</li>
+<li><strong>End confidently</strong> — the last line should feel like a mic drop</li>
+</ol>
+<hr />
+<h2>📋 Quick Cheat Sheet (Sticky Note / Teleprompter)</h2>
+<pre><code>HOOK:     &quot;Imagine a call from your bank... it's a deepfake.&quot;
+INTRO:    &quot;Meet VoxSentinalX — 10-layer forensic detection.&quot;
+BENTO:    Spectral → Breathing → Jitter → Neural LCNN → Fusion
+SANDBOX:  Wire Fraud (RED) → Authentic (GREEN)
+LIVE:     Start monitoring → Play deepfake → WATCH radar + gauge
+          → &quot;92% confidence&quot; → Speak real voice → gauge drops
+          → &quot;Verified human&quot;
+FILE:     Drag Elon Musk.wav → 3-second forensic timeline
+TRAINING: &quot;5,400 files, 86% accuracy, 11 engines, real-time&quot;
+CLOSE:    &quot;Trust needs to be verified. Thank you.&quot;
+</code></pre>
+<hr />
+<h2>🎥 Recommended Recording Settings</h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Resolution</td>
+<td>1920×1080 (1080p)</td>
+</tr>
+<tr>
+<td>Frame Rate</td>
+<td>60 fps</td>
+</tr>
+<tr>
+<td>Format</td>
+<td>MP4 (H.264)</td>
+</tr>
+<tr>
+<td>Aspect Ratio</td>
+<td>16:9</td>
+</tr>
+<tr>
+<td>Audio</td>
+<td>48 kHz stereo (mic + system audio)</td>
+</tr>
+<tr>
+<td>Software</td>
+<td>OBS Studio (free)</td>
+</tr>
+<tr>
+<td>Bitrate</td>
+<td>6000–8000 kbps</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Script prepared for Smart India Hackathon (SIH 2026) — Problem Statement #26104</em>
+<em>VoxSentinalX | All rights reserved</em></p>
+</body>
+</html>

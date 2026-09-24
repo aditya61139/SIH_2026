@@ -21,6 +21,25 @@ export interface LayerScores {
   perturbation: number;
   bispectrum: number;
   neural_lcnn: number;
+  replay_attack: number;
+}
+
+export interface LanguageProfile {
+  language_family: string;
+  estimated_language: string;
+  vowel_space_area: number;
+  retroflex_dip_ratio: number;
+  npvi_rhythm_index: number;
+  formant_dispersion?: number;
+  multilingual_synthetic_prob?: number;
+}
+
+export interface ReplayProfile {
+  thd_score: number;
+  rt60_ratio: number;
+  coloration_score: number;
+  dac_transient_score?: number;
+  replay_probability: number;
 }
 
 export interface AnalysisUpdate {
@@ -40,6 +59,13 @@ export interface AnalysisUpdate {
   diagnostics: AnomalyItem[];
   layer_scores: LayerScores;
   layer_metrics: Record<string, Record<string, any>>;
+  language_profile?: LanguageProfile;
+  replay_profile?: ReplayProfile;
+  codec_normalization?: {
+    codec: string;
+    hf_ratio: number;
+    compensation_factor: number;
+  };
   speaker_separation: {
     caller_ratio: number;
     user_ratio: number;
@@ -58,6 +84,11 @@ export interface FileAnalysisReport {
   recommendation: string;
   suggested_actions: string[];
   unique_anomalies_detected: AnomalyItem[];
+  layer_scores?: LayerScores;
+  language_profile?: LanguageProfile;
+  replay_profile?: ReplayProfile;
+  audit_certificate?: any;
+  sha256_evidence_hash?: string;
   timeline: AnalysisUpdate[];
 }
 

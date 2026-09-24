@@ -1,0 +1,24 @@
+{
+  "name": "VoxSentinalX — AI Voice Defense",
+  "short_name": "VoxSentinalX",
+  "description": "Real-Time AI Voice Cloning Detection & Forensic Prevention Suite",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0D0E11",
+  "theme_color": "#0D0E11",
+  "icons": [
+    {
+      "src": "/Logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 """
-VoxSentinalX High-Throughput 8-Vector Forensic & Neural Ensemble Trainer.
+VoxSentinalX High-Throughput 10-Vector Forensic & Neural Ensemble Trainer.
 Trains on all 4,997 audio samples in data/unified_corpus (Bona Fide Human vs Multi-Generator Deepfakes).
 Extracts STFT phase, Prosody 8-12Hz micro-tremors, Respiration cadence, Vocoder cutoffs,
-LFCC deltas, Glottal LPC-NAQ, Jitter/Shimmer, and Bispectrum QPC features.
+LFCC deltas, Glottal LPC-NAQ, Jitter/Shimmer, Bispectrum QPC, Loudspeaker Replay, and Multilingual Rhythm features.
 """
 import os
 import sys
@@ -21,7 +21,7 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 def extract_forensic_features(audio: np.ndarray, sr: int = 16000) -> np.ndarray:
-    """Extracts a 32-dimensional forensic feature representation from audio."""
+    """Extracts a 32-dimensional 10-vector forensic feature representation from audio."""
     # Ensure fixed length 2.0s
     target_len = int(sr * 2.0)
     if len(audio) < target_len:
@@ -115,13 +115,52 @@ def extract_forensic_features(audio: np.ndarray, sr: int = 16000) -> np.ndarray:
     spec_kurtosis = float(np.mean((magnitude - np.mean(magnitude))**4) / ((np.var(magnitude) + 1e-10)**2))
     features.append(min(10.0, spec_kurtosis) / 10.0)
 
-    # 9-16. Statistical Mel Energies (14 additional dimensions)
+    # 9. Physical Loudspeaker Replay Features
+    # 9a. Sub-bass energy ratio (< 150 Hz) - steep rolloff in physical mobile loudspeakers
+    sub_150_mask = f < 150
+    sub_bass_energy = np.sum(magnitude[sub_150_mask, :]) / (np.sum(magnitude) + 1e-10)
+    features.append(float(sub_bass_energy))
+
+    # 9b. Autocorrelation Harmonics-to-Noise Ratio (HNR proxy)
+    frame_40ms = audio[: int(sr * 0.04)]
+    if len(frame_40ms) > 0 and np.sum(frame_40ms ** 2) > 1e-6:
+        frame_corr = np.correlate(frame_40ms, frame_40ms, mode='full')[len(frame_40ms) - 1 :]
+        min_l = int(sr / 350.0)
+        max_l = int(sr / 80.0)
+        if len(frame_corr) > max_l:
+            lags = np.arange(len(frame_corr))
+            unbiased_denom = frame_corr[0] * np.maximum(0.01, (1.0 - lags / float(len(frame_40ms))))
+            norm_c = frame_corr / unbiased_denom
+            r_peak = float(np.max(norm_c[min_l:max_l]))
+            features.append(min(1.0, max(0.0, r_peak)))
+        else:
+            features.append(0.5)
+    else:
+        features.append(0.5)
+
+    # 10. Multilingual & Regional Acoustic Rhythm Features
+    # 10a. Formant dispersion proxy (mid-frequency vocal tract ratio: 1.5 - 3.5 kHz vs 0.5 - 1.5 kHz)
+    f_mid_mask = (f >= 500) & (f < 1500)
+    f_high_mask = (f >= 1500) & (f < 3500)
+    f_mid_pwr = np.sum(magnitude[f_mid_mask, :]) + 1e-10
+    f_high_pwr = np.sum(magnitude[f_high_mask, :]) + 1e-10
+    formant_dispersion = float(f_high_pwr / f_mid_pwr)
+    features.append(min(3.0, formant_dispersion) / 3.0)
+
+    # 10b. Syllable cadence & nPVI rhythm variability
+    if len(energies) > 2:
+        nPVI_proxy = float(np.std(energies) / (np.mean(energies) + 1e-6))
+    else:
+        nPVI_proxy = 0.2
+    features.append(min(1.0, nPVI_proxy))
+
+    # Statistical Mel Energies (10 remaining dimensions to fill 32-dim feature vector)
     mel_sub = np.mean(magnitude[:80, :], axis=1)
-    if len(mel_sub) >= 14:
-        for idx in np.linspace(0, len(mel_sub)-1, 14, dtype=int):
+    if len(mel_sub) >= 10:
+        for idx in np.linspace(0, len(mel_sub)-1, 10, dtype=int):
             features.append(float(mel_sub[idx]))
     else:
-        features.extend([0.0] * 14)
+        features.extend([0.0] * 10)
 
     feat_arr = np.array(features[:32], dtype=np.float32)
     if len(feat_arr) < 32:
@@ -224,7 +263,7 @@ def compute_eer(scores: np.ndarray, labels: np.ndarray) -> float:
 
 def run_training():
     print("=" * 68)
-    print("  🛡️ VoxSentinalX 8-Vector Forensic & Neural Ensemble Training")
+    print("  🛡️ VoxSentinalX 10-Vector Forensic & Neural Ensemble Training")
     print("=" * 68)
 
     unified_dir = r"p:\VoxSentinalX\data\unified_corpus"
@@ -240,7 +279,7 @@ def run_training():
     print(f"Total Unique Training Samples        : {len(real_files) + len(fake_files):5d}")
     print("-" * 68)
 
-    print("[-] Extracting 8-Vector Forensic & Mel Representations...")
+    print("[-] Extracting 10-Vector Forensic & Mel Representations...")
     X_list = []
     y_list = []
 

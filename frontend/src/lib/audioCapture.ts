@@ -205,7 +205,7 @@ export class VoxSentinalAudioCapture {
     }
   }
 
-  public async stopVoiceRecordingAndCalibrate(apiBaseUrl: string = 'http://localhost:8000'): Promise<{
+  public async stopVoiceRecordingAndCalibrate(apiBaseUrl: string = (typeof window !== 'undefined' && window.location.hostname ? `${window.location.protocol}//${window.location.hostname}:8000` : 'http://localhost:8000')): Promise<{
     success: boolean;
     durationSec: number;
     profile?: any;

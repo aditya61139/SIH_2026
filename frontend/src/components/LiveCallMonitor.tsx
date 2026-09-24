@@ -1,11 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Square, Mic, Volume2, ShieldCheck, UserCheck, Layers, Radio, Radar } from 'lucide-react';
+import {
+  Play,
+  Square,
+  Mic,
+  Volume2,
+  ShieldCheck,
+  UserCheck,
+  Layers,
+  Radio,
+  Radar,
+  Globe,
+  AlertTriangle,
+} from 'lucide-react';
 import { VoxSentinalAudioCapture } from '../lib/audioCapture';
 import { CanvasAudioVisualizer } from '../lib/audioVisualizer';
 import { RiskGauge } from './RiskGauge';
 import { DiagnosticFeed } from './DiagnosticFeed';
 import { AlertOverlay } from './AlertOverlay';
 import { ForensicRadar } from './ForensicRadar';
+import { DetectionTimeline } from './DetectionTimeline';
 import { AnalysisUpdate } from '../types';
 
 interface LiveCallMonitorProps {
@@ -22,6 +35,7 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
   const [isMonitoring, setIsMonitoring] = useState<boolean>(false);
   const [audioLevel, setAudioLevel] = useState<number>(0);
   const [latestAnalysis, setLatestAnalysis] = useState<AnalysisUpdate | null>(null);
+  const [callTimeline, setCallTimeline] = useState<AnalysisUpdate[]>([]);
   const [connStatus, setConnStatus] = useState<string>('disconnected');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showAlertModal, setShowAlertModal] = useState<boolean>(false);
@@ -42,6 +56,7 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
         wsUrl,
         (data: AnalysisUpdate) => {
           setLatestAnalysis(data);
+          setCallTimeline((prev) => [...prev.slice(-59), data]);
           visualizerRef.current?.setRiskLevel(data.risk_level);
 
           if (data.risk_level === 'CRITICAL') {
@@ -95,6 +110,7 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
     perturbation: 0,
     bispectrum: 0,
     neural_lcnn: 0,
+    replay_attack: 0,
   };
   const separation = latestAnalysis?.speaker_separation ?? {
     caller_ratio: 1.0,
@@ -113,6 +129,29 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
         recommendation={latestAnalysis?.recommendation || ''}
       />
 
+      {/* Replay Attack Banner */}
+      {((layerScores.replay_attack || 0) >= 0.65 ||
+        (latestAnalysis?.replay_profile?.replay_probability || 0) >= 0.65) && (
+        <div className="flex items-center justify-between rounded-2xl bg-[#8B5CF6]/15 p-4 border border-[#8B5CF6]/40 shadow-xl animate-pulse">
+          <div className="flex items-center space-x-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8B5CF6]/20 text-[#C4B5FD]">
+              <Volume2 className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                Physical Loudspeaker Replay Attack Detected
+              </h3>
+              <p className="text-xs text-[#E2E8F0] mt-0.5">
+                Harmonic distortion (&gt;8.5% THD) and dual-slope room reverberation mismatch observed. The caller is playing pre-recorded audio through a loudspeaker.
+              </p>
+            </div>
+          </div>
+          <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#8B5CF6]/30 text-[#C4B5FD] border border-[#8B5CF6]/50">
+            REPLAY DEFENSE ACTIVE
+          </span>
+        </div>
+      )}
+
       {/* Top Banner: Speakerphone Operation Guide */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between rounded-2xl bg-[#1A1C23] p-4 sm:p-5 border border-[#2A2E37] shadow-xl">
         <div className="flex items-center space-x-3.5">
@@ -121,10 +160,10 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
           </div>
           <div>
             <h2 className="text-sm sm:text-base font-bold text-white">
-              Live Call Impersonation Interceptor (8-Vector Forensic Engine)
+              Live Call Impersonation Interceptor (10-Vector Forensic Engine)
             </h2>
             <p className="text-xs text-[#94A3B8] mt-0.5">
-              🔊 <strong>Physical Setup:</strong> Place phone on speakerphone next to your PC. VoxSentinalX captures caller audio, filters user voice, and conducts 8-layer AI forensic checks.
+              🔊 <strong>Physical Setup:</strong> Place phone on speakerphone next to your PC. VoxSentinalX captures caller audio, filters user voice, and conducts 10-layer AI forensic checks.
             </p>
           </div>
         </div>
@@ -160,12 +199,11 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
         </div>
       )}
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Telemetry, Radar, 8-Layer Decomposition (7 Cols) */}
-        <div className="lg:col-span-7 space-y-6">
-          {/* Oscilloscope & Spectrogram Canvas */}
-          <div className="rounded-2xl bg-[#1A1C23] p-5 border border-[#2A2E37] shadow-xl">
+      {/* TIER 1: Telemetry Cockpit (Audio Input + Radar + Risk Gauge) */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
+        {/* Oscilloscope & Spectrogram Canvas (6 Cols) */}
+        <div className="md:col-span-6 rounded-2xl bg-[#1A1C23] p-5 border border-[#2A2E37] shadow-xl flex flex-col justify-between">
+          <div>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
                 <Mic className={`h-4 w-4 ${isMonitoring ? 'text-[#10B981] animate-pulse' : 'text-[#64748B]'}`} />
@@ -182,11 +220,11 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
             </div>
 
             {/* Canvas Visualizer */}
-            <div className="relative overflow-hidden rounded-xl bg-[#15171C] border border-[#2A2E37] h-40">
+            <div className="relative overflow-hidden rounded-xl bg-[#15171C] border border-[#2A2E37] h-36">
               <canvas
                 ref={canvasRef}
                 width={640}
-                height={160}
+                height={144}
                 className="w-full h-full block"
               />
               {!isMonitoring && (
@@ -198,35 +236,57 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
                 </div>
               )}
             </div>
-
-            {/* Volume Input Meter */}
-            <div className="mt-3 flex items-center space-x-3">
-              <Volume2 className="h-4 w-4 text-[#94A3B8] shrink-0" />
-              <div className="flex-1 h-2 rounded-full bg-[#374151] overflow-hidden border border-[#2A2E37]">
-                <div
-                  className="h-full bg-gradient-to-r from-[#10B981] to-emerald-400 transition-all duration-75"
-                  style={{ width: `${Math.min(audioLevel * 300, 100)}%` }}
-                />
-              </div>
-              <span className="text-[10px] font-mono text-[#94A3B8] shrink-0">
-                {Math.round(audioLevel * 100)}% Input
-              </span>
-            </div>
           </div>
 
-          {/* 8-Layer Forensic Decomposition Breakdown */}
-          <div className="rounded-2xl bg-[#1A1C23] p-5 border border-[#2A2E37] shadow-xl">
+          {/* Volume Input Meter */}
+          <div className="mt-3 flex items-center space-x-3">
+            <Volume2 className="h-4 w-4 text-[#94A3B8] shrink-0" />
+            <div className="flex-1 h-2 rounded-full bg-[#374151] overflow-hidden border border-[#2A2E37]">
+              <div
+                className="h-full bg-gradient-to-r from-[#10B981] to-emerald-400 transition-all duration-75"
+                style={{ width: `${Math.min(audioLevel * 300, 100)}%` }}
+              />
+            </div>
+            <span className="text-[10px] font-mono text-[#94A3B8] shrink-0">
+              {Math.round(audioLevel * 100)}% Input
+            </span>
+          </div>
+        </div>
+
+        {/* 10-Axis Forensic Radar Chart (3 Cols) */}
+        <div className="md:col-span-3 rounded-2xl bg-[#1A1C23] p-4 border border-[#2A2E37] shadow-xl flex items-center justify-center">
+          <ForensicRadar
+            scores={layerScores}
+            riskLevel={riskLevel}
+          />
+        </div>
+
+        {/* Risk Gauge (3 Cols) */}
+        <div className="md:col-span-3">
+          <RiskGauge
+            score={riskScore}
+            level={riskLevel}
+            isSpike={isSpike}
+          />
+        </div>
+      </div>
+
+      {/* TIER 2: 10-Vector Forensic Decomposition & Diagnostic Feed */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* 10-Vector Forensic Decomposition (7 Cols) */}
+        <div className="lg:col-span-7 rounded-2xl bg-[#1A1C23] p-5 border border-[#2A2E37] shadow-xl flex flex-col justify-between">
+          <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <Layers className="h-4 w-4 text-[#10B981]" />
                 <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                  8-Vector Forensic Decomposition
+                  10-Vector Forensic Decomposition
                 </h3>
               </div>
               <span className="text-[11px] text-[#94A3B8] font-mono">Sliding Window: 2.0s</span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
               {/* Layer 1: Spectral */}
               <div className="rounded-xl bg-[#15171C] p-3 border border-[#2A2E37]">
                 <span className="text-[10px] text-[#94A3B8] uppercase font-semibold block">L1: Spectral</span>
@@ -265,11 +325,11 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
 
               {/* Layer 5: LFCC */}
               <div className="rounded-xl bg-[#15171C] p-3 border border-[#2A2E37]">
-                <span className="text-[10px] text-[#94A3B8] uppercase font-semibold block">L5: ASVspoof LFCC</span>
+                <span className="text-[10px] text-[#94A3B8] uppercase font-semibold block">L5: LFCC</span>
                 <div className="mt-0.5 text-base font-mono font-bold text-[#10B981]">
                   {Math.round(layerScores.lfcc * 100)}%
                 </div>
-                <span className="text-[9px] text-[#64748B] block truncate">Linear Cepstrum ΔΔ</span>
+                <span className="text-[9px] text-[#64748B] block truncate">Linear Cepstrum</span>
               </div>
 
               {/* Layer 6: Glottal */}
@@ -278,7 +338,7 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
                 <div className="mt-0.5 text-base font-mono font-bold text-[#10B981]">
                   {Math.round(layerScores.glottal * 100)}%
                 </div>
-                <span className="text-[9px] text-[#64748B] block truncate">LPC-NAQ Biomechanics</span>
+                <span className="text-[9px] text-[#64748B] block truncate">LPC-NAQ Airflow</span>
               </div>
 
               {/* Layer 7: Perturbation */}
@@ -296,55 +356,75 @@ export const LiveCallMonitor: React.FC<LiveCallMonitorProps> = ({
                 <div className="mt-0.5 text-base font-mono font-bold text-[#10B981]">
                   {Math.round(layerScores.bispectrum * 100)}%
                 </div>
-                <span className="text-[9px] text-[#64748B] block truncate">QPC Phase Coupling</span>
+                <span className="text-[9px] text-[#64748B] block truncate">QPC Coupling</span>
+              </div>
+
+              {/* Layer 9: Neural LCNN */}
+              <div className="rounded-xl bg-[#15171C] p-3 border border-[#2A2E37]">
+                <span className="text-[10px] text-[#94A3B8] uppercase font-semibold block">L9: Deep LCNN</span>
+                <div className="mt-0.5 text-base font-mono font-bold text-[#10B981]">
+                  {Math.round((layerScores.neural_lcnn || 0) * 100)}%
+                </div>
+                <span className="text-[9px] text-[#64748B] block truncate">MFM-BiLSTM Net</span>
+              </div>
+
+              {/* Layer 10: Replay Attack */}
+              <div className="rounded-xl bg-[#15171C] p-3 border border-[#2A2E37]">
+                <span className="text-[10px] text-[#94A3B8] uppercase font-semibold block">L10: Replay</span>
+                <div className={`mt-0.5 text-base font-mono font-bold ${(layerScores.replay_attack || 0) >= 0.65 ? 'text-[#8B5CF6]' : 'text-[#10B981]'}`}>
+                  {Math.round((layerScores.replay_attack || 0) * 100)}%
+                </div>
+                <span className="text-[9px] text-[#64748B] block truncate">Loudspeaker THD</span>
               </div>
             </div>
+          </div>
 
-            {/* Speaker Diarization Badge */}
-            <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between rounded-xl bg-[#15171C] p-3 border border-[#2A2E37] text-xs">
+          {/* Speaker Diarization & Linguistic Accent Badge */}
+          <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between rounded-xl bg-[#15171C] p-3 border border-[#2A2E37] text-xs gap-2">
+            <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center space-x-2">
                 <UserCheck className="h-4 w-4 text-[#10B981]" />
                 <span className="text-[#E2E8F0]">
-                  Channel Isolation: <strong>Caller ({Math.round(separation.caller_ratio * 100)}%)</strong> vs <strong>User ({Math.round(separation.user_ratio * 100)}%)</strong>
+                  Channel: <strong>Caller ({Math.round(separation.caller_ratio * 100)}%)</strong> vs <strong>User ({Math.round(separation.user_ratio * 100)}%)</strong>
                 </span>
               </div>
-              <button
-                onClick={onOpenCalibration}
-                className="mt-2 sm:mt-0 text-[11px] font-semibold text-[#10B981] hover:underline"
-              >
-                {separation.calibrated ? 'Recalibrate Profile' : 'Calibrate Voiceprint'}
-              </button>
+
+              {latestAnalysis?.language_profile?.estimated_language && (
+                <div className="flex items-center space-x-1.5 text-xs text-[#E2E8F0]">
+                  <Globe className="h-3.5 w-3.5 text-[#10B981]" />
+                  <span>Accent: <strong className="text-white">{latestAnalysis.language_profile.estimated_language}</strong></span>
+                </div>
+              )}
             </div>
+
+            <button
+              onClick={onOpenCalibration}
+              className="mt-2 sm:mt-0 text-[11px] font-semibold text-[#10B981] hover:underline shrink-0"
+            >
+              {separation.calibrated ? 'Recalibrate Profile' : 'Calibrate Voiceprint'}
+            </button>
           </div>
         </div>
 
-        {/* Right Column: Risk Gauge, Radar, Diagnostic Feed (5 Cols) */}
-        <div className="lg:col-span-5 space-y-6 flex flex-col">
-          {/* Risk Gauge */}
-          <RiskGauge
-            score={riskScore}
-            level={riskLevel}
-            isSpike={isSpike}
+        {/* Diagnostic Forensics Feed (5 Cols) */}
+        <div className="lg:col-span-5 h-full">
+          <DiagnosticFeed
+            anomalies={diagnostics}
+            userMessage={latestAnalysis?.user_message}
+            recommendation={latestAnalysis?.recommendation}
+            suggestedActions={latestAnalysis?.suggested_actions}
           />
-
-          {/* Forensic Radar Chart */}
-          <div className="rounded-2xl bg-[#1A1C23] p-4 border border-[#2A2E37] shadow-xl flex items-center justify-center">
-            <ForensicRadar
-              scores={layerScores}
-              riskLevel={riskLevel}
-            />
-          </div>
-
-          {/* Granular Diagnostic Messages Feed */}
-          <div className="flex-1">
-            <DiagnosticFeed
-              anomalies={diagnostics}
-              userMessage={latestAnalysis?.user_message}
-              recommendation={latestAnalysis?.recommendation}
-              suggestedActions={latestAnalysis?.suggested_actions}
-            />
-          </div>
         </div>
+      </div>
+
+      {/* TIER 3: Real-Time Rolling Forensic Detection Timeline */}
+      <div className="rounded-3xl bg-[#1A1C23] p-6 border border-[#2A2E37] shadow-xl">
+        <DetectionTimeline
+          timeline={callTimeline}
+          activeTimestamp={null}
+          onSeek={() => {}}
+          durationSeconds={callTimeline.length}
+        />
       </div>
     </div>
   );

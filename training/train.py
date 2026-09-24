@@ -75,7 +75,7 @@ def train_model(
         print("[-] Executing high-throughput Forensic Ensemble training pipeline...")
         from training.train_acoustic_ensemble import run_training
         run_training()
-        return {"status": "trained_via_ensemble", "message": "Trained with 8-Vector Forensic Ensemble."}
+        return {"status": "trained_via_ensemble", "message": "Trained with 10-Vector Forensic Ensemble."}
 
     class FocalLoss(nn.Module):
         """Focal Loss to combat class imbalance in deepfake detection."""
